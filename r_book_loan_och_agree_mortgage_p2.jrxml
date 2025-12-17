@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_book_loan_och_agree_mortgage_p2" language="groovy" pageWidth="612" pageHeight="1108" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cf291b26-8024-42ea-aef8-86ef1d8021ba">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="88"/>
+	<property name="ireport.y" value="969"/>
+	<parameter name="colmast_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select lncollmaster.*,
+		cmcoopmaster.*,
+		MBMEMBMASTER.*,
+		( MBUCFPRENAME.PRENAME_DESC || MBMEMBMASTER.MEMB_NAME || '   ' || MBMEMBMASTER.MEMB_SURNAME  ) as Mem_Name,
+		mut.tambol_desc as tambol_desc2,
+		mud.district_desc as amphur_desc2,
+		mup.province_desc as province_desc2,
+		FT_READTBAHT(est_price) as m_bath
+from lncollmaster
+left join cmcoopmaster on cmcoopmaster.coop_id = lncollmaster.coop_Id
+left join MBMEMBMASTER on lncollmaster.member_no = MBMEMBMASTER.member_no
+left join MBUCFPRENAME on MBMEMBMASTER.PRENAME_CODE = MBUCFPRENAME.PRENAME_CODE
+left outer join mbucftambol mut on lncollmaster.mrtg_tambol1 = mut.tambol_code and lncollmaster.mrtg_amphur1 = mut.district_code
+left outer join mbucfdistrict mud on lncollmaster.mrtg_amphur1 = mud.district_code and lncollmaster.mrtg_province1 = mud.province_code
+left outer join mbucfprovince mup on lncollmaster.mrtg_province1 = mup.province_code
+where lncollmaster.collmast_no= $P{colmast_no} and lncollmaster.coop_id = $P{coopid}]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="COLLMAST_NO" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="COLLMAST_TYPE" class="java.lang.String"/>
+	<field name="COLLMAST_DATE" class="java.sql.Timestamp"/>
+	<field name="COLL_PRICE" class="java.math.BigDecimal"/>
+	<field name="COLL_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNIT" class="java.math.BigDecimal"/>
+	<field name="EST_PERCENT" class="java.math.BigDecimal"/>
+	<field name="EST_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGE_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGE_DATE" class="java.sql.Timestamp"/>
+	<field name="EXPIRE_DATE" class="java.sql.Timestamp"/>
+	<field name="REDEEM_DATE" class="java.sql.Timestamp"/>
+	<field name="COLLMAST_STATUS" class="java.math.BigDecimal"/>
+	<field name="LANDTYPE_CODE" class="java.lang.String"/>
+	<field name="LAND_DEPARTMENT" class="java.lang.String"/>
+	<field name="LAND_RAVANG" class="java.lang.String"/>
+	<field name="LAND_DOCNO" class="java.lang.String"/>
+	<field name="LAND_LANDNO" class="java.lang.String"/>
+	<field name="LAND_SURVEY" class="java.lang.String"/>
+	<field name="LAND_BOOKNO" class="java.lang.String"/>
+	<field name="LAND_PAGENO" class="java.lang.String"/>
+	<field name="POS_TAMBOL" class="java.lang.String"/>
+	<field name="POS_AMPHUR" class="java.lang.String"/>
+	<field name="POS_PROVINCE" class="java.lang.String"/>
+	<field name="SIZE_RAI" class="java.math.BigDecimal"/>
+	<field name="SIZE_NGAN" class="java.math.BigDecimal"/>
+	<field name="SIZE_WA" class="java.math.BigDecimal"/>
+	<field name="PHOTOAIR_PROVINCE" class="java.lang.String"/>
+	<field name="PHOTOAIR_NUMBER" class="java.lang.String"/>
+	<field name="PHOTOAIR_PAGE" class="java.lang.String"/>
+	<field name="BUILDINGTYPE_CODE" class="java.lang.String"/>
+	<field name="BD_VILLAGE" class="java.lang.String"/>
+	<field name="BD_ADDRNO" class="java.lang.String"/>
+	<field name="BD_ADDRMOO" class="java.lang.String"/>
+	<field name="BD_SOI" class="java.lang.String"/>
+	<field name="BD_ROAD" class="java.lang.String"/>
+	<field name="BD_TAMBOL" class="java.lang.String"/>
+	<field name="BD_AMPHUR" class="java.lang.String"/>
+	<field name="BD_PROVINCE" class="java.lang.String"/>
+	<field name="BD_AGE" class="java.math.BigDecimal"/>
+	<field name="CONDO_REGISTNO" class="java.lang.String"/>
+	<field name="CONDO_NAME" class="java.lang.String"/>
+	<field name="CONDO_TOWERNO" class="java.lang.String"/>
+	<field name="CONDO_FLOOR" class="java.lang.String"/>
+	<field name="CONDO_ROOMNO" class="java.lang.String"/>
+	<field name="CONDO_ROOMSIZE" class="java.math.BigDecimal"/>
+	<field name="CONDO_AGE" class="java.math.BigDecimal"/>
+	<field name="DESC_POSITION" class="java.lang.String"/>
+	<field name="DESC_UTILITY" class="java.lang.String"/>
+	<field name="DESC_TRAVEL" class="java.lang.String"/>
+	<field name="DESC_ETC" class="java.lang.String"/>
+	<field name="REDEEM_FLAG" class="java.math.BigDecimal"/>
+	<field name="COLLMAST_DESC" class="java.lang.String"/>
+	<field name="BHPRICENOW_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="BGMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUSTVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="ASSETVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="LAWSALE_AMT" class="java.math.BigDecimal"/>
+	<field name="INSURANCE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGECOMP_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNITCOMPANY" class="java.math.BigDecimal"/>
+	<field name="INSURANCEFIRE_AMT" class="java.math.BigDecimal"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="PRICEPER_UNITLAND" class="java.math.BigDecimal"/>
+	<field name="BD_ONLANDNO" class="java.lang.String"/>
+	<field name="BD_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="CONDO_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="CONDO_PRICESQUARE" class="java.math.BigDecimal"/>
+	<field name="MRTG_MEMNO1" class="java.lang.String"/>
+	<field name="MRTG_NAME1" class="java.lang.String"/>
+	<field name="MRTG_PERSONID1" class="java.lang.String"/>
+	<field name="MRTG_AGE1" class="java.lang.String"/>
+	<field name="MRTG_NATIONALITY1" class="java.lang.String"/>
+	<field name="MRTG_CITIZENSHIP1" class="java.lang.String"/>
+	<field name="MRTG_PARENTNAME1" class="java.lang.String"/>
+	<field name="MRTG_MATENAME1" class="java.lang.String"/>
+	<field name="MRTG_VILLAGE1" class="java.lang.String"/>
+	<field name="MRTG_ADDRESS1" class="java.lang.String"/>
+	<field name="MRTG_MOO1" class="java.lang.String"/>
+	<field name="MRTG_PROVINCE1" class="java.lang.String"/>
+	<field name="MRTG_AMPHUR1" class="java.lang.String"/>
+	<field name="MRTG_TAMBOL1" class="java.lang.String"/>
+	<field name="MRTG_MEMNO2" class="java.lang.String"/>
+	<field name="MRTG_NAME2" class="java.lang.String"/>
+	<field name="MRTG_PERSONID2" class="java.lang.String"/>
+	<field name="MRTG_AGE2" class="java.lang.String"/>
+	<field name="MRTG_NATIONALITY2" class="java.lang.String"/>
+	<field name="MRTG_CITIZENSHIP2" class="java.lang.String"/>
+	<field name="MRTG_PARENTNAME2" class="java.lang.String"/>
+	<field name="MRTG_MATENAME2" class="java.lang.String"/>
+	<field name="MRTG_VILLAGE2" class="java.lang.String"/>
+	<field name="MRTG_ADDRESS2" class="java.lang.String"/>
+	<field name="MRTG_MOO2" class="java.lang.String"/>
+	<field name="MRTG_PROVINCE2" class="java.lang.String"/>
+	<field name="MRTG_AMPHUR2" class="java.lang.String"/>
+	<field name="MRTG_TAMBOL2" class="java.lang.String"/>
+	<field name="MRTG_SOI1" class="java.lang.String"/>
+	<field name="MRTG_ROAD1" class="java.lang.String"/>
+	<field name="MRTG_SOI2" class="java.lang.String"/>
+	<field name="MRTG_ROAD2" class="java.lang.String"/>
+	<field name="LAND_OFFICE" class="java.lang.String"/>
+	<field name="MORTGAGE_GRTNAME" class="java.lang.String"/>
+	<field name="INTEREST_RATE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGESUM_AMT" class="java.math.BigDecimal"/>
+	<field name="MORTGAGEFIRST_AMT" class="java.math.BigDecimal"/>
+	<field name="MRTG_PHONE1" class="java.lang.String"/>
+	<field name="MRTG_PHONE2" class="java.lang.String"/>
+	<field name="AUTZD_NAME" class="java.lang.String"/>
+	<field name="AUTRZ_NAME2" class="java.lang.String"/>
+	<field name="AUTRZ_NAME1" class="java.lang.String"/>
+	<field name="AUTZD_PERSONID" class="java.lang.String"/>
+	<field name="AUTRZ_POS1" class="java.lang.String"/>
+	<field name="AUTRZ_POS2" class="java.lang.String"/>
+	<field name="AUTZD_AGE" class="java.lang.String"/>
+	<field name="AUTZD_NATIONALITY" class="java.lang.String"/>
+	<field name="AUTZD_CITIZENSHIP" class="java.lang.String"/>
+	<field name="AUTZD_PARENTNAME" class="java.lang.String"/>
+	<field name="AUTZD_VILLAGE" class="java.lang.String"/>
+	<field name="AUTZD_ADDRESS" class="java.lang.String"/>
+	<field name="AUTZD_MOO" class="java.lang.String"/>
+	<field name="AUTZD_SOI" class="java.lang.String"/>
+	<field name="AUTZD_ROAD" class="java.lang.String"/>
+	<field name="AUTZD_TAMBOL" class="java.lang.String"/>
+	<field name="AUTZD_AMPHUR" class="java.lang.String"/>
+	<field name="AUTZD_PROVINCE" class="java.lang.String"/>
+	<field name="AUTRZ_DATE" class="java.sql.Timestamp"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="COOP_CONTROL" class="java.lang.String"/>
+	<field name="COOP_SUBTYPE" class="java.math.BigDecimal"/>
+	<field name="ADDR_NO" class="java.lang.String"/>
+	<field name="ADDR_MOO" class="java.lang.String"/>
+	<field name="ADDR_ROAD" class="java.lang.String"/>
+	<field name="ADDR_TAMBOL" class="java.lang.String"/>
+	<field name="ADDR_AMPHUR" class="java.lang.String"/>
+	<field name="ADDR_PROVINCE" class="java.lang.String"/>
+	<field name="ADDR_POSTCODE" class="java.lang.String"/>
+	<field name="ADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_FAX" class="java.lang.String"/>
+	<field name="MANAGER" class="java.lang.String"/>
+	<field name="OFFICE_ACCOUNT" class="java.lang.String"/>
+	<field name="OFFICE_FINANCE" class="java.lang.String"/>
+	<field name="AUDITOR" class="java.lang.String"/>
+	<field name="AUDITOR_ADDR" class="java.lang.String"/>
+	<field name="MEMBNO_FORMAT" class="java.lang.String"/>
+	<field name="MEMNOMAIN_DOCCODE" class="java.lang.String"/>
+	<field name="MEMNOCO_DOCCODE" class="java.lang.String"/>
+	<field name="MEMNOMAIN_SUFFIX" class="java.lang.String"/>
+	<field name="MEMNOCO_SUFFIX" class="java.lang.String"/>
+	<field name="RECEIPT_REMARK1" class="java.lang.String"/>
+	<field name="RECEIPT_REMARK2" class="java.lang.String"/>
+	<field name="COOPLOGO_PATH" class="java.lang.String"/>
+	<field name="RETRY_AGE" class="java.math.BigDecimal"/>
+	<field name="RETRY_MONTH" class="java.math.BigDecimal"/>
+	<field name="RETRY_DAY" class="java.math.BigDecimal"/>
+	<field name="MAXMBAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="MAXMBWORKAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="MAXAPPLNEW_AMT" class="java.math.BigDecimal"/>
+	<field name="PREFIX_COOP" class="java.lang.String"/>
+	<field name="CHGGRPMBTYPE_FLAG" class="java.math.BigDecimal"/>
+	<field name="PRENAME_CODE" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="MEMB_ENAME" class="java.lang.String"/>
+	<field name="MEMB_ESURNAME" class="java.lang.String"/>
+	<field name="MEMBCAT_CODE" class="java.lang.String"/>
+	<field name="MEMBTYPE_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="BIRTH_DATE" class="java.sql.Timestamp"/>
+	<field name="MEMBER_DATE" class="java.sql.Timestamp"/>
+	<field name="DEAD_STATUS" class="java.math.BigDecimal"/>
+	<field name="DEAD_DATE" class="java.sql.Timestamp"/>
+	<field name="RETIRE_STATUS" class="java.math.BigDecimal"/>
+	<field name="RETIRE_DATE" class="java.sql.Timestamp"/>
+	<field name="EARLY_DATE" class="java.sql.Timestamp"/>
+	<field name="RESIGN_STATUS" class="java.math.BigDecimal"/>
+	<field name="RESIGN_DATE" class="java.sql.Timestamp"/>
+	<field name="RESIGNCAUSE_CODE" class="java.lang.String"/>
+	<field name="CLOSE_DATE" class="java.sql.Timestamp"/>
+	<field name="SEX" class="java.lang.String"/>
+	<field name="MARIAGE_STATUS" class="java.math.BigDecimal"/>
+	<field name="ADDRESS_NO" class="java.lang.String"/>
+	<field name="ADDRESS_MOO" class="java.lang.String"/>
+	<field name="ADDRESS_SOI" class="java.lang.String"/>
+	<field name="ADDRESS_VILLAGE" class="java.lang.String"/>
+	<field name="ADDRESS_ROAD" class="java.lang.String"/>
+	<field name="TAMBOL_CODE" class="java.lang.String"/>
+	<field name="DISTRICT_CODE" class="java.lang.String"/>
+	<field name="PROVINCE_CODE" class="java.lang.String"/>
+	<field name="POSTCODE" class="java.lang.String"/>
+	<field name="MEM_TEL" class="java.lang.String"/>
+	<field name="MEM_TELMOBILE" class="java.lang.String"/>
+	<field name="MEM_TELWORK" class="java.lang.String"/>
+	<field name="EMAIL" class="java.lang.String"/>
+	<field name="CARD_PERSON" class="java.lang.String"/>
+	<field name="WORK_DATE" class="java.sql.Timestamp"/>
+	<field name="POSITION_CODE" class="java.lang.String"/>
+	<field name="LEVEL_CODE" class="java.math.BigDecimal"/>
+	<field name="DEPARTMENT_CODE" class="java.lang.String"/>
+	<field name="SALARY_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="SALARY_ID" class="java.lang.String"/>
+	<field name="FIRSTFEE_STATUS" class="java.math.BigDecimal"/>
+	<field name="MEMBER_STATUS" class="java.math.BigDecimal"/>
+	<field name="MEMBER_REF" class="java.lang.String"/>
+	<field name="PAUSEKEEP_FLAG" class="java.math.BigDecimal"/>
+	<field name="PAUSEKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="FIRSTKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="LASTKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="DROPGURANTEE_FLAG" class="java.math.BigDecimal"/>
+	<field name="DROPLOANALL_FLAG" class="java.math.BigDecimal"/>
+	<field name="LEGAL_FLAG" class="java.math.BigDecimal"/>
+	<field name="ACCUM_INTEREST" class="java.math.BigDecimal"/>
+	<field name="SUMINT_LASTYEAR" class="java.math.BigDecimal"/>
+	<field name="EXPENSE_CODE" class="java.lang.String"/>
+	<field name="EXPENSE_BANK" class="java.lang.String"/>
+	<field name="EXPENSE_BRANCH" class="java.lang.String"/>
+	<field name="EXPENSE_ACCID" class="java.lang.String"/>
+	<field name="APPL_DOCNO" class="java.lang.String"/>
+	<field name="APPLTYPE_CODE" class="java.lang.String"/>
+	<field name="NATIONALITY" class="java.lang.String"/>
+	<field name="UPDATE_BYENTRYID" class="java.lang.String"/>
+	<field name="UPDATE_BYENTRYIP" class="java.lang.String"/>
+	<field name="UPDATE_BYLASTDOC" class="java.lang.String"/>
+	<field name="MEMBGRPELEC_CODE" class="java.lang.String"/>
+	<field name="MEMBGRPELEC_LOCK" class="java.math.BigDecimal"/>
+	<field name="TRANMEM_COOP" class="java.lang.String"/>
+	<field name="TRANMEM_DATE" class="java.sql.Timestamp"/>
+	<field name="TRANSHARE_VALUE" class="java.math.BigDecimal"/>
+	<field name="TRANSHARE_PERIOD" class="java.math.BigDecimal"/>
+	<field name="NCBSEND_FLAG" class="java.math.BigDecimal"/>
+	<field name="RECEIPTMONTH_FLAG" class="java.math.BigDecimal"/>
+	<field name="MEM_TAXID" class="java.lang.String"/>
+	<field name="MEM_FAX" class="java.lang.String"/>
+	<field name="TRANLOAN_VALUE" class="java.math.BigDecimal"/>
+	<field name="PAUSEDIV_FLAG" class="java.math.BigDecimal"/>
+	<field name="PAUSEAVG_FLAG" class="java.math.BigDecimal"/>
+	<field name="EARLY_CAUSE" class="java.lang.String"/>
+	<field name="MOBILEAPPLY_STATUS" class="java.math.BigDecimal"/>
+	<field name="MEM_NAME" class="java.lang.String"/>
+	<field name="TAMBOL_DESC2" class="java.lang.String"/>
+	<field name="AMPHUR_DESC2" class="java.lang.String"/>
+	<field name="PROVINCE_DESC2" class="java.lang.String"/>
+	<field name="M_BATH" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="59" splitType="Stretch"/>
+	</title>
+	<detail>
+		<band height="900" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="fe8ca99a-9b20-4e32-bd36-3a5b78855925" x="40" y="127" width="533" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[สมควร  ผู้จำนองยินยอมให้ผู้รับจำนองเป็นผู้เก็บรักษากรมธรรม์ประกันภัยไว้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0b98240f-6191-42b4-b6b1-4bd4c1522862" x="40" y="47" width="532" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[เบี้ยประกันภัยที่ต้องเสียแก่บริษัทผู้รับประกันภัยมากน้อยเท่าใด  ผู้จำนองยอมออกเงินของผู้จำนองเสียเอง  ไม่เกี่ยวข้องกับผู้รับจำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4e8cf441-8664-47ff-8f46-8f2d8d323a7f" x="40" y="27" width="532" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[นับแต่วันทำสัญญานี้ โดยให้ผู้รับจำนองเป็นผู้รับประโยชน์เป็นจำนวนเงินเต็มตามราคาที่จำนอง ทุกๆ ปีที่สัญญาจำนองนี้ยังมีผลต่อกัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a57c8771-748e-498c-8f50-299e16c00083" x="102" y="147" width="470" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข้อ 7. ในระหว่างระยะเวลาสัญญาจำนองนี้มีผลใช้บังคับอยู่ ผู้จำนองจะให้สิทธิประการใดๆ แก่ผู้อื่น ในห้องชุดที่จำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="daab53c0-7459-476d-94dd-eaf797e66646" x="102" y="67" width="470" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[อนึ่ง ในการทำประกันภัย หรือต่ออายุประกันภัยห้องชุดที่จำนองในปีต่อไปทุกปีนั้น ผู้จำนองตกลงยินยอมให้ผู้รับจำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62b7975c-211c-45c0-b348-69eb84e40fc2" x="40" y="107" width="557" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[จำนองเต็มจำนวนทันที  หรือให้ผู้รับจำนองหักเงินจำนวนดังกล่าวออกจากเงินได้รายเดือนของผู้จำนองที่มีอยู่ตามแต่ผู้รับจำนองจะเห็น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f359b647-bdbb-4a42-b309-67f43c733a5c" x="102" y="7" width="470" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข้อ 6. ผู้จำนองสัญญาต่อไปว่า จะทำประกันภัยห้องชุดจำนองนี้ไว้กับบริษัทที่ผู้รับจำนองมีความพอใจ ในกำหนด 7 วัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f8a87889-9267-49ac-9aa2-778275d60f66" x="40" y="87" width="533" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ทำประกันภัยห้องชุดที่จำนองในนามของผู้จำนองได้ด้วย   เบี้ยประกันภัยที่ผู้รับจำนองจ่ายทดรองไป   ผู้จำนองตกลงชดใช้คืนแก่ผู้รับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="059932fa-4f14-41fd-9b70-d3a52f770fdf" x="40" y="167" width="532" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[นี้เช่นว่า เช่า  เช่าซื้อ  อาศัย  เป็นต้นและการกระทำอื่น ๆ อันเป็นเหตุทำให้เสื่อมสิทธิ ลดสิทธิ รอนสิทธิ ทอนสิทธิ และเสียสิทธิ ของผู้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="82ed0520-ae26-4fa5-bd0f-0d5cd4c78031" x="40" y="187" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จำนอง  และผู้รับจำนองในห้องชุดที่จำนองนี้ ผู้จำนองต้องได้รับความยินยอมอนุญาตเป็นลายลักษณ์อักษรจากผู้รับจำนองก่อน  แต่ถ้าผู้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ffbc5922-2181-4918-af93-07c03417ca52" x="40" y="207" width="532" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จำนองได้ให้สิทธิประการใด ๆ  ดังกล่าวไว้ข้างต้นนี้แก่ผู้อื่นไว้ก่อนแล้วในขณะเวลาที่จำนองนี้  ผู้จำนองต้องแจ้งให้ผู้รับจำนองทราบเป็น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="10f13972-db89-4c8b-b1be-2d9311361bfc" x="40" y="227" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ลายลักษณ์อักษรทันที และถ้าผู้จำนองจะต่อายุสิทธิที่ได้ให้ไว้แล้วไปอีก ผู้จำนองจะต้องได้รับความยินยอมอนุญาตเป็นลายลักษณ์อักษร]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f5c6ef2b-e41b-4ebf-90ae-80901009beb0" x="40" y="247" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ก่อน การกระทำใดๆ ที่ผู้จำนองได้กระทำฝ่าฝืนขัดต่อสัญญาข้อนี้ ไม่ผูกพันผู้รับจำนองและผู้รับจำนองมีสิทธิจะปฏิเสธการกระทำเช่นนั้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ddc27964-adcb-4068-b7b5-14ac58fdc3e8" x="40" y="267" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ของผู้จำนองได้  และยินยอมให้ผู้รับจำนองใช้สิทธิตามข้อ 3.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2340cd84-3def-43da-b931-9004b32e3e48" x="102" y="287" width="470" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข้อ 8. ในระหว่างการจำนอง  ถ้ามีการประชุมเจ้าของร่วมเกี่ยวกับการเลิกอาคารชุด  การซ่อมแซมอาคารชุดที่เสียหาย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2e12bd31-7e68-4f69-a1d5-79e1606fb202" x="40" y="407" width="532" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[มีสิทธิได้รับค่าทดแทน  เมื่อผู้รับจำนองร้องขอ  ผู้จำนองจะโอนสิทธิดังกล่าวให้ผู้รับจำนอง   เพื่อใช้สิทธิเรียกร้องและรับเงินชดใช้ราคา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e5cb2d47-f781-4f81-ab67-aa7e9beb2b4d" x="40" y="427" width="532" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ทรัพย์ส่วนกลางหรือค่าทดแทนทันที เงินค่าชดใช้ราคาทรัพย์ส่วนกลางหรือค่าทดแทนที่ผู้รับจำนองได้รับจะนำไปหักชำระหนี้ที่ผู้จำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e7017a78-d8f5-4022-b3d2-f6ddc2a78eed" x="40" y="447" width="532" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[และ/หรือลูกหนี้ต้องชำระให้แก่ผู้รับจำนอง  ถ้ามีเงินส่วนเหลือให้คืนแก่ผู้จำนอง แต่ถ้าจำนวนเงินที่ได้รับชดใช้ราคาทรัพย์ส่วนกลางหรือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="983241f3-c006-4fea-abe1-f48b8e6baa1e" x="40" y="467" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ค่าทดแทนต่ำกว่าหนี้ อันผู้จำนองและลูกหนี้พึงต้องชำระเป็นจำนวนเท่าใด  ผู้จำนองตกลงยินยอมรับใช้เงินจำนวนที่ขาดนั้นจนครบ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="463e8f7d-d311-4851-8938-910cbf9b5def" x="102" y="487" width="471" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข้อ 9. การผ่อนเวลาในการชำระหนี้ การแปลงหนี้ใหม่ การปลดหนี้ การประนีประนอมยอมความ หากจะพึงมีกับลูกหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5536ed2a-829a-4383-87b0-4575346de5b7" x="40" y="507" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[และต้องแจ้งให้ผู้จำนองทราบก่อน โดยผู้จำนองจะต้องตกลงยินยอมในการนั้นๆ ด้วยทุกกรณี และไม่ถือเป็นเหตุปลดเปลื้องความรับผิด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="35538e4a-08d8-430c-8123-9a1b8893f039" x="102" y="547" width="470" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข้อ 10. ในกรณีผู้จำนองมีหนังสือแจ้งให้ผู้รับจำนองขายทอดตลาดห้องชุดทรัพย์ประกันที่จำนองตามกฎหมาย ผู้จำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0b497848-fa19-4d83-9a08-41df94a3f847" x="40" y="527" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ชดใช้ของผู้จำนองเป็นอันขาด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a9867096-a8c4-4f60-81a3-3eaec71923de" x="40" y="567" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ตกลงยินยอมให้ผู้รับจำนองดำเนินการขายทอดตลาด ตามระเบียบ  วิธีการปฏิบัติของผู้รับจำนอง ตลอดจนดำเนินการใดๆที่เกี่ยวเนื่อง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7bd044ce-4787-431d-b912-64e47c4a485e" x="40" y="587" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ด้วยทุกประการ  ผู้จำนองจะไม่ขัดขวาง  หรือทำการใดๆให้เป็นการรอนสิทธิในทรัพย์ประกัน  บรรดาค่าธรรมเนียมและค่าใช้จ่ายทั้งสิ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="43cad811-30be-410b-97c5-7fcf6863597d" x="40" y="607" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ในการจำนองและการไถ่ถอนจำนอง  หรือขายทอดตลาดห้องชุดทรัพย์ประกันที่จำนอง  ผู้จำนองเป็นผู้เสียเอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="709d4abf-4544-409f-8090-af6b253230ac" x="102" y="647" width="471" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข้อ 12. หนังสือแสดงกรรมสิทธิ์ทรัพย์ที่จำนองนั้น ผู้จำนองยินยอมให้ผู้รับจำนองเป็นผู้เก็บรักษาไว้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bda5f5fe-3af7-4cc3-a021-e916dc1cbd20" x="102" y="627" width="471" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข้อ 11. ค่าธรรมเนียมและค่าใช้จ่ายทั้งสิ่นในการจำนองและไถ่ถอนจำนอง ผู้จำนองจะเป็นผู้เสียเอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ac746720-6367-4c9f-bf5e-d8b8cfab7133" x="40" y="706" width="533" height="20"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ประสงค์  จึงได้พร้อมกันลงลายมือชื่อไว้เป็นสำคัญต่อหน้าพยานและพนักงานที่ดิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e6e0e7a-f371-4e91-81ca-ed872313da2c" x="102" y="686" width="471" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[เพื่อเป็นหลักฐานทั้งสองฝ่ายได้อ่านและเข้าใจข้อตกลงต่อท้ายหนังสือสัญญาจำนองเป็นประกันนี้   ถูกต้องตามความ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="67af2c0b-9bd7-42c9-9e89-fa36548da238" x="189" y="868" width="256" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ลายมือชื่อ...............................................................ผู้รับจำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cfe6a4a1-47e0-408f-9753-564b2ce4528c" x="209" y="815" width="203" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(...............................................................)]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3a37d7b3-5015-4d82-a18f-770762232661" x="212" y="881" width="193" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTRZ_DATE}==null ? "": "(แทนตามหนังสือมอบอำนาจ ลว."+new SimpleDateFormat("d MMMM yyyy",new Locale("th","TH")).format($F{AUTRZ_DATE})+")"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="dc97fa89-8702-41c6-9943-25fd5c2f535d" x="189" y="796" width="246" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ลายมือชื่อ...............................................................ผู้จำนอง]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="815da9d3-0e00-49fd-a22c-20c1fea15771" x="226" y="813" width="169" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_NAME1}==null ? "-":$F{MRTG_NAME1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="702d027e-bdb1-44bf-9961-15d25f8d9f6b" x="102" y="387" width="470" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[อนึ่ง ในระหว่างการจำนอง ถ้าห้องชุดเสียหายหรือถูกเวนคืน ทำให้ผู้จำนองมีสิทธิได้รับชดใช้ราคาทรัพย์ส่วนกลางหรือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2f13a45e-fa18-4fff-ac46-c664c794bca9" x="40" y="307" width="532" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[การได้มาซึ่งทรัพย์ส่วนกลางที่มีภาระติดพัน การจำหน่ายทรัพย์ส่วนกลาง หรือการแก้ไขเปลี่ยนแปลงเพิ่มเติมข้อบังคับนิติบุคคลอาคาร]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="01aa9725-59d7-44ea-b7b8-bf10faf2e002" x="40" y="327" width="532" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ชุด   เกี่ยวกับอัตราส่วนค่าใช้จ่ายร่วมกันของเจ้าของร่วม  หรือเกี่ยวกับการใช้หรือการจัดการทรัพย์ส่วนกลาง  ผู้จำนองต้องแจ้งวันนัด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3fb3cdae-2ece-49b5-ab45-0a5205f0ba30" x="41" y="347" width="532" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ประชุมพร้อมทั้งรายละเอียดที่เกี่ยวข้องให้ผู้รับจำนองทราบล่วงหน้า ถ้าผู้รับจำนองเห็นสมควรเข้าประชุมแทนผู้จำนองแล้ว ผู้จำนองจะ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2db281b6-bc8a-4ad9-9115-8eaf55bf42b0" x="41" y="367" width="532" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[มอบฉันทะเป็นหนังสือให้ผู้รับจำนองหรือบุคคลที่ผู้รับจำนองเห็นสมควรเข้าประชุมและออกเสียงแทนผู้จำนอง ในการประชุมเจ้าของรวม]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

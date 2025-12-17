@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_printfin_receipt_sub2" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e880175c-8a70-4127-9402-28041feb1dc0">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_slipno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+FINSLIP.PAY_TOWHOM,
+FINSLIP.ENTRY_DATE,
+FINSLIPDET.SLIPITEM_DESC,
+FINSLIPDET.ITEM_AMT,
+FINSLIP.MEMBER_NO,
+FINSLIPDET.CASH_TYPE,
+FINSLIPDET.SEQ_NO,
+FINSLIP.RECEIVE_DATE,
+FINSLIP.REMARK,
+FINSLIP.SLIP_NO,
+FINSLIPDET.VAT_AMT,
+FINSLIP.MEMBER_FLAG,
+FINSLIP.RECEIPT_NO
+FROM
+FINSLIP,
+FINSLIPDET
+WHERE
+( FINSLIP.SLIP_NO = FINSLIPDET.SLIP_NO ) and
+( FINSLIP.COOP_ID = FINSLIPDET.COOP_ID ) and
+finslip.payment_status <> -9   and
+( trim(FINSLIP.SLIP_NO) = $P{as_slipno})
+and ( finslip.coop_id = $P{as_coopid})]]>
+	</queryString>
+	<field name="PAY_TOWHOM" class="java.lang.String"/>
+	<field name="ENTRY_DATE" class="java.sql.Timestamp"/>
+	<field name="SLIPITEM_DESC" class="java.lang.String"/>
+	<field name="ITEM_AMT" class="java.math.BigDecimal"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="CASH_TYPE" class="java.lang.String"/>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="RECEIVE_DATE" class="java.sql.Timestamp"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="SLIP_NO" class="java.lang.String"/>
+	<field name="VAT_AMT" class="java.math.BigDecimal"/>
+	<field name="MEMBER_FLAG" class="java.math.BigDecimal"/>
+	<field name="RECEIPT_NO" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a18ee91f-4dc8-4893-8b37-d750c57ad834" mode="Transparent" x="47" y="0" width="241" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SLIPITEM_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d2990bcc-87f3-4a9f-b16f-dc538d8a0ace" x="257" y="0" width="121" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ITEM_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="false">
+				<reportElement uuid="37c501d6-075c-4526-be3b-f899a1b8984f" x="17" y="0" width="22" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_loan_collateral" language="groovy" pageWidth="442" pageHeight="555" orientation="Landscape" columnWidth="442" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="763e0747-438c-4d38-af14-a848aac6b9eb">
+	<property name="ireport.zoom" value="2.593742460100003"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="collmast_no" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+lnb.*,
+lnt.buildingtype_desc,
+(select province_desc from mbucfprovince where province_code = lnb.bd_province)  as province_desc,
+(select district_desc from mbucfdistrict where district_code = lnb.bd_amphur)  as amphur_desc,
+(select tambol_desc from mbucftambol where tambol_code = lnb.bd_tambol) as tambol_desc
+from lncollmastbuilding lnb
+left join lnucfbuildingtype lnt on lnb.buildingtype_code = lnt.buildingtype_code
+where lnb.collmast_no = $P{collmast_no}
+order by lnb.buildingtype_code]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="COLLMAST_NO" class="java.lang.String"/>
+	<field name="BDAREA_CODE" class="java.lang.String"/>
+	<field name="BD_SQUARE" class="java.math.BigDecimal"/>
+	<field name="BD_PRICESQUARE" class="java.math.BigDecimal"/>
+	<field name="BD_SUMPRICE" class="java.math.BigDecimal"/>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="WIDTH_AMT" class="java.math.BigDecimal"/>
+	<field name="LONG_AMT" class="java.math.BigDecimal"/>
+	<field name="REMARK_ETC" class="java.lang.String"/>
+	<field name="POS_TAMBOL" class="java.lang.String"/>
+	<field name="POS_AMPHUR" class="java.lang.String"/>
+	<field name="POS_PROVINCE" class="java.lang.String"/>
+	<field name="LANDTYPE_CODE" class="java.lang.String"/>
+	<field name="BD_ONLANDNO" class="java.lang.String"/>
+	<field name="BD_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="BUILDINGTYPE_CODE" class="java.lang.String"/>
+	<field name="BD_VILLAGE" class="java.lang.String"/>
+	<field name="BD_ADDRNO" class="java.lang.String"/>
+	<field name="BD_ADDRMOO" class="java.lang.String"/>
+	<field name="BD_SOI" class="java.lang.String"/>
+	<field name="BD_ROAD" class="java.lang.String"/>
+	<field name="BD_TAMBOL" class="java.lang.String"/>
+	<field name="BD_AMPHUR" class="java.lang.String"/>
+	<field name="BD_PROVINCE" class="java.lang.String"/>
+	<field name="BD_AGE" class="java.math.BigDecimal"/>
+	<field name="CONDO_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="CONDO_PRICESQUARE" class="java.math.BigDecimal"/>
+	<field name="CONDO_REGISTNO" class="java.lang.String"/>
+	<field name="CONDO_NAME" class="java.lang.String"/>
+	<field name="CONDO_TOWERNO" class="java.lang.String"/>
+	<field name="CONDO_FLOOR" class="java.lang.String"/>
+	<field name="CONDO_ROOMNO" class="java.lang.String"/>
+	<field name="CONDO_ROOMSIZE" class="java.math.BigDecimal"/>
+	<field name="CONDO_AGE" class="java.math.BigDecimal"/>
+	<field name="COLL_RATE" class="java.math.BigDecimal"/>
+	<field name="BD_SUMPRICE_SAL" class="java.math.BigDecimal"/>
+	<field name="BD_SUMPRICE_DEPT" class="java.math.BigDecimal"/>
+	<field name="BUILDINGTYPE_DESC" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="AMPHUR_DESC" class="java.lang.String"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<variable name="building_bal" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{BD_SUMPRICE_SAL} * $F{COLL_RATE} / 100]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e80068a5-0139-4922-b270-5c87a6b71fcf" x="73" y="0" width="40" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BD_ONLANDNO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a4ca669f-520d-4d51-8d6e-5895eb42e3c2" x="0" y="0" width="73" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BUILDINGTYPE_CODE} + " - " + $F{BUILDINGTYPE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a9da213e-e307-462c-a4f3-9c1a2c3f71e4" x="113" y="0" width="25" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BD_AGE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="7f4c4615-32f1-42d1-af76-e9e58f8803bd" x="138" y="0" width="30" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BD_DEPRECIATION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="233ab62e-95a1-4229-ade2-b3d041e6ebf3" x="168" y="0" width="51" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BD_SUMPRICE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3f42e463-fee5-45b8-90c5-ee11e4e3141e" x="321" y="0" width="39" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TAMBOL_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="458dbf74-bedb-4d9c-b157-db37ddddc6a0" x="360" y="0" width="38" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AMPHUR_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3dea512b-772b-4ddf-a90e-4fbfcd78e8dc" x="398" y="0" width="44" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="ba4b537f-f4a8-4e66-b419-3160a3d313bb" x="270" y="0" width="51" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BD_SUMPRICE_SAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="09e6c28d-3a1a-454d-a007-5ebb1c265f86" x="219" y="0" width="51" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BD_SUMPRICE_DEPT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

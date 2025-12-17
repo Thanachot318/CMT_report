@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mbshr_mbreqgain_gain_old" language="groovy" pageWidth="245" pageHeight="802" columnWidth="245" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e58f091a-7545-4d8d-8385-814b8952c934">
+	<property name="ireport.zoom" value="1.771561000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="gain_docno" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+	gd.seq_no,
+	(case when gd.prename_code != '000'
+		and gd.prename_code is not null
+		then pg.prename_desc || gd.gain_name || ' ' || gd.gain_surname
+		else gd.gain_name || ' ' || gd.gain_surname
+	 end
+	) as gainname_old,
+	gr.gain_concern
+from mbreqgain gm
+left join mbreqgaindetail gd on gm.gain_docno = gd.gain_docno
+left join mbucfprename pg on gd.prename_code = pg.prename_code
+left join mbucfgainconcern gr on gd.relation_code = gr.concern_code
+where gd.gain_chgtype = 'OLD'
+	and gd.gain_docno = 	$P{gain_docno}
+order by gd.seq_no]]>
+	</queryString>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="GAINNAME_OLD" class="java.lang.String"/>
+	<field name="GAIN_CONCERN" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="07a770ec-8e16-481d-afcc-0c855ec5d280" x="24" y="0" width="156" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $F{GAINNAME_OLD}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d8160ac2-4f39-4978-9ad9-2876163fa0cf" x="180" y="0" width="65" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GAIN_CONCERN}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="47560c60-b415-463c-81db-16dd3eeac55c" x="0" y="0" width="24" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SEQ_NO} + ")"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

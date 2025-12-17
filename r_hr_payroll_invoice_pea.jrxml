@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_hr_payroll_invoice" language="groovy" printOrder="Horizontal" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="10314e09-73cd-416d-9195-1f1dcb161cb2">
+	<property name="ireport.zoom" value="1.4641000000000133"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="370"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_sempno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_year" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_month" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="md_status" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_eempno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select hr.coop_id,
+hd.pos_code,
+mbp.prename_desc || hr.emp_name || ' ' || hr.emp_surname as full_name,
+cm.manager,
+hs.pos_desc,
+hr.salexp_accid,
+hr.emp_no,
+$P{md_status} as md_status,
+$P{as_year}||$P{as_month} as payroll_period,
+$P{as_year} as year,
+case   $P{as_month}         when '01' then 'มกราคม'
+                            when '02' then 'กุมภาพันธ์'
+                            when '03' then 'มีนาคม'
+                            when '04' then 'เมษายน'
+                    when '05' then 'พฤษภาคม'
+                            when '06' then 'มิถุนายน'
+                            when '07' then 'กรกฎาคม'
+                            when '08' then 'สิงหาคม'
+                            when '09' then 'กันยายน'
+                            when '10' then 'ตุลาคม'
+                            when '11' then 'พฤศจิกายน'
+                            when '12' then 'ธันวาคม'
+                            else ''
+                            end as month,
+(case when salexp_code ='CBT' then cb.bank_desc
+when salexp_code ='TRN' then 'บัญชีสหกรณ์' else '' end  ) as cash,
+
+(select
+sum(hd.item_amt)
+from hrpayroll h , hrpayrolldet hd , hrucfsalaryitem hus
+where h.payrollslip_no = hd.payrollslip_no(+)
+and hd.salitem_code = hus.salitem_code(+)
+and hus.sign_flag = 1
+and h.payroll_period = $P{as_year}||$P{as_month}
+and h.emp_no = hr.emp_no
+and h.coop_id = hr.coop_id) as item_amt_add,
+
+(select
+sum(hd.item_amt)
+from hrpayroll h , hrpayrolldet hd , hrucfsalaryitem hus
+where h.payrollslip_no = hd.payrollslip_no(+)
+and hd.salitem_code = hus.salitem_code(+)
+and hus.sign_flag = -1
+and trim(h.payroll_period) = $P{as_year}||$P{as_month}
+and h.emp_no = hr.emp_no
+and h.coop_id = hr.coop_id) as item_amt_sub,
+cm.coop_name
+from  mbucfprename mbp,
+  hremployee hr,
+         hrucfpositiondet hd ,
+  hrucfpositionmas hs,
+  cmucfbank cb,
+     cmcoopconstant cm
+where hr.prename_code = mbp.prename_code(+)
+and hr.pos_code = hd.pos_code(+)
+and hd.pos_mas = hs.pos_mas(+)
+and hr.salexp_bank = bank_code(+)
+and hr.coop_id = cm.coop_id(+)
+and trim(hr.emp_no) between $P{as_sempno} and $P{as_eempno}
+order by hr.emp_no]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="POS_CODE" class="java.lang.String"/>
+	<field name="FULL_NAME" class="java.lang.String"/>
+	<field name="MANAGER" class="java.lang.String"/>
+	<field name="POS_DESC" class="java.lang.String"/>
+	<field name="SALEXP_ACCID" class="java.lang.String"/>
+	<field name="EMP_NO" class="java.lang.String"/>
+	<field name="MD_STATUS" class="java.lang.String"/>
+	<field name="PAYROLL_PERIOD" class="java.lang.String"/>
+	<field name="YEAR" class="java.lang.String"/>
+	<field name="MONTH" class="java.lang.String"/>
+	<field name="CASH" class="java.lang.String"/>
+	<field name="ITEM_AMT_ADD" class="java.math.BigDecimal"/>
+	<field name="ITEM_AMT_SUB" class="java.math.BigDecimal"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<detail>
+		<band height="764" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d3efcb4e-edec-4431-84a4-f461ae6b02a9" x="0" y="137" width="136" height="26"/>
+				<box leftPadding="4"/>
+				<textElement>
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<text><![CDATA[เลขที่ตำแหน่ง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="91684198-eb86-4dfb-8710-d7d63cd8ef8e" x="0" y="163" width="136" height="26"/>
+				<box leftPadding="4"/>
+				<textElement>
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<text><![CDATA[ชื่อ-นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1a5ab51c-f7d0-4ad0-9a42-c2991d20d147" mode="Transparent" x="0" y="189" width="136" height="26" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Angsana New" size="18" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ตำแหน่ง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="89517a54-4762-48ed-bce0-5251dcd1158a" mode="Transparent" x="0" y="215" width="136" height="26" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Angsana New" size="18" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[โอนเงินเข้า]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5f92e166-4874-4860-8529-700ed524f05f" mode="Transparent" x="0" y="241" width="136" height="26" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Angsana New" size="18" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[เลขที่บัญชี]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="3cfc00f3-6a7b-4769-a971-4f6f02bbd0ac" x="0" y="331" width="555" height="159"/>
+				<subreportParameter name="as_year">
+					<subreportParameterExpression><![CDATA[$F{PAYROLL_PERIOD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$F{COOP_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_empno">
+					<subreportParameterExpression><![CDATA[$F{EMP_NO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["r_hr_payroll_invoice_subreport1_pea.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="19a310a7-39c8-4551-bcb3-a0e0ac2ab14c" x="136" y="137" width="419" height="26"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{POS_CODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e1ba866b-e6f4-4d7a-bc2c-5c815e24972b" x="0" y="113" width="555" height="24"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ประจำเดือน "+ $F{MONTH} +" "+ $F{YEAR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="27bff9c7-23ac-4e4d-80fa-a300a89655f6" x="136" y="163" width="419" height="26"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULL_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b59c6ee2-9a54-44e5-9f69-10d295293fc1" x="136" y="189" width="419" height="26"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{POS_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="78cbc919-4b66-4d5b-b700-f04d874a0eef" x="136" y="215" width="419" height="26"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CASH}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="80d67ee2-19b4-4d49-869f-16d923f50f69" x="136" y="241" width="419" height="26"/>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SALEXP_ACCID}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="e6961639-d0e5-441e-b21b-6f908b3f9db2" x="0" y="539" width="555" height="159"/>
+				<subreportParameter name="as_year">
+					<subreportParameterExpression><![CDATA[$F{PAYROLL_PERIOD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$F{COOP_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_eempno">
+					<subreportParameterExpression><![CDATA[$F{EMP_NO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["r_hr_payroll_invoice_subreport2_pea.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="3254bfde-9e1e-4dee-82b9-caea8b7afe62" x="0" y="267" width="50" height="37"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2a9bcfa4-103e-47d1-bec9-a41d6b25cef3" x="359" y="267" width="196" height="37"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน (บาท)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f8d06ba1-992b-450c-b9b9-38dac14826a5" mode="Transparent" x="51" y="304" width="308" height="27" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="10">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="Angsana New" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[รายรับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cf3ffa8e-6bc9-4c24-8ed3-e9d378c7e14f" x="50" y="267" width="309" height="37"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[รายงาน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8881fc21-f65a-42c1-b0d3-1e311cc4b400" x="51" y="491" width="308" height="25"/>
+				<box leftPadding="15">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รวม]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="12e0a43a-f84f-4075-96d0-847bc79d742a" x="359" y="491" width="196" height="25"/>
+				<box rightPadding="4">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ITEM_AMT_ADD}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3ffbfdff-4261-4c46-bba7-57847826c0fd" x="0" y="698" width="359" height="33"/>
+				<box leftPadding="15">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รวม]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="543d1ce3-925e-4b46-ac02-6aa5ea79b8ac" x="359" y="698" width="196" height="33"/>
+				<box rightPadding="4">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ITEM_AMT_SUB}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3a07bbd7-9807-46f4-b7da-1d643e54495c" x="51" y="516" width="308" height="23"/>
+				<box leftPadding="10">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="Angsana New" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายจ่าย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="296c20d1-53dd-44ec-bafe-d5991e971300" x="0" y="731" width="359" height="33"/>
+				<box leftPadding="15">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รับสุทธิ]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a0d2b5e7-1e88-427a-a399-c29dbcad3cc8" mode="Transparent" x="359" y="731" width="196" height="33" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box rightPadding="4">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="Angsana New" size="18" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ITEM_AMT_ADD}-$F{ITEM_AMT_SUB}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a62b8c58-877f-4a33-877a-4377ac1e5b3a" x="0" y="87" width="555" height="26"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6bea9531-35ca-4bd0-926e-af24ca99b5a4" x="0" y="304" width="50" height="460"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="aead8fd2-d253-4431-b49b-b064d4e1842a" x="227" y="6" width="89" height="81"/>
+				<imageExpression><![CDATA["C:\\GCOOP_ALL\\PEA\\GCOOP\\Saving\\Image\\band_black.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="4c2eb903-e8ab-4ceb-a30e-21e44fc82744" x="359" y="304" width="196" height="394"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="18"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

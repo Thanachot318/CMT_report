@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LNDT00001_coll" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="020e840c-b99c-43e2-9fd9-b5356dc7dc69">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="loanrequest_docno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+lnreqloan.LOANREQUEST_DOCNO ,
+    NULL AS grp_desc,
+    lnreqloan.LOANREQUEST_DATE AS LOANREQUEST_DATE,
+    (CASE
+        WHEN lnreqloancoll.LOANCOLLTYPE_CODE = '01' THEN lnreqloancoll.REF_COLLNO
+        ELSE NULL
+    END) AS MEMBER_NO,
+    LNUCFLOANCOLLTYPE.LOANCOLLTYPE_DESC  AS coll_desc,
+    (CASE
+        WHEN lnreqloancoll.LOANCOLLTYPE_CODE = '01' THEN FT_GETMBNAME(lnreqloancoll.coop_id, lnreqloancoll.REF_COLLNO)
+        ELSE NULL
+    END) AS name,
+    NULL AS SALARY_AMOUNT,
+    NULL AS INCOMEMONTH_OTHER,
+    NULL AS SHARE_BALANCE,
+    NULL AS LOANTYPE_CODE,
+    NULL AS LOANPERMISS_AMT,
+    lnreqloancoll.COLLACTIVE_AMT AS LOANREQUEST_AMT,
+    NULL AS loan_clr,
+    NULL AS MONEYTYPE_DESC,
+    NULL AS RECVESTIMATE_AMT,
+    NULL AS ENTRY_ID
+FROM
+    lnreqloancoll
+LEFT JOIN lnreqloan ON lnreqloancoll.loanrequest_docno = lnreqloan.loanrequest_docno
+LEFT JOIN  LNUCFLOANCOLLTYPE ON LNUCFLOANCOLLTYPE.LOANCOLLTYPE_CODE = lnreqloancoll.LOANCOLLTYPE_CODE
+
+
+where lnreqloancoll.LOANREQUEST_DOCNO = $P{loanrequest_docno}]]>
+	</queryString>
+	<field name="LOANREQUEST_DOCNO" class="java.lang.String"/>
+	<field name="GRP_DESC" class="java.lang.String"/>
+	<field name="LOANREQUEST_DATE" class="java.sql.Timestamp"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="COLL_DESC" class="java.lang.String"/>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="SALARY_AMOUNT" class="java.lang.String"/>
+	<field name="INCOMEMONTH_OTHER" class="java.lang.String"/>
+	<field name="SHARE_BALANCE" class="java.lang.String"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANPERMISS_AMT" class="java.lang.String"/>
+	<field name="LOANREQUEST_AMT" class="java.math.BigDecimal"/>
+	<field name="LOAN_CLR" class="java.lang.String"/>
+	<field name="MONEYTYPE_DESC" class="java.lang.String"/>
+	<field name="RECVESTIMATE_AMT" class="java.lang.String"/>
+	<field name="ENTRY_ID" class="java.lang.String"/>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b3370603-d2f2-4cca-bdab-8480810ef4c5" x="368" y="0" width="53" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SHARE_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f95efc1c-6054-4039-9086-d3c16e2b2a0c" x="519" y="0" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANTYPE_CODE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="46b54a27-b42b-4322-8b2c-47e158c64161" x="716" y="0" width="50" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RECVESTIMATE_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8e447939-9488-4a31-ac9c-98e5b6c52d10" x="-1" y="0" width="33" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="74a1c2fe-f506-4303-89b0-43e12fd22c93" x="316" y="0" width="52" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INCOMEMONTH_OTHER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="841e1257-e9fc-4862-9854-b8ca35075cf6" x="421" y="0" width="48" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANPERMISS_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="68a09b91-5831-4a14-9f4b-d511ebd24936" x="657" y="0" width="59" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MONEYTYPE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3c818612-58cd-49f5-8429-2d17cdf84574" x="87" y="0" width="52" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="dca41124-aea1-4f5c-a7c6-6dea02c23a58" x="615" y="0" width="42" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2efc3c7b-3715-4865-a5d5-44ebb3636437" x="766" y="0" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ENTRY_ID}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="7e7f16ac-9687-4111-86e4-282e3fbc6181" x="573" y="0" width="42" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANPERMISS_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="017abece-5773-4507-a1d7-4c7fefbf504c" x="32" y="0" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="53df66e4-17be-40fe-a898-f5faadc7d360" x="269" y="0" width="47" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SALARY_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="bd6249b4-9f1c-4282-bbf5-c30791b3e0ce" x="179" y="0" width="90" height="20">
+					<printWhenExpression><![CDATA[$V{REPORT_COUNT} == 1 ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ddde0913-3b79-4905-875d-334bef200ca2" x="139" y="0" width="40" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COLL_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="2b36f4d3-bdad-4e9d-ba27-d13cc53e1f56" x="470" y="0" width="49" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANREQUEST_AMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

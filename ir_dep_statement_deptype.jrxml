@@ -1,0 +1,816 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 5.1.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_dep_statement_deptype" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6c56a587-10ea-49f7-a7bc-296f4cb64df6">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="gcoop"/>
+	<parameter name="adtm_start" class="java.util.Date"/>
+	<parameter name="adtm_end" class="java.util.Date"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["090001"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["DPM00010"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<defaultValueExpression><![CDATA["[DPM00010] รายงานการเคลื่อนไหวเงินฝาก"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["admin_api"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    depttype_code,
+    membcat_code,
+    depttype_desc,
+    SUM(prncbal) AS prncbal,
+    SUM(with_amt) AS with_amt,
+    SUM(dept_amt) AS dept_amt,
+    SUM(ERO_amt) AS ERO_amt,
+    SUM(ERI_amt) AS ERI_amt,
+    (SUM(dept_amt) + SUM(ERI_amt)) - (SUM(with_amt) + SUM(ERO_amt)) AS net_change,
+    SUM(prncbal) + ((SUM(dept_amt) + SUM(ERI_amt)) - (SUM(with_amt) + SUM(ERO_amt))) AS af_prncbal,
+    ' ' AS FIX_COOPNAME,
+    SUM(CASE WHEN prncbal > 0 THEN 1 ELSE 0 END) AS count_dept,
+    COUNT(DISTINCT CASE WHEN prncbal > 0 THEN member_no ELSE NULL END) AS count_member,
+    (SUM(count_bfdept) + SUM(count_bfdept_c)) - SUM(count_bfdept_o) AS count_bfdept,
+    SUM(count_cdept) AS count_cdept,
+    SUM(count_odept) AS count_odept
+FROM (
+    SELECT
+        a.prncbal,
+        c.depttype_desc,
+        c.depttype_code,
+        c.membcat_code,
+        0 AS dept_amt,
+        0 AS with_amt,
+        0 AS ERI_amt,
+        0 AS ERO_amt,
+        d.deptaccount_no,
+        d.member_no,
+        CASE WHEN d.deptclose_status = 0 AND d.deptopen_date < $P{adtm_start} THEN 1 ELSE 0 END AS count_bfdept,
+        CASE WHEN d.deptclose_status = 1 AND d.deptclose_date >= $P{adtm_end} THEN 1 ELSE 0 END AS count_bfdept_c,
+        CASE WHEN d.deptclose_status = 0 AND d.deptopen_date >= $P{adtm_end} THEN 1 ELSE 0 END AS count_bfdept_o,
+        0 AS count_cdept,
+        0 AS count_odept
+    FROM
+        dpdeptstatement a
+        JOIN dpdeptmaster d ON a.deptaccount_no = d.deptaccount_no AND a.coop_id = d.coop_id
+        JOIN dpucfdepttype c ON c.depttype_code = d.depttype_code AND c.coop_id = d.coop_id AND c.membcat_code = d.membcat_code
+    WHERE
+        a.seq_no = (
+            SELECT MAX(b.seq_no)
+            FROM dpdeptstatement b
+            WHERE b.entry_date < $P{adtm_start}
+              AND b.deptaccount_no = a.deptaccount_no
+              AND b.coop_id = a.coop_id
+        )
+
+    UNION ALL
+    SELECT
+        0 AS prncbal,
+        c.depttype_desc,
+        c.depttype_code,
+        c.membcat_code,
+        CASE WHEN e.recppaytype_flag > 0 THEN a.item_amt ELSE 0 END AS dept_amt,
+        CASE WHEN e.recppaytype_flag < 0 THEN a.item_amt ELSE 0 END AS with_amt,
+        0 AS ERI_amt,
+        0 AS ERO_amt,
+        d.deptaccount_no,
+        d.member_no,
+        0 AS count_bfdept,
+        0 AS count_bfdept_c,
+        0 AS count_bfdept_o,
+        CASE WHEN e.DEPTITEM_GROUP  = 'CLS' THEN 1 ELSE 0 END AS count_cdept,
+        CASE WHEN e.DEPTITEM_GROUP  = 'OPN' THEN 1 ELSE 0 END AS count_odept
+    FROM
+        dpdeptstatement a
+        JOIN dpdeptmaster d ON a.deptaccount_no = d.deptaccount_no AND a.coop_id = d.coop_id
+        JOIN dpucfdepttype c ON c.depttype_code = d.depttype_code AND c.coop_id = d.coop_id AND c.membcat_code = d.membcat_code
+        JOIN dpucfrecppaytype e ON a.recppaytype_code = e.recppaytype_code AND a.coop_id = e.coop_id
+    WHERE
+        (a.entry_date >= $P{adtm_start} AND a.entry_date <= $P{adtm_end})
+        AND a.item_status = 1
+        AND a.recppaytype_code NOT IN ('ERO', 'ERI')
+
+    UNION ALL
+    SELECT
+        0 AS prncbal,
+        c.depttype_desc,
+        c.depttype_code,
+        c.membcat_code,
+        0 AS dept_amt,
+        0 AS with_amt,
+        CASE WHEN e.recppaytype_flag > 0 THEN a.item_amt ELSE 0 END AS ERI_amt,
+        CASE WHEN e.recppaytype_flag < 0 THEN a.item_amt ELSE 0 END AS ERO_amt,
+        d.deptaccount_no,
+        d.member_no,
+        0 AS count_bfdept,
+        0 AS count_bfdept_c,
+        0 AS count_bfdept_o,
+        0 AS count_cdept,
+        0 AS count_odept
+    FROM
+        dpdeptstatement a
+        JOIN dpdeptmaster d ON a.deptaccount_no = d.deptaccount_no AND a.coop_id = d.coop_id
+        JOIN dpucfdepttype c ON c.depttype_code = d.depttype_code AND c.coop_id = d.coop_id AND c.membcat_code = d.membcat_code
+        JOIN dpucfrecppaytype e ON a.recppaytype_code = e.recppaytype_code AND a.coop_id = e.coop_id
+    WHERE
+        a.entry_date BETWEEN $P{adtm_start} AND $P{adtm_end}
+        AND (a.item_status = -1 OR a.recppaytype_code IN ('ERO', 'ERI'))
+
+) tb
+GROUP BY depttype_code, depttype_desc, membcat_code
+ORDER BY depttype_code, membcat_code]]>
+	</queryString>
+	<field name="DEPTTYPE_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DEPTTYPE_CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="DEPTTYPE_CODE"/>
+	</field>
+	<field name="MEMBCAT_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="MEMBCAT_CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="MEMBCAT_CODE"/>
+	</field>
+	<field name="DEPTTYPE_DESC" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DEPTTYPE_DESC"/>
+		<property name="com.jaspersoft.studio.field.label" value="DEPTTYPE_DESC"/>
+	</field>
+	<field name="PRNCBAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="PRNCBAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRNCBAL"/>
+	</field>
+	<field name="WITH_AMT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="WITH_AMT"/>
+		<property name="com.jaspersoft.studio.field.label" value="WITH_AMT"/>
+	</field>
+	<field name="DEPT_AMT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="DEPT_AMT"/>
+		<property name="com.jaspersoft.studio.field.label" value="DEPT_AMT"/>
+	</field>
+	<field name="ERO_AMT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ERO_AMT"/>
+		<property name="com.jaspersoft.studio.field.label" value="ERO_AMT"/>
+	</field>
+	<field name="ERI_AMT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ERI_AMT"/>
+		<property name="com.jaspersoft.studio.field.label" value="ERI_AMT"/>
+	</field>
+	<field name="NET_CHANGE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="NET_CHANGE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NET_CHANGE"/>
+	</field>
+	<field name="AF_PRNCBAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="AF_PRNCBAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="AF_PRNCBAL"/>
+	</field>
+	<field name="FIX_COOPNAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FIX_COOPNAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="FIX_COOPNAME"/>
+	</field>
+	<field name="COUNT_DEPT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="COUNT_DEPT"/>
+		<property name="com.jaspersoft.studio.field.label" value="COUNT_DEPT"/>
+	</field>
+	<field name="COUNT_MEMBER" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="COUNT_MEMBER"/>
+		<property name="com.jaspersoft.studio.field.label" value="COUNT_MEMBER"/>
+	</field>
+	<field name="COUNT_BFDEPT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="COUNT_BFDEPT"/>
+		<property name="com.jaspersoft.studio.field.label" value="COUNT_BFDEPT"/>
+	</field>
+	<field name="COUNT_CDEPT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="COUNT_CDEPT"/>
+		<property name="com.jaspersoft.studio.field.label" value="COUNT_CDEPT"/>
+	</field>
+	<field name="COUNT_ODEPT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="COUNT_ODEPT"/>
+		<property name="com.jaspersoft.studio.field.label" value="COUNT_ODEPT"/>
+	</field>
+	<variable name="SUM(PRNCBAL)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{PRNCBAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM(DEPT_AMT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{DEPT_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM(WITH_AMT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{WITH_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM(ERI_AMT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{ERI_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM(ERO_AMT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{ERO_AMT}]]></variableExpression>
+	</variable>
+	<variable name="SUM(NET_CHANGE)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{NET_CHANGE}]]></variableExpression>
+	</variable>
+	<variable name="SUM(AF_PRNCBAL)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{AF_PRNCBAL}]]></variableExpression>
+	</variable>
+	<variable name="SUM(COUNT_BFDEPT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{COUNT_BFDEPT}]]></variableExpression>
+	</variable>
+	<variable name="SUM(COUNT_ODEPT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{COUNT_ODEPT}]]></variableExpression>
+	</variable>
+	<variable name="SUM(COUNT_CDEPT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{COUNT_CDEPT}]]></variableExpression>
+	</variable>
+	<variable name="SUM(COUNT_DEPT)" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{COUNT_DEPT}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="0" y="0" width="800" height="30" uuid="6e92cc0a-6847-4147-a2cc-49d8d2e8e5d9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_startdate">
+					<subreportParameterExpression><![CDATA[$P{adtm_start}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_enddate">
+					<subreportParameterExpression><![CDATA[$P{adtm_end}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail} + "ตั้งแต่วันที่ " +
+new java.text.SimpleDateFormat("d MMMM yyyy", new java.util.Locale("th", "TH")).format($P{adtm_start}) +
+" ถึงวันที่ " +
+new java.text.SimpleDateFormat("d MMMM yyyy", new java.util.Locale("th", "TH")).format($P{adtm_end})]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[ "C:\\CLIENT(SPA)\\iReport\\report_header\\ir_header_landscape.jasper" ]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="40">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="30" height="40" uuid="2607c709-785a-47b9-8849-cbc5bf78bb4a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="0" width="170" height="40" uuid="5b773b0d-02cd-4744-bb3a-6bad65c80f43">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ประเภทเงินฝาก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="0" width="80" height="40" uuid="f9109abb-1c52-40c7-878a-ee933fdddf78">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+					<paragraph rightIndent="4"/>
+				</textElement>
+				<text><![CDATA[ยกมา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="0" width="90" height="20" uuid="0648a539-8ecc-4f11-960b-61f5f037c4d4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ฝาก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="0" width="90" height="20" uuid="38cde009-a60d-40f7-9159-987a03b1a6e8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ถอน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="20" width="90" height="20" uuid="bacf8a6a-ad3c-490e-8025-35ea5252069e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ปรับปรุงฝาก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="20" width="90" height="20" uuid="6eb78d2d-6058-45f6-a3b8-720d83727119">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ปรับปรุงถอน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="0" width="90" height="40" uuid="10badeb1-7403-4092-bfd4-9320de837e57">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เพิ่ม/ลด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="550" y="0" width="90" height="40" uuid="042f4448-de3f-44d1-8f6b-ce534a13b213">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ยอดคงเหลือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="640" y="0" width="50" height="40" uuid="34fc765e-8344-414d-8002-61db90c9e13c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[บัญชียกมา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="690" y="0" width="30" height="40" uuid="8a3c414e-49f9-45a2-9947-e16eff082e7b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เปิด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="720" y="0" width="30" height="40" uuid="d54518bd-3a7d-4402-ad5d-4b365ca1d9f7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ปิด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="750" y="0" width="50" height="40" uuid="90a2cce0-e412-479e-8ef9-bdd18b850706">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[บัญชียกไป]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="0" width="30" height="40" uuid="6923e1bb-ae7a-459c-b6f3-cda456805768"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="0" width="170" height="40" uuid="739e531f-372b-4baa-9203-332e8ea1f6f0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTTYPE_CODE} + " " + $F{DEPTTYPE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="0" width="80" height="40" uuid="44c372c2-8135-4d1d-8c60-8b9eff14bbd8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRNCBAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="90" height="20" uuid="a49861dc-cd13-4775-98b8-ea6aab34107c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dashed" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPT_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="0" width="90" height="20" uuid="d75487d3-ee5c-4cad-a687-0937db6f4a10">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dashed" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{WITH_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="20" width="90" height="20" uuid="b2faac19-00d7-4450-88c5-ee99796e8dec">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ERI_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="20" width="90" height="20" uuid="ce1749c8-b86a-4edb-8e65-4e52311f69a5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ERO_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="0" width="90" height="40" uuid="a8da4f1f-e427-4bf8-9ebc-88b359e0ee9c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NET_CHANGE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="550" y="0" width="90" height="40" uuid="14671bff-6924-4a9d-85c2-cbe1a7698413">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AF_PRNCBAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="640" y="0" width="50" height="40" uuid="b7f808af-0b67-4c7e-a0b0-3ba9ae827243">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COUNT_BFDEPT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="690" y="0" width="30" height="40" uuid="e267b49e-aa4c-4834-863f-d3fae17455f1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COUNT_ODEPT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="720" y="0" width="30" height="40" uuid="16852898-970e-4e99-89b5-ea1900612157">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COUNT_CDEPT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="750" y="0" width="50" height="40" uuid="bb9fc196-777d-4fde-a692-50e654377fa0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COUNT_DEPT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="680" y="0" width="121" height="30" uuid="7dd1aa80-83b7-4ecd-9258-5bbde74b55d1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ : " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="40">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="200" height="40" uuid="81f3d39b-2d59-4ea2-b1fa-18af711bba01">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รวมทั้งหมด]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="200" y="0" width="80" height="40" uuid="a706ffdd-7b6b-4eff-86e4-fcdf0b51ad47">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+					<paragraph rightIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(PRNCBAL)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="20" width="90" height="20" uuid="261e4bb9-6d3e-4029-a85f-0d25641f57dc">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(ERI_AMT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="640" y="0" width="50" height="40" uuid="0c7d532b-e859-4810-9b5e-b3f0fa3e7f01">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(COUNT_BFDEPT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="720" y="0" width="30" height="40" uuid="7e2fa06a-34e8-4aa0-b5b6-8395c4fe4133">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(COUNT_CDEPT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="750" y="0" width="50" height="40" uuid="b9995608-abb7-4c48-b256-985b9eaa71d6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(COUNT_DEPT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="690" y="0" width="30" height="40" uuid="17a4ffa2-5614-48be-8558-c01e77d636e0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(COUNT_ODEPT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="550" y="0" width="90" height="40" uuid="fac0b600-6c79-46b9-b28e-e2022668712b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(AF_PRNCBAL)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="0" width="90" height="20" uuid="a8803bd5-7e2a-4ba7-aad5-9a7ba60892a8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Dashed" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(WITH_AMT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="20" width="90" height="20" uuid="af8ff524-a73d-4137-a6b4-207bd9a0baa6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(ERO_AMT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="280" y="0" width="90" height="20" uuid="01d14f80-9d21-42dc-aa33-d7740a5d4b92">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Dashed" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(DEPT_AMT)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="0" width="90" height="40" uuid="cb79dd69-fc0a-42ab-94bb-7715703edde9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUM(NET_CHANGE)}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

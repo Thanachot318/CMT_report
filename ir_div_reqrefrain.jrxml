@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_div_reqrefrain" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5dd2e45e-39f9-49b1-afa2-1e9361b72ce1">
+	<property name="ireport.zoom" value="2.1435888100000025"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ประจำปี "]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String"/>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<parameter name="as_year" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_smembgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_emembgroup" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select req.member_no, ft_getmbname(req.coop_id, req.member_no) as fullname, mg.membgroup_code, mg.membgroup_desc,
+req.new_refraindiv as pausediv_flag, req.new_refrainavg as pauseavg_flag,
+cc.coop_name, ym.div_year,
+'                               ' as report_id
+from yrreqrefrain req
+join yrbgmaster ym on ym.coop_id = req.coop_id and ym.member_no = req.member_no  and req.div_year =ym.div_year
+join mbucfmembgroup mg on mg.coop_id = ym.coop_id and mg.membgroup_code = ym.membgroup_code
+join cmcoopconstant cc on cc.coop_id = req.coop_id
+where
+(req.new_refraindiv = 1 or req.new_refrainavg = 1)
+and req.coop_id = $P{as_coopid}
+and trim(req.div_year) = $P{as_year}
+and ( ym.membgroup_code between $P{as_smembgroup} and $P{as_emembgroup} )]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="PAUSEDIV_FLAG" class="java.math.BigDecimal"/>
+	<field name="PAUSEAVG_FLAG" class="java.math.BigDecimal"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="DIV_YEAR" class="java.lang.String"/>
+	<field name="REPORT_ID" class="java.lang.String"/>
+	<variable name="sum_mem_group" class="java.lang.Integer" resetType="Group" resetGroup="membgroup_code" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="count_div_group" class="java.lang.Integer" resetType="Group" resetGroup="membgroup_code" calculation="Count">
+		<variableExpression><![CDATA[$F{PAUSEDIV_FLAG}]]></variableExpression>
+	</variable>
+	<variable name="count_mem_all" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="count_avg_group" class="java.lang.Integer" resetType="Group" resetGroup="membgroup_code" calculation="Count">
+		<variableExpression><![CDATA[$F{PAUSEAVG_FLAG}]]></variableExpression>
+	</variable>
+	<variable name="count_avg_all" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{PAUSEAVG_FLAG}]]></variableExpression>
+	</variable>
+	<variable name="count_div_all" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{PAUSEDIV_FLAG}]]></variableExpression>
+	</variable>
+	<group name="membgroup_code">
+		<groupExpression><![CDATA[$F{MEMBGROUP_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="0972312c-87c4-42ec-9693-ead84bc9cfb8" x="0" y="0" width="555" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE}+"-"+$F{MEMBGROUP_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement uuid="61834653-d269-4bc6-92ea-3e016cfb4731" x="0" y="0" width="258" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE}+"-"+$F{MEMBGROUP_DESC}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement uuid="7f60d81c-7212-4212-93bb-36d509c6d8d2" x="258" y="0" width="63" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$V{sum_mem_group}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="b09213f6-652c-4ffa-a314-82564bddf363" x="321" y="0" width="57" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement/>
+					<textFieldExpression><![CDATA["ราย"]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement uuid="e8484807-0aad-41d4-a2ca-feb4e70b1fc3" x="378" y="0" width="86" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$V{count_div_group}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement uuid="1f7422b2-7aca-456f-b8cf-c4a02c27d98c" x="464" y="0" width="91" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$V{count_avg_group}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<pageHeader>
+		<band height="20" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="8d40097c-185e-4570-973e-821c6d3a76c5" x="0" y="0" width="555" height="20"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_portrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="66e18271-81e9-49e5-a9bb-8c0128a67a4b" x="92" y="0" width="286" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ชื่อ-สกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="49a0a1ec-a0c6-409e-b13a-8add777b36de" x="0" y="0" width="34" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0d35ace6-5694-4e4c-bc5d-d2b0d8f56929" x="378" y="0" width="86" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[งดปันผล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="146a77a7-869c-4b68-881e-b60d6cad24d1" x="34" y="0" width="58" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="396c4125-e4de-4aca-84ba-340091a99b6d" x="464" y="0" width="91" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[งดเฉลี่ยคืน]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0be80b26-8088-4b58-9a78-fb3305354a5b" x="0" y="0" width="34" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{membgroup_code_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9e9ca43d-e698-4c0f-9b02-373213459001" x="34" y="0" width="58" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1f4e1348-54e1-4a68-8929-baa139f67bc1" x="92" y="0" width="286" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="a8ed22f8-e091-457f-8d51-8f0f9ef380d7" x="505" y="3" width="14" height="10">
+					<printWhenExpression><![CDATA[$F{PAUSEAVG_FLAG}== 1 ? true : false]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<imageExpression><![CDATA["Image\\checkmark.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement uuid="1a52d0e0-06ee-43b3-83dd-0cc0c797caac" x="419" y="3" width="14" height="10">
+					<printWhenExpression><![CDATA[$F{PAUSEDIV_FLAG} == 1 ? true : false]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<imageExpression><![CDATA["Image\\checkmark.png"]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<summary>
+		<band height="26">
+			<textField>
+				<reportElement uuid="23672078-d560-4a9f-a86f-67354ed02a9b" x="0" y="0" width="258" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["รวมทั้งหมด"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="6a26dd85-78bc-4434-a4cd-21e8bb114851" x="258" y="0" width="63" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{count_mem_all}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="449c6c90-8ec7-418d-b22f-4c915e17b177" x="321" y="0" width="57" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA["ราย"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="7a66b499-aba0-41a8-8042-5382d8daf91c" x="378" y="0" width="86" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{count_div_all}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="1f69428b-971e-4f5a-8f62-c2cec2d36951" x="464" y="0" width="91" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{count_avg_all}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="0f150af6-73f9-4d55-9264-528775351345" x="0" y="21" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

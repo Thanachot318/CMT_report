@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_dep_monthintpay_ole" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="504cd4c6-6dc7-4696-ac98-3bbb8c3801c9">
+	<property name="ireport.zoom" value="2.143588810000005"/>
+	<property name="ireport.x" value="275"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="coop_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sdepttype_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edepttype_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+dpdeptmaster.depttype_code,
+dpucfdeptmaintype.deptmain_desc,
+dpdeptmaster.monthintpay_meth,
+dpdeptmaster.deptaccount_no,
+dpdeptmaster.deptaccount_name,
+dpdeptmaster.tran_bankacc_no,
+dpdeptmaster.dept_tranacc_name,
+dpdeptmaster.bank_code,
+dpdeptmaster.bank_branch,
+cmucfbank.bank_desc,
+cmucfbankbranch.branch_name,
+cmcoopmaster.coop_name
+from dpdeptmaster
+left join cmucfbank on dpdeptmaster.bank_code = cmucfbank.bank_code
+left join cmucfbankbranch on dpdeptmaster.bank_branch = cmucfbankbranch.branch_id
+								and dpdeptmaster.bank_code = cmucfbankbranch.bank_code
+left join dpucfdeptmaintype on dpdeptmaster.depttype_code = dpucfdeptmaintype.deptmain_type
+left join cmcoopmaster on dpdeptmaster.coop_id = cmcoopmaster.coop_id
+where dpdeptmaster.coop_id = $P{coop_id} and
+dpdeptmaster.depttype_code between $P{sdepttype_code} and $P{edepttype_code} and
+deptclose_status = 0
+order by
+dpdeptmaster.depttype_code,
+dpdeptmaster.monthintpay_meth,
+dpdeptmaster.deptaccount_no]]>
+	</queryString>
+	<field name="depttype_code" class="java.lang.String"/>
+	<field name="deptmain_desc" class="java.lang.String"/>
+	<field name="monthintpay_meth" class="java.math.BigDecimal"/>
+	<field name="deptaccount_no" class="java.lang.String"/>
+	<field name="deptaccount_name" class="java.lang.String"/>
+	<field name="tran_bankacc_no" class="java.lang.String"/>
+	<field name="dept_tranacc_name" class="java.lang.String"/>
+	<field name="bank_code" class="java.lang.String"/>
+	<field name="bank_branch" class="java.lang.String"/>
+	<field name="bank_desc" class="java.lang.String"/>
+	<field name="branch_name" class="java.lang.String"/>
+	<field name="coop_name" class="java.lang.String"/>
+	<group name="G_depttype" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{depttype_code}]]></groupExpression>
+		<groupHeader>
+			<band height="33">
+				<textField>
+					<reportElement uuid="69499402-a9e7-4473-9f66-2075d1845209" x="0" y="13" width="802" height="20"/>
+					<textElement>
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ประเภทเงินฝาก:  " + $F{depttype_code} + " - " + $F{deptmain_desc}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="9">
+				<line>
+					<reportElement uuid="9e741c5f-ec13-4b8c-bacc-2be190c06264" x="0" y="8" width="802" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="G_monthintpay" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{monthintpay_meth}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<textField>
+					<reportElement uuid="336268ac-47dd-4523-a1d7-943c3317ebb7" x="0" y="0" width="802" height="20"/>
+					<textElement>
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รับดอกเบี้ยโดย:  " + ($F{monthintpay_meth} == 0 ? "นำไปทบต้น" : ($F{monthintpay_meth} == 1 ? "โอนเข้าบัญชี" : ($F{monthintpay_meth} == 2 ? "โอนเข้าธนาคาร" : "รับเองโดยแยกต้นเงิน")))]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="d3d7aabf-e4d0-4ea0-8c26-e72c252b58f4" x="0" y="20" width="83" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[เลขที่บัญชี]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4db4bf12-0803-4640-a820-1dae0e3eb38b" x="320" y="20" width="182" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ธนาคาร]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d6de83a0-efab-44b1-a2dd-2dd58ae243cd" x="83" y="20" width="137" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ชื่อบัญชี]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b7dc5599-d3bd-494a-bf85-cc3d340d27e7" x="220" y="20" width="100" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[เลขที่บัญชีที่โอน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="33c14741-695d-4d89-8ffb-17e3055c7857" x="665" y="20" width="137" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ชื่อบัญชีที่โอน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1bc6e93e-db99-4012-ad9e-3c37fc994897" x="502" y="20" width="163" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[สาขา]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="40">
+			<textField>
+				<reportElement uuid="f9f837a0-3654-47d9-aea4-0fb0358cbbde" x="702" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["วันที่พิมพ์: "+new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="59b86c30-2ec7-4662-9511-dcfb9ad040ac" x="702" y="20" width="75" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่  " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="69091c1e-90c8-4c63-bf9a-f467334b64c8" x="777" y="20" width="25" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["/  " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="62e0664f-e8d4-4a3c-b321-317409a94949" x="0" y="20" width="802" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานวิธีการรับดอกเบี้ยเงินฝาก]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="fea77e8b-95be-4e6e-90f6-bd4fdc505de3" x="0" y="0" width="802" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{coop_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ecc86fcd-bb45-45b7-8e8b-b2aac91b46a6" x="0" y="0" width="83" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{deptaccount_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b6ef8438-cc2b-4247-ae9d-d43ee222609c" x="83" y="0" width="137" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{deptaccount_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1d75db15-7036-4461-a279-ccb9e387814a" x="320" y="0" width="182" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bank_desc} == null ? "" : ($F{bank_code} +" - "+$F{bank_desc})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6bd70f38-4e3c-4dff-b2cb-bfa95e28bca7" x="502" y="0" width="163" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{branch_name} == null ? "" : ($F{bank_branch}+" - "+$F{branch_name})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="80ef913f-427a-4826-a7c6-b142de0402d3" x="665" y="0" width="137" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dept_tranacc_name} == null ? "" : $F{dept_tranacc_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="479edbb4-a40a-45b1-94ec-aa8ea0c8b67e" x="220" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tran_bankacc_no} == null ? "" : $F{tran_bankacc_no}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

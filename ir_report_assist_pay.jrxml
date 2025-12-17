@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_report_assist_pay" language="groovy" pageWidth="720" pageHeight="842" columnWidth="680" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="65376fbf-1fc1-45b9-bd47-995d5af1006b">
+	<property name="ireport.zoom" value="1.464100000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="date1" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="date2" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="assisttype_start" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="assisttype_end" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select ao.member_no
+,mb.prename_code
+,mb.memb_name
+,mb.memb_surname
+,ao.slip_date
+,ao.assisttype_code,
+(select ut.assisttype_desc from assucfassisttype ut where ut.assisttype_code=ao.assisttype_code) assisttype_desc,
+(select ut.assisttype_group from assucfassisttype ut where ut.assisttype_code=ao.assisttype_code) assisttype_group,
+(select mp.prename_desc from mbucfprename mp where mb.prename_code=mp.prename_code)prename_desc,
+(select cc.coop_name from cmcoopconstant cc where mb.coop_id=cc.coop_id) coop_name
+,sum(aod.itempay_amt) as  payout_amt
+,aod.moneytype_code
+,aod.expense_bank
+,aod.expense_accid
+,aod.deptaccount_no
+,CMUCFBANK.bank_shortname_t
+,dpucfdepttype.depttype_desc
+,aod.methpaytype_code
+,aod.description
+from assslippayout ao
+join assslippayoutdet aod on ao.assistslip_no = aod.assistslip_no
+join mbmembmaster mb on ao.member_no=mb.member_no and ao.coop_id = mb.coop_id
+left join CMUCFBANK on aod.expense_bank=CMUCFBANK.bank_code
+--left join cmucfbankbranch on ASSREQMASTERGAIN.expense_branch = cmucfbankbranch.branch_id and ASSREQMASTERGAIN.expense_bank=cmucfbankbranch.bank_code
+left join dpdeptmaster on aod.deptaccount_no = dpdeptmaster.deptaccount_no
+left join dpucfdepttype on dpdeptmaster.depttype_code =dpucfdepttype.depttype_code and dpucfdepttype.membcat_code = mb.membcat_code
+where ao.slip_date between $P{date1} and $P{date2}
+and ao.assisttype_code between $P{assisttype_start} and $P{assisttype_end}
+and ao.slip_status = 1
+and ao.coop_id = $P{as_coopid}
+group by ao.member_no
+,mb.prename_code
+,mb.memb_name
+,mb.memb_surname
+,ao.slip_date
+,ao.assisttype_code
+,mb.prename_code
+,mb.coop_id
+,aod.moneytype_code
+,aod.expense_bank
+,aod.expense_accid
+,aod.deptaccount_no
+,CMUCFBANK.bank_shortname_t
+,dpucfdepttype.depttype_desc
+,aod.methpaytype_code
+,aod.description
+order by ao.assisttype_code,ao.slip_date]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_CODE" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="SLIP_DATE" class="java.sql.Timestamp"/>
+	<field name="ASSISTTYPE_CODE" class="java.lang.String"/>
+	<field name="ASSISTTYPE_DESC" class="java.lang.String"/>
+	<field name="ASSISTTYPE_GROUP" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="PAYOUT_AMT" class="java.math.BigDecimal"/>
+	<field name="MONEYTYPE_CODE" class="java.lang.String"/>
+	<field name="EXPENSE_BANK" class="java.lang.String"/>
+	<field name="EXPENSE_ACCID" class="java.lang.String"/>
+	<field name="DEPTACCOUNT_NO" class="java.lang.String"/>
+	<field name="BANK_SHORTNAME_T" class="java.lang.String"/>
+	<field name="DEPTTYPE_DESC" class="java.lang.String"/>
+	<field name="METHPAYTYPE_CODE" class="java.lang.String"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<variable name="group_type_count" class="java.lang.Number" resetType="Group" resetGroup="assist_type_group" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="sum_group_type" class="java.math.BigDecimal" resetType="Group" resetGroup="assist_type_group" calculation="Sum">
+		<variableExpression><![CDATA[$F{PAYOUT_AMT}]]></variableExpression>
+	</variable>
+	<group name="assist_type_group">
+		<groupExpression><![CDATA[$F{ASSISTTYPE_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="60172a2f-8d14-4018-957b-d76034e105e9" x="0" y="7" width="644" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ASSISTTYPE_CODE}+" - "+$F{ASSISTTYPE_DESC}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="17f502a2-1a1f-438f-bee4-743bed70b9e2" x="0" y="30" width="25" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<text><![CDATA[ลำดับ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="90a93643-0f40-47bd-8b5b-dfcc16ee47c9" x="100" y="30" width="58" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<text><![CDATA[เลขที่สมาชิก]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a71ec08b-4784-455c-94f8-66856677a41a" x="158" y="30" width="233" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[ชื่อ-สกุล / ผู้รับผลประโยชน์]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="067312ee-3dae-4f48-aae9-ffb5ac2bbb59" x="25" y="30" width="75" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<text><![CDATA[วันที่จ่ายสวัสดิการ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d2768fc1-cea7-4565-a7b3-73e5e7d666a1" x="620" y="30" width="60" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+						<paragraph rightIndent="5"/>
+					</textElement>
+					<text><![CDATA[จำนวนเงิน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d9c0a525-b4b9-405e-8878-f7e09e2febbd" x="391" y="30" width="77" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[วิธีการจ่าย]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="e8dd015d-12bd-4307-9c65-0194dfbeb359" x="468" y="30" width="92" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[ธนาคาร]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="7a1c1fe2-5d6c-4a97-afa2-23a822cfd093" x="560" y="30" width="60" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<text><![CDATA[เลขที่บัญชี]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement uuid="6d298fe9-2b6b-4a7a-a946-0f2b0458f5de" x="0" y="0" width="272" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+						<paragraph rightIndent="10"/>
+					</textElement>
+					<text><![CDATA[รวมสมาชิก]]></text>
+				</staticText>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="4e27bc5c-7646-403c-931d-2922aba934e9" x="620" y="0" width="60" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+						<paragraph rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_group_type}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="2ec925a5-83ae-42f3-9e00-8c2d530df6ae" x="364" y="0" width="256" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+						<paragraph rightIndent="10"/>
+					</textElement>
+					<text><![CDATA[จำนวนเงิน]]></text>
+				</staticText>
+				<textField pattern="#,##0">
+					<reportElement uuid="9b33256a-13d1-4362-8cfb-1c94b7de0b18" x="272" y="0" width="54" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+						<paragraph rightIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{group_type_count}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="4ddf9790-95f5-4596-b425-a70fe5a4d548" x="326" y="0" width="38" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+						<paragraph rightIndent="10"/>
+					</textElement>
+					<text><![CDATA[ราย]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0df13d96-c5a0-4102-828d-4d7a67bf297c" x="0" y="20" width="644" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานการจ่ายเงินสวัสดิการ]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="bc479832-2bbe-4dfc-a6a6-dfcdd7863468" x="0" y="40" width="644" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ตั้งแต่ วันที่ "+ new SimpleDateFormat("dd/MM/yyyy ",new Locale("th","TH")).format($P{date1})+" ถึง "+new SimpleDateFormat("dd/MM/yyyy ",new Locale("th","TH")).format($P{date2})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="21bc13a9-9f76-4759-b20f-a800ca42514b" x="523" y="0" width="101" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" หน้า "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="a570d88e-9f67-42f1-8879-6f54a72fb600" x="624" y="0" width="20" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["/"+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="61fcb6f2-bf8c-4df4-8b7e-810aaccf3d99" x="0" y="0" width="644" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="275a1173-6bb1-487f-84ce-1acc6318c612" x="0" y="0" width="25" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{assist_type_group_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1af583ce-bdbb-4e59-b4a8-83c79b7d9cee" x="158" y="0" width="233" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{MEMB_NAME}+"  "+$F{MEMB_SURNAME}+
+($F{ASSISTTYPE_GROUP} == "02"? " / "+$F{DESCRIPTION}:"")]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="a38b454a-4941-4f64-8d29-5d590473418c" x="620" y="0" width="60" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PAYOUT_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8a51ebc3-4b08-4c08-b2d5-0dd1cfb7bfd9" x="100" y="0" width="58" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="ca95c25c-e25e-4161-8a81-3f0996029a96" x="25" y="0" width="75" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy ",new Locale("th","TH")).format($F{SLIP_DATE})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1c7b93a5-969a-4c9e-8a12-bcbb514caf1c" x="391" y="0" width="77" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MONEYTYPE_CODE} == "CBT" ? "โอนธนาคาร":
+($F{MONEYTYPE_CODE} =="TRN" && $F{METHPAYTYPE_CODE} == "DEP"?"โอนภายใน" :
+    ($F{MONEYTYPE_CODE} =="TRN" && $F{METHPAYTYPE_CODE} == "LON"?"ชำระหนี้":
+    ($F{MONEYTYPE_CODE} == "CSH" ? "เงินสด" : ""
+    )))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f695a474-e0f5-4fa9-bb3b-c8c13a01ba05" x="468" y="0" width="92" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MONEYTYPE_CODE} == "CBT" ? ($F{BANK_SHORTNAME_T}==null?"":$F{BANK_SHORTNAME_T}) :
+($F{MONEYTYPE_CODE} == "TRN" && $F{METHPAYTYPE_CODE} == "DEP" ? $F{DEPTTYPE_DESC} : "")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="922f7c18-4828-42f0-9842-6f6405fa3ff7" x="560" y="0" width="60" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MONEYTYPE_CODE} == "CBT" ? $F{EXPENSE_ACCID} :
+($F{MONEYTYPE_CODE} == "TRN" && $F{METHPAYTYPE_CODE} =="DEP" ? $F{DEPTACCOUNT_NO} : "-")]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

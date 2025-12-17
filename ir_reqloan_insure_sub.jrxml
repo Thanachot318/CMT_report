@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LNDY00004_sub" language="groovy" pageWidth="234" pageHeight="842" columnWidth="234" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="eb4ea62e-aba4-4bbd-bed0-bf425a7b2ace">
+	<property name="ireport.zoom" value="3.1384283767210053"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="loanrequest_docno" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+lnc.ref_collno,
+ft_getmbname(lnc.coop_id, lnc.ref_collno) as fullname
+from lnreqloancoll lnc
+left join mbmembmaster mb on mb.member_no = lnc.ref_collno
+where loanrequest_docno = $P{loanrequest_docno}]]>
+	</queryString>
+	<field name="REF_COLLNO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0751258-ef0d-42f6-8702-dab77be41e26" x="46" y="0" width="188" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="81ff9231-6484-4ab1-a24c-3b5879d608d6" x="0" y="0" width="46" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REF_COLLNO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

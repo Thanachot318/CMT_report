@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_dep_dpucfrecppay" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="852196ca-1837-4618-9262-168a88a0cd94">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+    coop_id,
+    recppaytype_code,
+    recppaytype_desc,
+    deptitem_group
+
+from dpucfrecppaytype
+where active_flag = 1
+order by
+    recppaytype_flag desc,
+    case
+        when deptitem_group = 'OPN' then 1
+        when deptitem_group = 'DEP' then 2
+        when deptitem_group = 'WID' then 3
+        when deptitem_group = 'CLS' then 4
+        when deptitem_group = 'INT' then 5
+        when deptitem_group = 'TAX' then 6
+        when deptitem_group = 'FEE' then 7
+        when deptitem_group = 'ERR' then 8
+        else 0
+    end,
+    recppaytype_code asc]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="RECPPAYTYPE_CODE" class="java.lang.String"/>
+	<field name="RECPPAYTYPE_DESC" class="java.lang.String"/>
+	<field name="DEPTITEM_GROUP" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="20" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="c100ef2d-5419-4638-ba9d-c9eb3941ee0e" x="0" y="0" width="555" height="20"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$F{COOP_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_portrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="267e8a53-f3ab-4758-81a2-2e8158ff7655" x="89" y="0" width="64" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รหัสรายการ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="75d51f21-aa52-4dd4-91ce-35355460d3ef" x="153" y="0" width="402" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14" isBold="true"/>
+					<paragraph leftIndent="170"/>
+				</textElement>
+				<text><![CDATA[คำอธิบาย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3e6a6537-494b-433d-bc2f-ec0e7a5c73d8" x="0" y="0" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[กลุ่มรายการ]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="c879792a-e275-4cba-8147-bdebe975e72f" x="89" y="0" width="64" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RECPPAYTYPE_CODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b23ba653-80e7-4c75-9c2a-ba745ecb2507" x="153" y="0" width="402" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RECPPAYTYPE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1c698814-2e88-4501-9000-17641e51b3b6" x="0" y="0" width="89" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+					<paragraph leftIndent="30"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTITEM_GROUP}.equals("OPN") ? "เปิดบัญชี" :
+$F{DEPTITEM_GROUP}.equals("DEP") ? "ฝาก" :
+$F{DEPTITEM_GROUP}.equals("WID") ? "ถอน" :
+$F{DEPTITEM_GROUP}.equals("CLS") ? "ปิดบัญชี" :
+$F{DEPTITEM_GROUP}.equals("INT") ? "ดอกเบี้ย" :
+$F{DEPTITEM_GROUP}.equals("FEE") ? "ค่าธรรมเนียม" :
+$F{DEPTITEM_GROUP}.equals("ERR") ? "ยกเลิก" :
+$F{DEPTITEM_GROUP}.equals("TAX") ? "ภาษี" :
+""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

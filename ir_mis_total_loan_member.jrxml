@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mis_total_loan_member" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="78f52c7e-6c90-4408-8b4f-857481898b8b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT lt.loantype_code
+	, lt.loantype_desc
+	, nvl(m.province_code, '000') AS province_code
+	, mp.province_desc
+	, pa.group_code
+	, pa.group_desc
+	, CASE WHEN m.member_status = 1 AND m.resign_status = 0 THEN 'ปกติ'
+		ELSE 'พ้นสภาพ' END AS member_flag
+	, count(*) as member_cnt
+	, cm.coop_name
+FROM LNCONTSTATEMENT l
+JOIN (
+	SELECT LOANCONTRACT_NO, MAX(seq_no) AS seq_no FROM LNCONTSTATEMENT
+	WHERE OPERATE_DATE <= TO_DATE('09302025', 'MMddyyyy')
+		AND ITEM_STATUS = 1 AND LOANITEMTYPE_CODE <> 'CL'
+	GROUP BY LOANCONTRACT_NO
+) lq ON l.loancontract_no = lq.loancontract_no
+	AND l.seq_no = lq.seq_no
+JOIN LNCONTMASTER lm ON l.loancontract_no = lm.loancontract_no
+JOIN LNLOANTYPE lt ON lm.loantype_code = lt.loantype_code
+JOIN MBMEMBMASTER m ON lm.member_no = m.member_no
+LEFT JOIN MBUCFPROVINCE mp ON nvl(m.province_code, '000') = mp.province_code
+JOIN CMCOOPCONSTANT cm ON lm.COOP_ID = cm.COOP_ID
+JOIN (
+SELECT LEVEL AS group_code
+	, TO_CHAR(0+ (10 * (LEVEL - 1))+ CASE WHEN LEVEL = 1 THEN 0 ELSE 1 END) || ' - ' || TO_CHAR(0 + (10 * LEVEL)) AS group_desc
+	, 0 + (10 * (LEVEL - 1)) + CASE WHEN LEVEL = 1 THEN 0 ELSE 1 END AS from_Age, 0 + (10 * LEVEL) AS to_age
+FROM dual CONNECT BY LEVEL <= (
+	SELECT CEIL(TRUNC((MAX(ft_calage(m.BIRTH_DATE, TRUNC(SYSDATE), 4)))) / 10) AS ages
+	FROM MBMEMBMASTER m
+)) pa ON TRUNC(ft_calage(m.BIRTH_DATE, TRUNC(SYSDATE), 8) / 12) BETWEEN pa.from_age AND pa.to_Age
+WHERE l.principal_balance > 0
+GROUP BY lt.loantype_code
+	, lt.loantype_desc
+	, nvl(m.province_code, '000')
+	, mp.province_desc
+	, pa.group_code
+	, pa.group_desc
+	, cm.coop_name
+	, CASE WHEN m.member_status = 1 AND m.resign_status = 0 THEN 'ปกติ'
+		ELSE 'พ้นสภาพ' END
+ORDER BY member_flag, pa.group_code, province_code , loantype_code]]>
+	</queryString>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANTYPE_DESC" class="java.lang.String"/>
+	<field name="PROVINCE_CODE" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="GROUP_CODE" class="java.math.BigDecimal"/>
+	<field name="GROUP_DESC" class="java.lang.String"/>
+	<field name="MEMBER_FLAG" class="java.lang.String"/>
+	<field name="MEMBER_CNT" class="java.math.BigDecimal"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<variable name="ages_member_cnt" class="java.math.BigDecimal" resetType="Group" resetGroup="ages" calculation="Sum">
+		<variableExpression><![CDATA[$F{MEMBER_CNT}]]></variableExpression>
+	</variable>
+	<variable name="province_member_cnt" class="java.math.BigDecimal" resetType="Group" resetGroup="province" calculation="Sum">
+		<variableExpression><![CDATA[$F{MEMBER_CNT}]]></variableExpression>
+	</variable>
+	<variable name="status_member_cnt" class="java.math.BigDecimal" resetType="Group" resetGroup="status" calculation="Sum">
+		<variableExpression><![CDATA[$F{MEMBER_CNT}]]></variableExpression>
+	</variable>
+	<variable name="member_cnt" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{MEMBER_CNT}]]></variableExpression>
+	</variable>
+	<group name="status">
+		<groupExpression><![CDATA[$F{MEMBER_FLAG}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="06e090f0-fa9e-45a0-9288-51803a491e69" x="0" y="0" width="555" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph leftIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["สมาชิก: " + $F{MEMBER_FLAG}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement uuid="489b9269-d6c6-40e4-95c7-33bfb1cf1fb5" x="0" y="0" width="455" height="20"/>
+					<box>
+						<bottomPen lineWidth="1.0" lineStyle="Double"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph leftIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวมสมาชิก: " + $F{MEMBER_FLAG}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement uuid="3ca7c880-efe5-419c-bdc7-843e65307e19" x="455" y="0" width="100" height="20"/>
+					<box>
+						<bottomPen lineWidth="1.0" lineStyle="Double"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{status_member_cnt}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="ages">
+		<groupExpression><![CDATA[$F{GROUP_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="ef2b344b-e7aa-4c46-a4ad-892baa934d98" x="0" y="0" width="555" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph leftIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ช่วงอายุ: " + $F{GROUP_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement uuid="3d73e690-5869-4c2b-9fac-a12842838683" x="0" y="0" width="455" height="20"/>
+					<box>
+						<bottomPen lineWidth="1.0" lineStyle="Double"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph leftIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวมช่วงอายุ: " + $F{GROUP_DESC}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement uuid="3294f836-76a3-4f14-a123-7621ad0aea55" x="455" y="0" width="100" height="20"/>
+					<box>
+						<bottomPen lineWidth="1.0" lineStyle="Double"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ages_member_cnt}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="province">
+		<groupExpression><![CDATA[$F{PROVINCE_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="a5007d86-403f-445f-87aa-9b7a1a058d84" x="0" y="0" width="555" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph leftIndent="20"/>
+					</textElement>
+					<textFieldExpression><![CDATA["จังหวัด: " + $F{PROVINCE_DESC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField>
+					<reportElement uuid="7658ce35-f1e1-4f99-93e5-2b2bf27dd96a" x="0" y="0" width="455" height="20"/>
+					<box>
+						<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph leftIndent="20"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวมจังหวัด: " + $F{PROVINCE_DESC}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement uuid="45955352-5e10-4739-8556-4c5f1dfd5c55" x="455" y="0" width="100" height="20"/>
+					<box>
+						<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph rightIndent="2"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{province_member_cnt}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="58" splitType="Stretch">
+			<textField>
+				<reportElement uuid="48b58cd6-5ef1-4b48-957b-86b586949640" x="0" y="0" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cccda365-6089-44e4-abb2-0498abb0e2f4" x="0" y="38" width="50" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ลำดับ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fed24a0e-b9ae-48a1-a380-60b3b2486563" x="50" y="38" width="405" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รายการ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3a9f7b60-ee1f-47a4-8c5f-6d92a8080e5a" x="455" y="38" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["จำนวน(คน)"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="#,##0;-#,##0">
+				<reportElement uuid="0fefe031-9863-4f06-898f-8b6238c2e883" x="0" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="aaab9298-74c8-4f9e-b847-c2b9bf8f1fc2" x="50" y="0" width="405" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANTYPE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement uuid="6f338bf1-5c44-4438-9a11-2b48efff5926" x="455" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_CNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch">
+			<textField>
+				<reportElement uuid="50fa6732-5688-4c46-8797-f30a0bb909e1" x="0" y="0" width="455" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมทั้งหมด"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement uuid="d726e160-f706-4be9-a39e-f61edf79d6ef" x="455" y="0" width="100" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{member_cnt}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

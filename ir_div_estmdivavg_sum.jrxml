@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mbshr_share_statement_bymem_lite" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="02b01abb-3f13-4077-a5dc-ee4de74d4fdc">
+	<property name="ireport.zoom" value="2.1435888100000047"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["MBSH-DAY-130"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<parameter name="as_year" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select 'ประจำปี : '|| yr.div_year AS year_text,
+yr.seq_no , yr.est_type , yr.est_rate , yr.est_order , yr.est_value , yr.est_amt , cm.coop_name
+from yrrptestdivavg yr, cmcoopconstant cm
+where yr.coop_id = cm.coop_id
+and yr.coop_id = $P{as_coopid}
+and TRIM(yr.div_year) = $P{as_year}]]>
+	</queryString>
+	<field name="YEAR_TEXT" class="java.lang.String"/>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="EST_TYPE" class="java.lang.String"/>
+	<field name="EST_RATE" class="java.math.BigDecimal"/>
+	<field name="EST_ORDER" class="java.math.BigDecimal"/>
+	<field name="EST_VALUE" class="java.math.BigDecimal"/>
+	<field name="EST_AMT" class="java.math.BigDecimal"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<group name="ESTTYPEGRP">
+		<groupExpression><![CDATA[$F{EST_TYPE}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="88144c1e-384f-41cd-9e6c-629169a9785d" x="29" y="0" width="488" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{EST_TYPE} == "DIV" ? "สรุปยอดประมาณการปันผล"
+    : "สรุปยอดประมาณการเฉลี่ยคืน")]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="5f5d98fe-beff-4d19-8d55-218e3862d0a3" x="54" y="20" width="317" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{EST_TYPE} == "DIV" ? "มูลค่าหุ้นสะสม"
+    : "ดอกเบี้ยสะสม")]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="8cd6f745-6570-4d8d-abe5-df9e65cf36c1" x="371" y="20" width="73" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{EST_VALUE}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="0bd161d1-79fe-47ce-b5db-5c87520b77c7" x="444" y="20" width="73" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA["  บาท"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="1">
+				<line>
+					<reportElement uuid="295dae50-7770-46f3-a685-6717d77303d1" x="29" y="0" width="488" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="b1205310-4e77-4945-ba97-6d1133ff692e" x="0" y="1" width="555" height="20"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$F{YEAR_TEXT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_portrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="26">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="56a345bb-15e6-40e5-bada-dfc482fa2c26" x="54" y="0" width="317" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{EST_TYPE} == "DIV" ? "ปันผลอัตรา"
+    : "เฉลี่ยคืนอัตรา") + "   " + $F{EST_RATE} + " %"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="74997f08-a447-4ae9-bb65-18220f53ce95" x="371" y="0" width="73" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EST_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f60675a1-3b8c-4bfe-9c5b-d259eaa44676" x="444" y="0" width="73" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  บาท"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="20"/>
+	</pageFooter>
+</jasperReport>

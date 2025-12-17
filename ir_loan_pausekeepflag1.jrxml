@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 5.1.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mb_pausekeepflag1" language="groovy" pageWidth="842" pageHeight="595" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0606b94a-3882-4d0e-8e36-de7712193db9">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="iscospadla"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="as_coopid" class="java.lang.String"/>
+	<parameter name="as_smemno" class="java.lang.String"/>
+	<parameter name="as_ememno" class="java.lang.String"/>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["LNEC0280"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select mb.member_no , ft_getmbname( mb.coop_id , mb.member_no ) as fullname,
+mg.membgroup_code, mg.membgroup_desc , mb.salary_amount , mb.pausekeep_flag,mb.pausekeep_date,
+sh.sharestk_amt * 10 as sharestk_value,cm.coop_name,sh.payment_status
+from mbmembmaster mb
+left join mbucfmembgroup mg on mb.membgroup_code = mg.membgroup_code
+left join shsharemaster sh on mb.member_no = sh.member_no
+left join cmcoopconstant cm on mb.coop_id = cm.coop_id
+where mb.member_status = 1 and sh.payment_status < 1 and sharestk_amt > 0  and mb.coop_id =  $P{as_coopid} and mb.membgroup_code between  $P{as_smemno} and  $P{as_ememno}
+
+and mb.member_no not in ( select member_no from lncontmaster where principal_balance > 0 and payment_status > -13)
+
+order by membgroup_code , mb.member_no]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="SALARY_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="PAUSEKEEP_FLAG" class="java.math.BigDecimal"/>
+	<field name="PAUSEKEEP_DATE" class="java.sql.Timestamp"/>
+	<field name="SHARESTK_VALUE" class="java.math.BigDecimal"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="PAYMENT_STATUS" class="java.math.BigDecimal"/>
+	<variable name="countmemb_g1" class="java.math.BigDecimal" resetType="Group" resetGroup="membgroup_code" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<variable name="countmemb_all" class="java.math.BigDecimal" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<group name="membgroup_code">
+		<groupExpression><![CDATA[$F{MEMBGROUP_CODE}]]></groupExpression>
+		<groupHeader>
+			<band height="1"/>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="30" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="0" y="4" width="800" height="20" printWhenGroupChanges="membgroup_code" uuid="34f19283-cd04-49aa-bdfb-d241b842a877">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="smembgroup_code">
+					<subreportParameterExpression><![CDATA[$P{as_smemno}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="emembgroup_code">
+					<subreportParameterExpression><![CDATA[$P{as_ememno}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["C:\\CLIENT(SPA)\\iReport\\report_header\\ir_header_landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="50">
+			<staticText>
+				<reportElement x="610" y="5" width="110" height="40" printWhenGroupChanges="membgroup_code" uuid="31b857cd-ec52-4cf3-b985-5c5d2e16ebf7"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[สถานะงดเรียกเก็บ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="5" width="30" height="40" printWhenGroupChanges="membgroup_code" uuid="2baaeb3e-0c62-4d04-a674-08195bc0a7f9"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="408" y="5" width="102" height="40" printWhenGroupChanges="membgroup_code" uuid="487e05c6-e338-4458-a202-838b270d4924"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เงินเดือน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="720" y="5" width="79" height="40" printWhenGroupChanges="membgroup_code" uuid="8bd4c601-4b06-4f50-9454-9281d5ed8896"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[สถานะส่งหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="5" width="90" height="40" printWhenGroupChanges="membgroup_code" uuid="f6849300-4768-4787-a570-40f55730d0a6"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[สังกัด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="5" width="90" height="40" printWhenGroupChanges="membgroup_code" uuid="026db8b3-aac4-4555-8fba-5178ffad1647"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขทะเบียน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="510" y="5" width="100" height="40" printWhenGroupChanges="membgroup_code" uuid="b4e012ca-b8c1-4c28-8ceb-6378a8041267"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ทุนเรือนหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="5" width="198" height="40" printWhenGroupChanges="membgroup_code" uuid="514a4a50-4e36-4cc9-8a42-eca7b91a1e9f"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - สกุล]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="1" width="30" height="21" printWhenGroupChanges="membgroup_code" uuid="5abb944f-da65-41ab-9ca9-344422f7a373"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="1" width="90" height="21" printWhenGroupChanges="membgroup_code" uuid="a9f822ea-76e2-49a1-b263-c1c81a27c57d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="210" y="1" width="198" height="21" printWhenGroupChanges="membgroup_code" uuid="bb5be324-b60c-4538-9db1-04564409976b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="408" y="1" width="102" height="21" printWhenGroupChanges="membgroup_code" uuid="90956d04-f7e8-4936-b5ef-42891341bc76"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SALARY_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="510" y="1" width="100" height="21" printWhenGroupChanges="membgroup_code" uuid="33b9097f-78c9-4989-8b68-8d1b398f08b2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SHARESTK_VALUE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="1" width="90" height="21" printWhenGroupChanges="membgroup_code" uuid="674f8962-4066-4b3c-93bb-f7686b99f6d5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBGROUP_CODE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="610" y="0" width="110" height="21" printWhenGroupChanges="membgroup_code" uuid="a07c7c6d-cbfb-4c76-91c8-0aad10afe50c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PAUSEKEEP_FLAG}==1?"งดเรียกเก็บ":"ปกติ"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="720" y="1" width="79" height="21" printWhenGroupChanges="membgroup_code" uuid="8159e962-da43-4425-a343-007d1225e04f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PAYMENT_STATUS}< 1?"งดเก็บ":"ปกติ"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="23">
+			<textField>
+				<reportElement x="710" y="0" width="70" height="20" uuid="948b7aa0-992f-49db-bc13-d8798d9b37f7"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ "+$V{PAGE_NUMBER}+" / "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="780" y="0" width="19" height="20" uuid="ab26f2b3-1ea5-453d-bbc9-9373835deed8"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="25" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="#,##0">
+				<reportElement x="506" y="5" width="38" height="20" uuid="23739ed3-78d2-4108-a8e5-277fb7a4f645"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{countmemb_all}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="544" y="5" width="115" height="20" uuid="4524361e-67b1-4bae-87e6-382d640ce22c"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[คน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="5" width="306" height="20" uuid="7a05a9c5-9741-4bcf-913e-c2201d0394c3"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="20"/>
+				</textElement>
+				<text><![CDATA[รวม จำนวนคนเปลี่ยนแปลงทั้งหมด]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

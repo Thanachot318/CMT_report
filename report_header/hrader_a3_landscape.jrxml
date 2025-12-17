@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="hrader_a3_landscape" language="groovy" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1190" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="370482fd-cb62-45ac-bbfb-a51b6c5b3af6">
+	<property name="ireport.zoom" value="2.5937424601000107"/>
+	<property name="ireport.x" value="783"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_entryid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportdetail2" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT * FROM v_report_header WHERE  coop_id = $P{as_coopid} and report_id = $P{as_reportid}]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="REPORT_ID" class="java.lang.String"/>
+	<field name="REPORT_NAME" class="java.lang.String"/>
+	<field name="APPLICATION_NAME" class="java.lang.String"/>
+	<field name="GROUP_NAME" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<pageHeader>
+		<band height="80" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ee611f4c-87bf-42d7-91af-22e3bc0eca83" x="1090" y="20" width="100" height="20">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA["วันที่พิมพ์ " + new SimpleDateFormat("dd MMMM yyyy", new Locale("th", "TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="befb0545-fddf-4ee7-910f-c75ebe8d2c69" x="0" y="0" width="100" height="15">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{APPLICATION_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="de87193b-7f7f-4566-a083-20e9d7cf441e" x="0" y="15" width="100" height="15">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GROUP_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4c837bd4-1bb0-4668-a2db-cb1f42541166" x="1090" y="40" width="100" height="20">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เวลาที่พิมพ์ " + new SimpleDateFormat("HH:mm:ss", new Locale("th", "TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a77e004c-3fd9-4f6b-8683-e3a6a88977af" stretchType="RelativeToBandHeight" x="100" y="40" width="990" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[!$P{as_reportdetail}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{as_reportdetail}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8d6c23a8-4f8f-4715-9cd1-5b5512aa838f" x="100" y="0" width="990" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c7649cdd-3ae3-473c-8895-2158c32f3e42" x="0" y="30" width="100" height="15">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REPORT_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="898b40b7-c866-42db-9e17-7913088c8e71" x="0" y="45" width="100" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["พิมพ์โดย : " + $P{as_entryid}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="225b06e5-b39c-4bd6-bf3e-93904c3b27cf" x="100" y="20" width="990" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REPORT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="6660fb11-1406-4ccb-b254-321d722abe75" stretchType="RelativeToBandHeight" x="100" y="60" width="990" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[!$P{as_reportdetail}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{as_reportdetail2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+</jasperReport>

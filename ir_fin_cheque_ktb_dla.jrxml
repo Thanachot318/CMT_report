@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Krungsri_bank" language="groovy" pageWidth="680" pageHeight="254" orientation="Landscape" columnWidth="680" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c4ecc67a-26b3-4aba-b122-b4cd00caaee0">
+	<property name="ireport.zoom" value="1.126972201352367"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ai_killer" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ai_payee" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ai_prndate" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_bankbranch" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_bankcode" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_chequebookno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_chequeno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+cheque_no,
+ date_onchq,
+(substr(to_char( date_onchq , 'dd' ), 1,1)||'     '||substr(to_char( date_onchq , 'dd' ), 2,1) ||'     '|| substr(to_char( date_onchq , 'mm' ), 1,1)||'     '||substr(to_char( date_onchq , 'mm' ), 2,1)||'     '|| substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),1,1)
+||'     '|| substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),2,1)||'     '|| substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),3,1)||'     '|| substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),4,1) ) as chqdate_dormat,
+
+substr(to_char( date_onchq , 'dd' ), 1,1) as d1,
+substr(to_char( date_onchq , 'dd' ), 2,1)  as d2,
+substr(to_char( date_onchq , 'mm' ), 1,1) as m1,
+substr(to_char( date_onchq , 'mm' ), 2,1) as m2,
+substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),1,1) as y1,
+substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),2,1) as y2,
+substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),3,1) as y3,
+substr(to_char( to_number( to_char( date_onchq , 'yyyy' ) ) + 543 ),4,1)   as y4
+, trim(to_whom)
+,item_amt
+, trim(remark)
+,'***'||trim(to_char(DECODE(item_amt,0,null,item_amt),'99G999G999G999D00'))||'***'
+,'***'||trim(ft_readtbaht(item_amt) )||'***' as thaibathamt
+
+
+ from FINCHQEUESTATEMENT
+where trim(chequebook_no) =  trim($P{as_chequebookno})
+and chqeue_status <> -9
+and trim(cheque_no) = trim($P{as_chequeno})
+and trim(bank_code)  = trim($P{as_bankcode})
+and trim(bank_branch)  = trim($P{as_bankbranch})]]>
+	</queryString>
+	<field name="CHEQUE_NO" class="java.lang.String"/>
+	<field name="DATE_ONCHQ" class="java.sql.Timestamp"/>
+	<field name="CHQDATE_DORMAT" class="java.lang.String"/>
+	<field name="D1" class="java.lang.String"/>
+	<field name="D2" class="java.lang.String"/>
+	<field name="M1" class="java.lang.String"/>
+	<field name="M2" class="java.lang.String"/>
+	<field name="Y1" class="java.lang.String"/>
+	<field name="Y2" class="java.lang.String"/>
+	<field name="Y3" class="java.lang.String"/>
+	<field name="Y4" class="java.lang.String"/>
+	<field name="TRIM(TO_WHOM)" class="java.lang.String"/>
+	<field name="ITEM_AMT" class="java.math.BigDecimal"/>
+	<field name="TRIM(REMARK)" class="java.lang.String"/>
+	<field name="&apos;***&apos;||TRIM(TO_CHAR(DECODE(ITEM_AMT,0,NULL,ITEM_AMT),&apos;99G999G999G999D00&apos;))||&apos;***&apos;" class="java.lang.String"/>
+	<field name="THAIBATHAMT" class="java.lang.String"/>
+	<variable name="DATE_DD" class="java.lang.String">
+		<variableExpression><![CDATA[new SimpleDateFormat("dd",new Locale("th","TH")).format($F{DATE_ONCHQ})]]></variableExpression>
+	</variable>
+	<variable name="DATE_MM" class="java.lang.String">
+		<variableExpression><![CDATA[new SimpleDateFormat("MM",new Locale("th","TH")).format($F{DATE_ONCHQ})]]></variableExpression>
+	</variable>
+	<variable name="DATE_YYYY" class="java.lang.String">
+		<variableExpression><![CDATA[new SimpleDateFormat("yyyy",new Locale("th","TH")).format($F{DATE_ONCHQ})]]></variableExpression>
+	</variable>
+	<detail>
+		<band height="196" splitType="Stretch">
+			<textField>
+				<reportElement uuid="14b8c015-a074-47e4-852f-a2bc05452a30" x="248" y="50" width="381" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TRIM(TO_WHOM)}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50e16881-b4df-4895-bc6d-0c55dfcbc556" x="289" y="76" width="381" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{THAIBATHAMT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3df8b81a-acb4-4253-9b29-955d09facc12" x="243" y="26" width="100" height="20">
+					<printWhenExpression><![CDATA[($P{ai_payee} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[A/C PAYEE ONLY]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="e69df6a3-ff3c-4ea6-acb1-9f12e3481d71" x="48" y="46" width="38" height="1">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="12adf235-d89f-438e-aae7-c4f0d19c5dc1" x="253" y="0" width="1" height="38">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="294a6e44-7c2e-4b14-99de-ca44d47ddadc" x="325" y="0" width="1" height="38">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement uuid="615f2451-2522-48b2-9a55-0ecc5b52878d" x="629" y="50" width="41" height="20">
+					<printWhenExpression><![CDATA[($P{ai_killer} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[////////////]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="be083ed9-eb72-4b09-adb8-1684975396b9" x="517" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{D1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f06f505e-efec-49c8-a9e4-d4118d2df74b" x="389" y="99" width="225" height="21"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{'***'||TRIM(TO_CHAR(DECODE(ITEM_AMT,0,NULL,ITEM_AMT),'99G999G999G999D00'))||'***'}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a06e6015-7b8d-475c-9930-d9b2d52bca6a" x="535" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{D2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3dadf8d5-6ec5-4795-8162-ca65e7c58e8f" x="551" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{M1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b30308c5-0921-4574-bbe4-0dd8d2960f24" x="569" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{M2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="532083eb-056c-463a-9fb4-d68e04a5fce3" x="602" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Y2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a72f08c4-5659-4745-88bd-5f5da0bdf9f9" x="585" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Y1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7d7848f9-824d-47af-8a1d-deeda673dfde" x="639" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Y4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="29e84f53-74de-4450-8130-823a0077cbfb" x="621" y="2" width="20" height="20">
+					<printWhenExpression><![CDATA[($P{ai_prndate} == "1" ? true : false )]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="17" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Y3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ae5bfaca-eb84-45cf-8857-dfe924d66fea" x="52" y="19" width="105" height="28"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="Angsana New" size="12" isBold="false"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TRIM(TO_WHOM)}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="baa15404-276f-44fd-a988-fb4e5a0725d2" x="52" y="1" width="105" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DATE_ONCHQ}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2567c3bd-afa2-4452-8a76-ea7cea460c76" x="52" y="37" width="105" height="21"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{'***'||TRIM(TO_CHAR(DECODE(ITEM_AMT,0,NULL,ITEM_AMT),'99G999G999G999D00'))||'***'}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

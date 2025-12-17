@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_acc_accmaster" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b7af6ec7-8997-451c-bf09-fa2488734480">
+	<property name="ireport.zoom" value="1.9487171000000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<defaultValueExpression><![CDATA["รายงานผังบัญชี"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String"/>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT  ACCMASTER.ACCOUNT_ID ,
+ lpad( '          ' , 10 *( account_type_id - 1 ) ) || ACCMASTER.ACCOUNT_ID || '  ' || ACCMASTER.ACCOUNT_NAME as account_name,
+         ACCCNTSECTION.SECTION_DESC ,
+        ACCMASTER.SECTION_ID ,
+        ACCMASTER.ACCOUNT_SORT ,
+        ACCMASTER.ACCOUNT_TYPE_ID ,
+        0 as select_row,
+         CMCOOPMASTER.COOP_NAME
+  FROM ACCMASTER ,
+         ACCCNTSECTION ,
+        CMCOOPMASTER
+  WHERE ( ACCMASTER.SECTION_ID = ACCCNTSECTION.SECTION_ID ) and
+     ( ACCMASTER.COOP_ID = CMCOOPMASTER.COOP_ID ) and
+     ( ( ACCMASTER.COOP_ID =$P{as_coopid} ) )
+ORDER BY ACCMASTER.ACCOUNT_ID          ASC,           ACCMASTER.SECTION_ID          ASC]]>
+	</queryString>
+	<field name="ACCOUNT_ID" class="java.lang.String"/>
+	<field name="ACCOUNT_NAME" class="java.lang.String"/>
+	<field name="SECTION_DESC" class="java.lang.String"/>
+	<field name="SECTION_ID" class="java.lang.String"/>
+	<field name="ACCOUNT_SORT" class="java.math.BigDecimal"/>
+	<field name="ACCOUNT_TYPE_ID" class="java.lang.String"/>
+	<field name="SELECT_ROW" class="java.math.BigDecimal"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="20">
+			<subreport>
+				<reportElement uuid="79582317-4c2e-4333-9a74-a5faade26d7c" x="0" y="0" width="555" height="20" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_portrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement uuid="578e2191-1a07-42cb-ac7c-9fb67f68fb94" x="0" y="0" width="555" height="18"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ACCOUNT_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

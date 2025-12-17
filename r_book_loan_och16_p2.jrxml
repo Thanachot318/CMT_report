@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_book_loan_och16_p2" language="groovy" pageWidth="612" pageHeight="1152" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cf291b26-8024-42ea-aef8-86ef1d8021ba">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="colmast_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select lncollmaster.*,cmcoopmaster.*, ( MBUCFPRENAME.PRENAME_DESC || MBMEMBMASTER.MEMB_NAME || '   ' || MBMEMBMASTER.MEMB_SURNAME  ) as Mem_Name,FT_READTBAHT(est_price) as m_bath,
+(select tambol_desc from mbucftambol where tambol_code = lncollmaster.pos_tambol) as tambol_desc,
+(select district_desc from mbucfdistrict where district_code = lncollmaster.pos_amphur)  as amphur_desc,
+(select province_desc from mbucfprovince where province_code = lncollmaster.pos_province)  as province_desc,
+(select tambol_desc from mbucftambol where tambol_code = lncollmaster.MRTG_TAMBOL1) as tambol_desc2,
+(select district_desc from mbucfdistrict where district_code = lncollmaster.MRTG_AMPHUR1)  as amphur_desc2,
+(select province_desc from mbucfprovince where province_code = lncollmaster.MRTG_PROVINCE1)  as province_desc2,
+(select tambol_desc from mbucftambol where tambol_code = lncollmaster.autzd_tambol) as tambol_desc3,
+(select district_desc from mbucfdistrict where district_code = lncollmaster.autzd_amphur)  as amphur_desc3,
+(select province_desc from mbucfprovince where province_code = lncollmaster.autzd_province)  as province_desc3
+ from lncollmaster
+inner join cmcoopmaster on cmcoopmaster.coop_id = lncollmaster.coop_Id
+inner join MBMEMBMASTER on lncollmaster.member_no = MBMEMBMASTER.member_no
+inner join MBUCFPRENAME on MBMEMBMASTER.PRENAME_CODE = MBUCFPRENAME.PRENAME_CODE
+ where lncollmaster.collmast_no= $P{colmast_no} and lncollmaster.coop_id = $P{coopid}]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="COLLMAST_NO" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="COLLMAST_TYPE" class="java.lang.String"/>
+	<field name="COLLMAST_DATE" class="java.sql.Timestamp"/>
+	<field name="COLL_PRICE" class="java.math.BigDecimal"/>
+	<field name="COLL_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNIT" class="java.math.BigDecimal"/>
+	<field name="EST_PERCENT" class="java.math.BigDecimal"/>
+	<field name="EST_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGE_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGE_DATE" class="java.sql.Timestamp"/>
+	<field name="EXPIRE_DATE" class="java.sql.Timestamp"/>
+	<field name="REDEEM_DATE" class="java.sql.Timestamp"/>
+	<field name="COLLMAST_STATUS" class="java.math.BigDecimal"/>
+	<field name="LANDTYPE_CODE" class="java.lang.String"/>
+	<field name="LAND_DEPARTMENT" class="java.lang.String"/>
+	<field name="LAND_RAVANG" class="java.lang.String"/>
+	<field name="LAND_DOCNO" class="java.lang.String"/>
+	<field name="LAND_LANDNO" class="java.lang.String"/>
+	<field name="LAND_SURVEY" class="java.lang.String"/>
+	<field name="LAND_BOOKNO" class="java.lang.String"/>
+	<field name="LAND_PAGENO" class="java.lang.String"/>
+	<field name="POS_TAMBOL" class="java.lang.String"/>
+	<field name="POS_AMPHUR" class="java.lang.String"/>
+	<field name="POS_PROVINCE" class="java.lang.String"/>
+	<field name="SIZE_RAI" class="java.math.BigDecimal"/>
+	<field name="SIZE_NGAN" class="java.math.BigDecimal"/>
+	<field name="SIZE_WA" class="java.math.BigDecimal"/>
+	<field name="PHOTOAIR_PROVINCE" class="java.lang.String"/>
+	<field name="PHOTOAIR_NUMBER" class="java.lang.String"/>
+	<field name="PHOTOAIR_PAGE" class="java.lang.String"/>
+	<field name="BUILDINGTYPE_CODE" class="java.lang.String"/>
+	<field name="BD_VILLAGE" class="java.lang.String"/>
+	<field name="BD_ADDRNO" class="java.lang.String"/>
+	<field name="BD_ADDRMOO" class="java.lang.String"/>
+	<field name="BD_SOI" class="java.lang.String"/>
+	<field name="BD_ROAD" class="java.lang.String"/>
+	<field name="BD_TAMBOL" class="java.lang.String"/>
+	<field name="BD_AMPHUR" class="java.lang.String"/>
+	<field name="BD_PROVINCE" class="java.lang.String"/>
+	<field name="BD_AGE" class="java.math.BigDecimal"/>
+	<field name="CONDO_REGISTNO" class="java.lang.String"/>
+	<field name="CONDO_NAME" class="java.lang.String"/>
+	<field name="CONDO_TOWERNO" class="java.lang.String"/>
+	<field name="CONDO_FLOOR" class="java.lang.String"/>
+	<field name="CONDO_ROOMNO" class="java.lang.String"/>
+	<field name="CONDO_ROOMSIZE" class="java.math.BigDecimal"/>
+	<field name="CONDO_AGE" class="java.math.BigDecimal"/>
+	<field name="DESC_POSITION" class="java.lang.String"/>
+	<field name="DESC_UTILITY" class="java.lang.String"/>
+	<field name="DESC_TRAVEL" class="java.lang.String"/>
+	<field name="DESC_ETC" class="java.lang.String"/>
+	<field name="REDEEM_FLAG" class="java.math.BigDecimal"/>
+	<field name="COLLMAST_DESC" class="java.lang.String"/>
+	<field name="BHPRICENOW_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="BGMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUSTVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="ASSETVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="LAWSALE_AMT" class="java.math.BigDecimal"/>
+	<field name="INSURANCE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGECOMP_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNITCOMPANY" class="java.math.BigDecimal"/>
+	<field name="INSURANCEFIRE_AMT" class="java.math.BigDecimal"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="PRICEPER_UNITLAND" class="java.math.BigDecimal"/>
+	<field name="BD_ONLANDNO" class="java.lang.String"/>
+	<field name="BD_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="CONDO_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="CONDO_PRICESQUARE" class="java.math.BigDecimal"/>
+	<field name="MRTG_MEMNO1" class="java.lang.String"/>
+	<field name="MRTG_NAME1" class="java.lang.String"/>
+	<field name="MRTG_PERSONID1" class="java.lang.String"/>
+	<field name="MRTG_AGE1" class="java.lang.String"/>
+	<field name="MRTG_NATIONALITY1" class="java.lang.String"/>
+	<field name="MRTG_CITIZENSHIP1" class="java.lang.String"/>
+	<field name="MRTG_PARENTNAME1" class="java.lang.String"/>
+	<field name="MRTG_MATENAME1" class="java.lang.String"/>
+	<field name="MRTG_VILLAGE1" class="java.lang.String"/>
+	<field name="MRTG_ADDRESS1" class="java.lang.String"/>
+	<field name="MRTG_MOO1" class="java.lang.String"/>
+	<field name="MRTG_PROVINCE1" class="java.lang.String"/>
+	<field name="MRTG_AMPHUR1" class="java.lang.String"/>
+	<field name="MRTG_TAMBOL1" class="java.lang.String"/>
+	<field name="MRTG_MEMNO2" class="java.lang.String"/>
+	<field name="MRTG_NAME2" class="java.lang.String"/>
+	<field name="MRTG_PERSONID2" class="java.lang.String"/>
+	<field name="MRTG_AGE2" class="java.lang.String"/>
+	<field name="MRTG_NATIONALITY2" class="java.lang.String"/>
+	<field name="MRTG_CITIZENSHIP2" class="java.lang.String"/>
+	<field name="MRTG_PARENTNAME2" class="java.lang.String"/>
+	<field name="MRTG_MATENAME2" class="java.lang.String"/>
+	<field name="MRTG_VILLAGE2" class="java.lang.String"/>
+	<field name="MRTG_ADDRESS2" class="java.lang.String"/>
+	<field name="MRTG_MOO2" class="java.lang.String"/>
+	<field name="MRTG_PROVINCE2" class="java.lang.String"/>
+	<field name="MRTG_AMPHUR2" class="java.lang.String"/>
+	<field name="MRTG_TAMBOL2" class="java.lang.String"/>
+	<field name="MRTG_SOI1" class="java.lang.String"/>
+	<field name="MRTG_ROAD1" class="java.lang.String"/>
+	<field name="MRTG_SOI2" class="java.lang.String"/>
+	<field name="MRTG_ROAD2" class="java.lang.String"/>
+	<field name="LAND_OFFICE" class="java.lang.String"/>
+	<field name="MORTGAGE_GRTNAME" class="java.lang.String"/>
+	<field name="INTEREST_RATE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGESUM_AMT" class="java.math.BigDecimal"/>
+	<field name="MORTGAGEFIRST_AMT" class="java.math.BigDecimal"/>
+	<field name="MRTG_PHONE1" class="java.lang.String"/>
+	<field name="MRTG_PHONE2" class="java.lang.String"/>
+	<field name="AUTZD_NAME" class="java.lang.String"/>
+	<field name="AUTRZ_NAME2" class="java.lang.String"/>
+	<field name="AUTRZ_NAME1" class="java.lang.String"/>
+	<field name="AUTZD_PERSONID" class="java.lang.String"/>
+	<field name="AUTRZ_POS1" class="java.lang.String"/>
+	<field name="AUTRZ_POS2" class="java.lang.String"/>
+	<field name="AUTZD_AGE" class="java.lang.String"/>
+	<field name="AUTZD_NATIONALITY" class="java.lang.String"/>
+	<field name="AUTZD_CITIZENSHIP" class="java.lang.String"/>
+	<field name="AUTZD_PARENTNAME" class="java.lang.String"/>
+	<field name="AUTZD_VILLAGE" class="java.lang.String"/>
+	<field name="AUTZD_ADDRESS" class="java.lang.String"/>
+	<field name="AUTZD_MOO" class="java.lang.String"/>
+	<field name="AUTZD_SOI" class="java.lang.String"/>
+	<field name="AUTZD_ROAD" class="java.lang.String"/>
+	<field name="AUTZD_TAMBOL" class="java.lang.String"/>
+	<field name="AUTZD_AMPHUR" class="java.lang.String"/>
+	<field name="AUTZD_PROVINCE" class="java.lang.String"/>
+	<field name="AUTRZ_DATE" class="java.sql.Timestamp"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="COOP_CONTROL" class="java.lang.String"/>
+	<field name="COOP_SUBTYPE" class="java.math.BigDecimal"/>
+	<field name="ADDR_NO" class="java.lang.String"/>
+	<field name="ADDR_MOO" class="java.lang.String"/>
+	<field name="ADDR_ROAD" class="java.lang.String"/>
+	<field name="ADDR_TAMBOL" class="java.lang.String"/>
+	<field name="ADDR_AMPHUR" class="java.lang.String"/>
+	<field name="ADDR_PROVINCE" class="java.lang.String"/>
+	<field name="ADDR_POSTCODE" class="java.lang.String"/>
+	<field name="ADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_FAX" class="java.lang.String"/>
+	<field name="MANAGER" class="java.lang.String"/>
+	<field name="OFFICE_ACCOUNT" class="java.lang.String"/>
+	<field name="OFFICE_FINANCE" class="java.lang.String"/>
+	<field name="AUDITOR" class="java.lang.String"/>
+	<field name="AUDITOR_ADDR" class="java.lang.String"/>
+	<field name="MEMBNO_FORMAT" class="java.lang.String"/>
+	<field name="MEMNOMAIN_DOCCODE" class="java.lang.String"/>
+	<field name="MEMNOCO_DOCCODE" class="java.lang.String"/>
+	<field name="MEMNOMAIN_SUFFIX" class="java.lang.String"/>
+	<field name="MEMNOCO_SUFFIX" class="java.lang.String"/>
+	<field name="RECEIPT_REMARK1" class="java.lang.String"/>
+	<field name="RECEIPT_REMARK2" class="java.lang.String"/>
+	<field name="COOPLOGO_PATH" class="java.lang.String"/>
+	<field name="RETRY_AGE" class="java.math.BigDecimal"/>
+	<field name="RETRY_MONTH" class="java.math.BigDecimal"/>
+	<field name="RETRY_DAY" class="java.math.BigDecimal"/>
+	<field name="MAXMBAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="MAXMBWORKAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="MAXAPPLNEW_AMT" class="java.math.BigDecimal"/>
+	<field name="PREFIX_COOP" class="java.lang.String"/>
+	<field name="CHGGRPMBTYPE_FLAG" class="java.math.BigDecimal"/>
+	<field name="MEM_NAME" class="java.lang.String"/>
+	<field name="M_BATH" class="java.lang.String"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<field name="AMPHUR_DESC" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="TAMBOL_DESC2" class="java.lang.String"/>
+	<field name="AMPHUR_DESC2" class="java.lang.String"/>
+	<field name="PROVINCE_DESC2" class="java.lang.String"/>
+	<field name="TAMBOL_DESC3" class="java.lang.String"/>
+	<field name="AMPHUR_DESC3" class="java.lang.String"/>
+	<field name="PROVINCE_DESC3" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="1100" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="99b9def9-77cf-4e02-9418-febcaf2cb1a3" x="211" y="297" width="273" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[( ลงลายมือชื่อผู้............... )............................................................]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="3cda6892-54f6-4c44-9de3-50ff7d177494" x="251" y="316" width="233" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(แทนตามหนังสือมอบอำนาจ ลว."+($F{AUTRZ_DATE}==null ? "" : new SimpleDateFormat("d MMMM yyyy",new Locale("th","TH")).format($F{AUTRZ_DATE}) )+")"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1e7aea22-db4a-4f9a-a0ae-6d13d5aec68f" x="214" y="353" width="270" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[( ลงลายมือชื่อพยาน )....................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87e6fcee-e5b9-412b-ba15-6099ec0d4059" x="214" y="335" width="270" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[( ลงลายมือชื่อพยาน )....................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4d4ff89a-9eba-4ef9-850e-a6fb5291fe9d" x="214" y="278" width="270" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[( ลงลายมือชื่อผู้............... )............................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8048083c-37ae-4c73-9886-2dc69d109249" x="173" y="57" width="233" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[- ๒ -]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="98ec5da3-bbe8-48d1-ae78-0d9b8a03673a" x="72" y="105" width="465" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หนังสือสัญญานี้ ได้ทำเป็น..................ฉบับ   มีข้อความตรงกัน  สำหรับสำนักงานที่ดินจังหวัดหนึ่งฉบับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f4ff817a-e899-4608-acea-df727fd557e6" x="17" y="124" width="520" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ผู้.............................................ถือไว้หนึ่งฉบับ  ผู้.............................................ถือไว้หนึ่งฉบับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="abf81e3e-f79a-4e9a-9b03-45df4b325e56" x="36" y="122" width="105" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8d617ed1-0535-4ff2-898d-1a4a2faa3eb8" x="220" y="122" width="105" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[รับจำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f2725eac-50ca-4078-9132-9796a3073e75" x="173" y="103" width="47" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="952de87a-c397-4f25-95c1-4a3364dd962a" x="17" y="143" width="520" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(ฉบับนี้สำหรับ...............................................................................)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f6f86615-38f3-4be8-95d9-3e6bc89953e2" x="72" y="162" width="465" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ทั้งสองฝ่ายได้ตรวจดูหนังสือสัญญาจำนองและเข้าใจข้อความตลอดแล้ว   จึงลงลายมือชื่อไว้เป็นหลักฐาน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e6cfe514-379b-4ed4-aba2-6c97e90204a0" x="17" y="181" width="520" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ต่อหน้าพยานและพนักงานเจ้าหน้าที่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="259f6d40-94be-46f1-aa29-edb607a776ad" x="214" y="384" width="270" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[( ลงชื่อ )........................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b60913a8-ebd1-4c3d-85e3-dca672656aa9" x="278" y="403" width="206" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[พนักงานเจ้าหน้าที่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="233d55ed-aab8-4c8f-a5f2-d30c12d62a37" x="278" y="422" width="206" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ประทับตราประจำตำแหน่งเป็นสำคัญ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9440f6e7-ebe4-43bd-85b3-ea4f180e99e8" x="278" y="441" width="206" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[...........................................................ผู้เขียน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fabc7d32-97ef-4ffc-9dd1-f9405e07a078" x="278" y="460" width="206" height="19"/>
+				<textElement textAlignment="Right">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[...........................................................ผู้ตรวจ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2716d723-b316-43cd-99d1-1ea90999edb8" x="292" y="276" width="33" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4238ff1b-0dfc-448a-bf62-22c901a0ceb1" x="288" y="295" width="42" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[รับจำนอง]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

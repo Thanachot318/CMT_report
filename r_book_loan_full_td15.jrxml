@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_book_loan_full_td15" language="groovy" pageWidth="612" pageHeight="1000" columnWidth="612" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8bda471e-f1c9-4577-a40f-838f8b52f17c">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="colmast_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\ICOOP_ALL\\ICORE\\ICOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coll_type" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select lncollmaster.*,cmcoopmaster.*
+ from lncollmaster
+left join cmcoopmaster on cmcoopmaster.coop_id = lncollmaster.coop_Id
+ where lncollmaster.collmast_no= $P{colmast_no}and lncollmaster.coop_id = $P{coopid}]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="COLLMAST_NO" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="COLLMAST_TYPE" class="java.lang.String"/>
+	<field name="COLLMAST_DATE" class="java.sql.Timestamp"/>
+	<field name="COLL_PRICE" class="java.math.BigDecimal"/>
+	<field name="COLL_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNIT" class="java.math.BigDecimal"/>
+	<field name="EST_PERCENT" class="java.math.BigDecimal"/>
+	<field name="EST_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGE_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGE_DATE" class="java.sql.Timestamp"/>
+	<field name="EXPIRE_DATE" class="java.sql.Timestamp"/>
+	<field name="REDEEM_DATE" class="java.sql.Timestamp"/>
+	<field name="COLLMAST_STATUS" class="java.math.BigDecimal"/>
+	<field name="LANDTYPE_CODE" class="java.lang.String"/>
+	<field name="LAND_DEPARTMENT" class="java.lang.String"/>
+	<field name="LAND_RAVANG" class="java.lang.String"/>
+	<field name="LAND_DOCNO" class="java.lang.String"/>
+	<field name="LAND_LANDNO" class="java.lang.String"/>
+	<field name="LAND_SURVEY" class="java.lang.String"/>
+	<field name="LAND_BOOKNO" class="java.lang.String"/>
+	<field name="LAND_PAGENO" class="java.lang.String"/>
+	<field name="POS_TAMBOL" class="java.lang.String"/>
+	<field name="POS_AMPHUR" class="java.lang.String"/>
+	<field name="POS_PROVINCE" class="java.lang.String"/>
+	<field name="SIZE_RAI" class="java.math.BigDecimal"/>
+	<field name="SIZE_NGAN" class="java.math.BigDecimal"/>
+	<field name="SIZE_WA" class="java.math.BigDecimal"/>
+	<field name="PHOTOAIR_PROVINCE" class="java.lang.String"/>
+	<field name="PHOTOAIR_NUMBER" class="java.lang.String"/>
+	<field name="PHOTOAIR_PAGE" class="java.lang.String"/>
+	<field name="BUILDINGTYPE_CODE" class="java.lang.String"/>
+	<field name="BD_VILLAGE" class="java.lang.String"/>
+	<field name="BD_ADDRNO" class="java.lang.String"/>
+	<field name="BD_ADDRMOO" class="java.lang.String"/>
+	<field name="BD_SOI" class="java.lang.String"/>
+	<field name="BD_ROAD" class="java.lang.String"/>
+	<field name="BD_TAMBOL" class="java.lang.String"/>
+	<field name="BD_AMPHUR" class="java.lang.String"/>
+	<field name="BD_PROVINCE" class="java.lang.String"/>
+	<field name="BD_AGE" class="java.math.BigDecimal"/>
+	<field name="CONDO_REGISTNO" class="java.lang.String"/>
+	<field name="CONDO_NAME" class="java.lang.String"/>
+	<field name="CONDO_TOWERNO" class="java.lang.String"/>
+	<field name="CONDO_FLOOR" class="java.lang.String"/>
+	<field name="CONDO_ROOMNO" class="java.lang.String"/>
+	<field name="CONDO_ROOMSIZE" class="java.math.BigDecimal"/>
+	<field name="CONDO_AGE" class="java.math.BigDecimal"/>
+	<field name="DESC_POSITION" class="java.lang.String"/>
+	<field name="DESC_UTILITY" class="java.lang.String"/>
+	<field name="DESC_TRAVEL" class="java.lang.String"/>
+	<field name="DESC_ETC" class="java.lang.String"/>
+	<field name="REDEEM_FLAG" class="java.math.BigDecimal"/>
+	<field name="COLLMAST_DESC" class="java.lang.String"/>
+	<field name="PRICEPER_UNITLAND" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNITCOMPANY" class="java.math.BigDecimal"/>
+	<field name="BHPRICENOW_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="BGMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUSTVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="ASSETVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="LAWSALE_AMT" class="java.math.BigDecimal"/>
+	<field name="INSURANCE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGECOMP_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="INSURANCEFIRE_AMT" class="java.math.BigDecimal"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="COOP_CONTROL" class="java.lang.String"/>
+	<field name="COOP_SUBTYPE" class="java.math.BigDecimal"/>
+	<field name="ADDR_NO" class="java.lang.String"/>
+	<field name="ADDR_MOO" class="java.lang.String"/>
+	<field name="ADDR_ROAD" class="java.lang.String"/>
+	<field name="ADDR_TAMBOL" class="java.lang.String"/>
+	<field name="ADDR_AMPHUR" class="java.lang.String"/>
+	<field name="ADDR_PROVINCE" class="java.lang.String"/>
+	<field name="ADDR_POSTCODE" class="java.lang.String"/>
+	<field name="ADDR_PHONE" class="java.lang.String"/>
+	<field name="ADDR_FAX" class="java.lang.String"/>
+	<field name="MANAGER" class="java.lang.String"/>
+	<field name="OFFICE_ACCOUNT" class="java.lang.String"/>
+	<field name="OFFICE_FINANCE" class="java.lang.String"/>
+	<field name="AUDITOR" class="java.lang.String"/>
+	<field name="AUDITOR_ADDR" class="java.lang.String"/>
+	<field name="MEMBNO_FORMAT" class="java.lang.String"/>
+	<field name="MEMNOMAIN_DOCCODE" class="java.lang.String"/>
+	<field name="MEMNOCO_DOCCODE" class="java.lang.String"/>
+	<field name="MEMNOMAIN_SUFFIX" class="java.lang.String"/>
+	<field name="MEMNOCO_SUFFIX" class="java.lang.String"/>
+	<field name="RECEIPT_REMARK1" class="java.lang.String"/>
+	<field name="RECEIPT_REMARK2" class="java.lang.String"/>
+	<field name="COOPLOGO_PATH" class="java.lang.String"/>
+	<field name="RETRY_AGE" class="java.math.BigDecimal"/>
+	<field name="RETRY_MONTH" class="java.math.BigDecimal"/>
+	<field name="RETRY_DAY" class="java.math.BigDecimal"/>
+	<field name="MAXMBAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="MAXMBWORKAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="MAXAPPLNEW_AMT" class="java.math.BigDecimal"/>
+	<field name="PREFIX_COOP" class="java.lang.String"/>
+	<field name="CHGGRPMBTYPE_FLAG" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="50" splitType="Prevent">
+			<subreport>
+				<reportElement uuid="43e22fb4-41f3-479d-b9d5-d8a1ee0838fd" x="0" y="0" width="612" height="50"/>
+				<subreportParameter name="colmast_no">
+					<subreportParameterExpression><![CDATA[$P{colmast_no}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="coopid">
+					<subreportParameterExpression><![CDATA[$P{coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="coll_type">
+					<subreportParameterExpression><![CDATA["ผู้จำนอง"]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["C:\\GCOOP_ALL\\CORE\\GCOOP\\iReport\\Reports\\r_book_loan_td15.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

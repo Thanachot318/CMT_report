@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mbshr_confirm_dep" language="groovy" pageWidth="480" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="480" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4c3cd961-77cb-447c-8b9e-416030ca2ce3">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_memberno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+yrs.bizzaccount_no,
+yrs.balance_amt,
+yrs.from_system,
+sum(yrs.balance_amt) as sum_balance_amt,
+typ.depttype_desc,
+dep.depttype_code
+from yrconfirmstatement yrs
+left join dpdeptmaster dep on rtrim(dep.deptaccount_no) = rtrim(yrs.bizzaccount_no)
+left join dpucfdepttype typ on rtrim(typ.depttype_code) = rtrim(dep.depttype_code)
+where
+yrs.member_no = $P{as_memberno}
+and yrs.balance_date = $P{adtm_date}
+and yrs.from_system = 'DEP'
+group by
+yrs.bizztype_code,
+yrs.bizzaccount_no,
+yrs.balance_amt,
+yrs.from_system,
+typ.depttype_desc,
+dep.depttype_code
+ORDER BY yrs.from_system]]>
+	</queryString>
+	<field name="BIZZACCOUNT_NO" class="java.lang.String"/>
+	<field name="BALANCE_AMT" class="java.math.BigDecimal"/>
+	<field name="FROM_SYSTEM" class="java.lang.String"/>
+	<field name="SUM_BALANCE_AMT" class="java.math.BigDecimal"/>
+	<field name="DEPTTYPE_DESC" class="java.lang.String"/>
+	<field name="DEPTTYPE_CODE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d8adf875-d738-481c-8f72-7b51318bf111" x="0" y="0" width="54" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เงินรับฝาก]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1640bd81-28cc-43f4-bb33-26893b938602" x="372" y="0" width="108" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,##0.00").format($F{BALANCE_AMT})+"   บาท"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8370752f-6aa7-425a-9666-f74877319244" x="304" y="0" width="68" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="085ce13d-be24-4721-91a3-780b03e03bcf" x="54" y="0" width="192" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTTYPE_DESC}+" "+$F{BIZZACCOUNT_NO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

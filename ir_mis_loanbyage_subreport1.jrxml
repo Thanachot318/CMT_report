@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mis_loanbyage_subreport1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d1dd4f28-38b9-4b9d-b14e-33da0b851ae8">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_age" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coop_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="operate_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select count(distinct MBMEMBMASTER.member_no) as a1,
+ count(distinct lncontmaster.loancontract_no) as c1,
+ sum(ls.principal_balance) as b1,
+ lnloantype.loantype_code,
+ trim(lnloantype.loantype_desc) as loantype_desc ,
+ CMCOOPMASTER.coop_name
+from lncontmaster
+inner join CMCOOPMASTER on lncontmaster.coop_id = CMCOOPMASTER.coop_id
+left join lnloantype on  lncontmaster.loantype_code = lnloantype.loantype_code
+left join lncontstatement ls on lncontmaster.loancontract_no = ls.loancontract_no
+join (select max(seq_no) as seq_no , loancontract_no from lncontstatement
+      where operate_date <= $P{operate_date}
+	AND ITEM_STATUS = 1 AND LOANITEMTYPE_CODE <> 'CL'
+      group by loancontract_no
+ ) lss on ls.loancontract_no = lss.loancontract_no
+ and ls.seq_no = lss.seq_no
+left join MBMEMBMASTER on MBMEMBMASTER.member_no = lncontmaster.member_no
+where MBMEMBMASTER.coop_id = $P{coop_id}
+ and MBMEMBMASTER.MEMBER_STATUS = 1
+ and MBMEMBMASTER.RESIGN_STATUS = 0
+ and ls.principal_balance > 0
+ and trunc(months_between(SYSDATE,MBMEMBMASTER.BIRTH_DATE)/12) between
+  case $P{as_age} when '25' then 25
+   when '41' then 41
+   when '51' then 51
+   when '56' then 56
+   when '61' then 61
+   when '66' then 66
+  else 0 end
+ and
+  case $P{as_age} when '25' then 40
+   when '41' then 50
+   when '51' then 55
+   when '56' then 60
+   when '61' then 65
+   when '66' then 150
+  else 0 end
+group by lnloantype.loangroup_code,
+ lnloantype.loantype_code ,
+ trim(lnloantype.loantype_desc) ,
+ CMCOOPMASTER.coop_name
+order by lnloantype.loangroup_code,
+ lnloantype.loantype_code]]>
+	</queryString>
+	<field name="A1" class="java.math.BigDecimal"/>
+	<field name="C1" class="java.math.BigDecimal"/>
+	<field name="B1" class="java.math.BigDecimal"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANTYPE_DESC" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="d09bc4a2-7116-4426-81b0-41228ec59243" stretchType="RelativeToBandHeight" x="20" y="0" width="159" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANTYPE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement uuid="5c533268-0ac3-49fd-a141-fed961c7c23f" x="287" y="0" width="62" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{C1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="96190940-7e40-4a89-8ab1-3430e9f67aa6" x="257" y="0" width="30" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ราย]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement uuid="79cff752-d011-403d-bdf2-9832550cac04" x="179" y="0" width="78" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{A1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="22decc92-5464-4e9c-b3f6-7964b291d978" x="525" y="0" width="30" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[บาท]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b5fa3b5a-7b1c-4d53-8235-5e378ca27a4b" x="349" y="0" width="30" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[สัญญา]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="208ae87e-ee43-4654-aa9e-beaf61dd71fc" x="379" y="0" width="146" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{B1} == 0 ? 0 : $F{B1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

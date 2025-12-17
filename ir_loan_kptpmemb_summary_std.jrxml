@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 5.1.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_kep_kptpmemb_summary" language="groovy" pageWidth="1224" pageHeight="792" orientation="Landscape" columnWidth="1184" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2db48b80-eb29-4877-a62a-5f6be43349bc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="392"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="597"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="ISCODLA"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="as_coopid" class="java.lang.String"/>
+	<parameter name="as_recvperiod" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\CORE\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="entry_id" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+    kt.coop_id AS cooperative_id,
+    kt.recv_period AS receiving_period,
+    kt.membgroup_code AS member_group_code,
+    mg.membgroup_desc AS member_group_description,
+    kt.member_no AS member_number,
+    ft_getmbname(kt.coop_id, kt.member_no) AS member_name,
+    ft_getmbname(kt.coop_id , l.TRNFROM_MEMNO) AS transform_member_name,
+    cm.coop_name AS cooperative_name,
+    SUM(CASE WHEN (ktd.keepitemtype_code LIKE 'FF%') THEN ktd.item_payment ELSE 0 END) AS fee_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code LIKE 'S0%') THEN ktd.item_payment ELSE 0 END) AS share_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code LIKE 'D0%') THEN ktd.item_payment ELSE 0 END) AS deposit_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code LIKE 'I0%' )THEN ktd.item_payment ELSE 0 END) AS insurance_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code = 'L01') THEN ktd.interest_payment ELSE 0 END) AS emergency_loan_interest_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code = 'L01') THEN ktd.principal_payment ELSE 0 END) AS emergency_loan_principal_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code = 'L01') THEN ktd.item_payment ELSE 0 END) AS emergency_loan_total_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code IN ('L02', 'L04')) THEN ktd.interest_payment ELSE 0 END) AS normal_loan_interest_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code IN ('L02', 'L04')) THEN ktd.principal_payment ELSE 0 END) AS normal_loan_principal_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code IN ('L02', 'L04')) THEN ktd.item_payment ELSE 0 END) AS normal_loan_total_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code = 'L03') THEN ktd.interest_payment ELSE 0 END) AS special_loan_interest_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code = 'L03') THEN ktd.principal_payment ELSE 0 END) AS special_loan_principal_payment,
+    SUM(CASE WHEN (ktd.keepitemtype_code = 'L03') THEN ktd.item_payment ELSE 0 END) AS special_loan_total_payment,
+    SUM(ktd.item_payment) AS total_payment
+FROM
+    kptempreceivedet ktd
+JOIN
+    kptempreceive kt ON ktd.coop_id = kt.coop_id AND ktd.kpslip_no = kt.kpslip_no
+JOIN
+    mbucfmembgroup mg ON kt.coop_id = mg.coop_id AND kt.membgroup_code = mg.membgroup_code
+JOIN
+    cmcoopmaster cm ON kt.coop_id = cm.coop_id
+JOIN 
+	LNCONTMASTER l ON l.coop_id = ktd.COOP_ID AND l.LOANCONTRACT_NO = ktd.LOANCONTRACT_NO AND l.transfer_status = 1
+WHERE 1=1
+GROUP BY
+    kt.coop_id,
+    kt.recv_period,
+    kt.membgroup_code,
+    mg.membgroup_desc,
+    kt.member_no,
+    cm.coop_name,
+    l.TRNFROM_MEMNO
+ORDER BY
+    kt.coop_id,
+    kt.membgroup_code,
+    kt.member_no]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="RECV_PERIOD" class="java.lang.String"/>
+	<field name="MEMBGROUP_CODE" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FEEITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="SHRITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="DEPITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="INSITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="EMERINTEREST_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="EMERPRINCIPAL_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="EMERITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="NORMINTEREST_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="NORMPRINCIPAL_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="NORMITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="SPCINTEREST_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="SPCPRINCIPAL_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="SPCITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="SUMITEM_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMBGROUP_DESC" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<variable name="SUMALLFEE" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{FEEITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLSHR" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SHRITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLDEP" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{DEPITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLEMERPRN" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{EMERPRINCIPAL_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLEMERINT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{EMERINTEREST_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLEMEITEM" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{EMERITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLNORMPRN" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NORMPRINCIPAL_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLNORMINT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NORMINTEREST_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLNORMITEM" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{NORMITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLSPCPRN" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SPCPRINCIPAL_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLESPCINT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SPCINTEREST_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLSPCITEM" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SPCITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLITEM" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUMITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLINS" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{INSITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLFEEGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{FEEITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLSHRGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{SHRITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLDEPGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{DEPITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLEMERPRNGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{EMERPRINCIPAL_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLEMERINTGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{EMERINTEREST_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLEMEITEMGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{EMERITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLNORMPRNGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{NORMPRINCIPAL_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLNORMINTGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{NORMINTEREST_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLNORMITEMGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{NORMITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLSPCPRNGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{SPCPRINCIPAL_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLESPCINTGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{SPCINTEREST_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLSPCITEMGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{SPCITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLITEMGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{SUMITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<variable name="SUMALLINSGRP1" class="java.math.BigDecimal" resetType="Group" resetGroup="MEMBGROUPCODE" calculation="Sum">
+		<variableExpression><![CDATA[$F{INSITEM_PAYMENT}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="122" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="38" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="30" height="38" uuid="4ce8339f-9bc7-4f5f-83f4-d3aa80cbf29f"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ลำดับ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="301" y="0" width="60" height="38" uuid="c80eaad2-6e27-4268-9933-901ffd403b86"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ค่าหุ้น"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="258" y="0" width="43" height="38" uuid="03f94212-5f06-48a4-8235-3389bf70e46c"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ค่า ธรรมเนียม"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="361" y="0" width="60" height="38" uuid="1451ce95-b807-4e93-85fa-5c227217845f"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เงินฝาก"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="546" y="20" width="65" height="18" uuid="454981be-ef85-4d93-8168-f9bd3ca298bc"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ดอกเบี้ย"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="481" y="20" width="65" height="18" uuid="8c5512f9-ca4c-4599-a73f-b41ce2066412"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เงินต้น"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="481" y="0" width="205" height="20" uuid="32ae6ec2-35e2-41e1-9725-e0fd0d89f802"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เงินกู้ฉุกเฉิน"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="686" y="0" width="205" height="20" uuid="fcd6f9f6-760f-43f2-afbe-1fbc306fb300"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เงินกู้สามัญ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="891" y="0" width="205" height="20" uuid="1f3a4a42-2ce4-446b-b699-87917c4a4287"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เงินกู้พิเศษ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="611" y="20" width="75" height="18" uuid="b2e66928-6eec-474f-86d0-f35df41020e8"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมชำระ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="686" y="20" width="65" height="18" uuid="51ecd28b-3821-4ea4-b332-92fdaad9e2bf"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เงินต้น"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="816" y="20" width="75" height="18" uuid="cd24e1f6-7d9d-4b29-896e-121366a8e193"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมชำระ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="751" y="20" width="65" height="18" uuid="fc1ebe47-8d14-4c0d-9bee-6a2df915df77"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ดอกเบี้ย"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="891" y="20" width="65" height="18" uuid="141ab878-3ca1-48ec-b386-c71f7e3fbb38"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เงินต้น"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1021" y="20" width="75" height="18" uuid="104e3a2c-1b8f-4abc-adf3-51e776e7e0b3"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมชำระ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="956" y="20" width="65" height="18" uuid="86211ac6-c38f-4d9e-9c1d-823e247ad592"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ดอกเบี้ย"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1096" y="0" width="88" height="38" uuid="8fad224f-3c55-424c-8b10-286d0e5f5fbc"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมชำระ"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="421" y="0" width="60" height="38" uuid="9afcc991-1315-42d7-946b-c6f2ce3ebcb8"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ค่าเบี้ยประกัน"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="0" width="55" height="38" uuid="cc47bbcb-17a0-4af2-b38f-4467fb5d10d5"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["สมาชิก"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="0" width="173" height="38" uuid="740b9874-03de-4b78-a2c7-0666ae9fafdd"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ชื่อ - นามสกุล"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="30" height="23" uuid="ca94d1fa-91cd-4ee9-8429-62a968c6dd24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT} + "."]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="258" y="0" width="43" height="23" uuid="399c0381-75d3-47fd-9cd4-8d1e10c371ca"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FEEITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="301" y="0" width="60" height="23" uuid="e2c462ad-c859-42d0-a718-7c66fbd81e52"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SHRITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="361" y="0" width="60" height="23" uuid="0295106f-b246-458e-b90a-221cf26350ad"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="481" y="0" width="65" height="23" uuid="abe91081-24ca-4046-a344-5f3df57c1349"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMERPRINCIPAL_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="546" y="0" width="65" height="23" uuid="31e10da0-17cb-4a68-b367-cfb18dc7ed18"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMERINTEREST_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="611" y="0" width="75" height="23" uuid="67d907c7-fd90-43ec-b475-6c41b18d9383"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMERITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="686" y="0" width="65" height="23" uuid="60fc291a-05cd-4876-85f5-e59f305da2b4"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NORMPRINCIPAL_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="751" y="0" width="65" height="23" uuid="743e16e6-c328-41a5-9af8-f3044684f318"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NORMINTEREST_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="816" y="0" width="75" height="23" uuid="3091d8f4-b4c0-452c-9c30-7a89fa56ffb6"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NORMITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="891" y="0" width="65" height="23" uuid="a1d20630-42f0-414c-b13e-b0400eea7a0d"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SPCPRINCIPAL_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="956" y="0" width="65" height="23" uuid="d6c3915d-9a66-470d-8b9c-e56985b29caf"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SPCINTEREST_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="1021" y="0" width="75" height="23" uuid="44176ebd-7f5e-41e2-8e05-c1afe6b4b7b7"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SPCITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="1096" y="0" width="88" height="23" uuid="baa60fe6-634c-4a64-9d8c-08368343c973"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUMITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="421" y="0" width="60" height="23" uuid="f593c4b3-a624-4e63-8f34-8f425f22f5d5"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INSITEM_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="0" width="55" height="23" uuid="dc800607-e3e3-4f2c-b1bd-135a9e9f8254"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="0" width="173" height="23" uuid="3ee9108c-012f-433e-8ed7-e1ef21950d9e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $F{MEMB_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="15"/>
+	</pageFooter>
+	<summary>
+		<band height="71" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="258" height="23" uuid="766d226a-d5cc-48a4-b020-413a18ac6a24"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["สรุปรวมทั้งหมด : "]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="258" y="0" width="43" height="23" uuid="0ddf9bd4-eb22-4167-afbb-030dd44233c7"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLFEE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="301" y="0" width="60" height="23" uuid="72c47765-1e1c-4b7c-ad1d-e1581059d207"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLSHR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="361" y="0" width="60" height="23" uuid="db4759a4-8fd4-447c-839d-f67ae1866cee"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLDEP}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="481" y="0" width="65" height="23" uuid="a0986fd9-8f32-411b-9bf6-2ab6a94b83d8"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLEMERPRN}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="546" y="0" width="65" height="23" uuid="ce621c56-2b39-4111-8c68-5867dc5d8b4f"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLEMERINT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="611" y="0" width="75" height="23" uuid="aac0be7d-23a9-4fd9-bf15-54414c6b1f49"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLEMEITEM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="751" y="0" width="65" height="23" uuid="f9adeb74-7fb7-4d5b-afae-0b88eac6333e"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLNORMINT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="686" y="0" width="65" height="23" uuid="c919a052-79d4-4275-9f84-fc0b77ebfd91"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLNORMPRN}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="816" y="0" width="75" height="23" uuid="35c6d867-395a-48d1-bec7-761e12a5766f"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLNORMITEM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="956" y="0" width="65" height="23" uuid="abfa24d9-9c2a-45a3-b23d-bcab9d81b3c6"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLESPCINT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="891" y="0" width="65" height="23" uuid="ad8d9c8b-bc2e-4184-805c-d44b4e57a62c"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLSPCPRN}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="1021" y="0" width="75" height="23" uuid="c4d6c96e-0d1c-47f4-bf53-9758092cb520"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLSPCITEM}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="1096" y="0" width="88" height="23" uuid="bca481fe-499d-42db-aedc-ad3b73116e1c"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLITEM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="23" width="496" height="23" uuid="967a1af6-23cf-42b3-9794-894fff9eeebf"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["สรุปรวมแยกตามประเภทรายการ"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="421" y="0" width="60" height="23" uuid="3e053365-35c1-4e71-858f-fcecaf9062ac"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUMALLINS}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

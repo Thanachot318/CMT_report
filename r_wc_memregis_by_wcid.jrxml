@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_wc_memregis_by_wcid" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bbc5840c-4ac4-4c9b-bb6a-b46d7a41cef8">
+	<property name="ireport.zoom" value="1.3310000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_wcid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="start_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="end_date" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_app" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+    wcreqdeposit.wc_id as wc_id,
+    wcreqdeposit.member_no  as member_no,
+    trim(mbucfprename.prename_desc) as prename_desc,
+    wcreqdeposit.deptopen_date as deptopen_date,
+    wcreqdeposit.wfbirthday_date as wfbirthday_date,
+    trim(wcreqdeposit.deptaccount_name)  as  deptaccount_name,
+    trim(wcreqdeposit.deptaccount_sname) as deptaccount_sname,
+    wcreqdeposit.card_person as card_person,
+    wccontcoop.coop_name
+from wcreqdeposit
+    left join mbucfprename on wcreqdeposit.prename_code = mbucfprename.prename_code
+    left join wccontcoop on wcreqdeposit.coop_id = wccontcoop.coop_id
+        and wcreqdeposit.wc_id = wccontcoop.wc_id
+        and (wccontcoop.application = $P{as_app} OR $P{as_app} IS NULL)
+where
+    wcreqdeposit.coop_id = $P{as_coopid}
+    and wcreqdeposit.wc_id = $P{as_wcid}
+    and trunc(wcreqdeposit.deptopen_date) between to_date($P{start_date}, 'YYYYMMDD') and to_date($P{end_date}, 'YYYYMMDD')
+    and wcreqdeposit.approve_status > 0
+order by
+    wcreqdeposit.deptopen_date]]>
+	</queryString>
+	<field name="WC_ID" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="DEPTOPEN_DATE" class="java.sql.Timestamp"/>
+	<field name="WFBIRTHDAY_DATE" class="java.sql.Timestamp"/>
+	<field name="DEPTACCOUNT_NAME" class="java.lang.String"/>
+	<field name="DEPTACCOUNT_SNAME" class="java.lang.String"/>
+	<field name="CARD_PERSON" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<variable name="num" class="java.math.BigDecimal" calculation="Count">
+		<variableExpression><![CDATA[$F{MEMBER_NO}]]></variableExpression>
+	</variable>
+	<group name="wc_id">
+		<groupExpression><![CDATA[$F{WC_ID}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="45" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="802" height="25" uuid="9f37a4c6-1477-4ce4-91e5-7532be671be9"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="25" width="802" height="20" uuid="3620d6ca-71a6-4ba2-a2b0-616bbfb916a8"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รายงานสมาชิกสมัครใหม่ ระหว่างวันที่ " +
+new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(new SimpleDateFormat("yyyyMMdd", new Locale("en", "US")).parse($P{start_date})) +
+" ถึงวันที่ " +
+new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format(new SimpleDateFormat("yyyyMMdd", new Locale("en", "US")).parse($P{end_date}))]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="122" y="0" width="417" height="20" uuid="3470466d-a1d0-4b0a-b38f-032e6a5f08aa"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="702" y="0" width="100" height="20" uuid="d89c18ec-13b2-487c-a85b-314c38c120c0"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขบัตรประชาชน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="61" height="20" uuid="5dfb3e3b-4a1f-4a70-b627-ed46dda7af17"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="539" y="0" width="78" height="20" uuid="2a870387-03a0-40e4-a89f-8996b7745c9c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[วันเกิด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="617" y="0" width="85" height="20" uuid="1f821f32-ca29-4b80-ab04-d9047981ca57"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[วันที่เป็นสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="0" width="61" height="20" uuid="8ffcb08d-6c53-4626-9663-7dd19be8f3f6"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลข สอ.]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="61" height="20" uuid="d8d5f709-52b4-41f7-9a72-47c78386f5a2"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{num}+"."]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="61" y="0" width="61" height="20" uuid="4000bd73-22a9-4422-9ef1-3ff193bb4314"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="122" y="0" width="417" height="20" uuid="21dc3c05-f01a-41f2-9d7c-7783b6249d0c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}+$F{DEPTACCOUNT_NAME}+"  " + $F{DEPTACCOUNT_SNAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="617" y="0" width="85" height="20" uuid="e59846af-8cbc-4756-834f-86fb3393db98"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy ",new Locale("th","TH")).format($F{DEPTOPEN_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="539" y="0" width="78" height="20" uuid="fae6bc7a-1677-4a29-b46c-20a910c822e7"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy ",new Locale("th","TH")).format($F{WFBIRTHDAY_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="702" y="0" width="100" height="20" uuid="8cccbaf1-8b97-476d-ad13-a9b74099d51d"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARD_PERSON}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="183" y="0" width="168" height="20" uuid="f5342ca1-cb2c-4ed1-9dc4-3e53127ea188"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{wc_id_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="183" height="20" uuid="0723ebc7-4683-423b-8312-a282f6bbc87e"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[รวมสมัครใหม่ทั้งหมด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="351" y="0" width="78" height="20" uuid="a4b83e3f-cf89-4369-9a36-d4cc055fd3d8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<text><![CDATA[ราย]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

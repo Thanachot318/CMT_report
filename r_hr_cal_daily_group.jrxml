@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_hr_ cal_daily" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="07055d4c-dc00-4f9c-8298-f92298f4ddb1">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_period" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="emptype_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+substr($P{as_period},0,4) as year,
+case     substr($P{as_period},5,2)    when '01' then 'มกราคม'
+                            when '02' then 'กุมภาพันธ์'
+                            when '03' then 'มีนาคม'
+                            when '04' then 'เมษายน'
+                    when '05' then 'พฤษภาคม'
+                            when '06' then 'มิถุนายน'
+                            when '07' then 'กรกฎาคม'
+                            when '08' then 'สิงหาคม'
+                            when '09' then 'กันยายน'
+                            when '10' then 'ตุลาคม'
+                            when '11' then 'พฤศจิกายน'
+                            when '12' then 'ธันวาคม'
+                            else ''
+                            end as month,
+(case when $P{emptype_code} = '01' then 'ลูกจ้างประจำ'
+when $P{emptype_code} = '02' then 'ลูกชั่วคราวรายเดือน'
+when $P{emptype_code} = '03' then 'ลูกชั่วคราว' else'' end) as emptype,
+nvl((select special_day from hrworkcalendar where  year = substr($P{as_period},0,4) and month = substr($P{as_period},5,2)),0) as special_day,
+(case when hr.emptype_code = '03' then (select holiday from hrworkcalendar where  year = substr($P{as_period},0,4) and month = substr($P{as_period},5,2))
+else (select holiday_full from hrworkcalendar where  year = substr($P{as_period},0,4) and month = substr($P{as_period},5,2)) end) as holiday,
+nvl((select daysinmonth from hrworkcalendar where  year = substr($P{as_period},0,4) and month = substr($P{as_period},5,2)),0) as workdays,
+nvl((case when hr.emptype_code = '03' then (select work_day from hrworkcalendar where  year = substr($P{as_period},0,4) and month = substr($P{as_period},5,2))
+else (select work_day_full from hrworkcalendar where  year = substr($P{as_period},0,4) and month = substr($P{as_period},5,2)) end),0) as work_day,
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'R01' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) as salary,
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'R02' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) as ot_amt,
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'P02' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) as P02,
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'P01' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) as P01,
+
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'R01' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) +
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'R02' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) -
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'P02' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) -
+nvl((select sum(hd.item_amt) from hrpayrolldet hd where hd.salitem_code = 'P01' and substr(hd.payrollslip_no,0,6) = $P{as_period} and substr(hd.payrollslip_no,7,1) = replace(hr.emptype_code,'0','')),0) as total
+
+from hremployee hr
+where hr.coop_id = $P{as_coopid} and hr.emptype_code = $P{emptype_code} and rownum = 1
+order by hr.emp_no]]>
+	</queryString>
+	<field name="YEAR" class="java.lang.String"/>
+	<field name="MONTH" class="java.lang.String"/>
+	<field name="EMPTYPE" class="java.lang.String"/>
+	<field name="SPECIAL_DAY" class="java.math.BigDecimal"/>
+	<field name="HOLIDAY" class="java.math.BigDecimal"/>
+	<field name="WORKDAYS" class="java.math.BigDecimal"/>
+	<field name="WORK_DAY" class="java.math.BigDecimal"/>
+	<field name="SALARY" class="java.math.BigDecimal"/>
+	<field name="OT_AMT" class="java.math.BigDecimal"/>
+	<field name="P02" class="java.math.BigDecimal"/>
+	<field name="P01" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<variable name="sumspecialday" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SPECIAL_DAY}]]></variableExpression>
+	</variable>
+	<variable name="sumholiday" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{HOLIDAY}]]></variableExpression>
+	</variable>
+	<variable name="sumworkday" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{WORK_DAY}]]></variableExpression>
+	</variable>
+	<variable name="sumwork_days" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{WORKDAYS}]]></variableExpression>
+	</variable>
+	<variable name="sumsalary" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{SALARY}]]></variableExpression>
+	</variable>
+	<variable name="sumotamt" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{OT_AMT}]]></variableExpression>
+	</variable>
+	<variable name="sump01" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{P01}]]></variableExpression>
+	</variable>
+	<variable name="sump02" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{P02}]]></variableExpression>
+	</variable>
+	<variable name="sumtotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{TOTAL}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="132" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="864c0f7c-709f-46cb-b2e0-486c93fe024d" x="0" y="18" width="802" height="27"/>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานการคำนวนค่าจ้างรายวัน/รายเดือน (รายกลุ่ม)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="350a0ce7-f4d2-4d0f-a5ba-c66ab71c7d69" x="27" y="112" width="80" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันนักขัตฤกษ์]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0cee7391-af74-46e7-bdac-f0fc145651c7" x="107" y="112" width="80" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันหยุด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e3d99b58-be86-433c-8db1-81c837a5ac7f" x="187" y="112" width="80" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันปกติ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d60360fa-09a2-4d33-8a5c-abcd9aaf4d69" x="267" y="112" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[จำนวนวัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="67df5720-7244-4b05-be6b-724c82faf84a" x="356" y="112" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="25f6af55-c2ba-49ff-974a-ef52ef8c4441" x="534" y="112" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OT(ชม)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0be87d2b-13db-4ce0-bc65-d27de2803735" x="445" y="112" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ประกันสังคม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f2d4482a-efa9-4040-911f-5f585f9630f7" x="712" y="112" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[สุทธิ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="83156176-7556-4065-a6e3-29b523263144" x="623" y="112" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[หักภาษี]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8081d51e-1007-4e95-842a-ea5668bf17dd" x="0" y="49" width="802" height="22"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="18" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ประจำเดือน "+ $F{MONTH} +" ปี "+$F{YEAR}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8f9a44b9-06cd-4f07-b157-0c2968008638" x="0" y="71" width="802" height="22"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="18" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ประเภทพนักงาน "+ $F{EMPTYPE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8f49b956-c1e4-4d69-b8ee-4fb7b53a8389" x="0" y="112" width="27" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="918493ba-1b65-4ba9-a78f-0c73a9c218a8" x="730" y="16" width="69" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["วันที่พิมพ์ : " + new SimpleDateFormat("dd/MM/yyyy",new Locale ( "th", "TH" )).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b43236ce-54dc-4806-9fb0-273d66c9d47d" x="27" y="0" width="80" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SPECIAL_DAY}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e928ca26-fbdc-427b-90b3-a63dda7e0f61" x="107" y="0" width="80" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{HOLIDAY}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c0c75926-af87-40bc-93fa-f85ab19f4f48" x="187" y="0" width="80" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{WORK_DAY}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3635bd7d-38f7-44cb-985b-ee23040e4fd0" x="267" y="0" width="89" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{WORKDAYS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b48e4ebc-f201-4b4a-b7ca-1efaf092181c" x="356" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SALARY}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="133f15b4-ecd7-4b06-a6f4-41e2045d2929" x="445" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{P02}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="10797ecd-95b2-4b2a-a3fd-1a432fef87dd" x="712" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="8b5b4f58-6807-4433-9483-45f20279c7fb" x="534" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{OT_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f77e0dea-7201-4aaa-a1aa-176b41afd549" x="623" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{P01}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="73317218-5b2c-48d1-9355-d0665a42a766" x="0" y="0" width="27" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a4816312-ecee-449f-a1e8-81b07eef6d80" x="27" y="0" width="80" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumspecialday}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="aab8c39d-77a1-42f8-84fb-324ae47efb81" x="107" y="0" width="80" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumholiday}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d8194cdb-f1e5-4822-b87b-0b74438c3fc9" x="187" y="0" width="80" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumworkday}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1d655822-2f9c-45be-96a1-88f8d34898f5" x="267" y="0" width="89" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumwork_days}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="2a8814a3-bb3f-4484-8cdb-b4507b005b44" x="356" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumsalary}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="ed42d20c-71ac-4cbd-9567-d234561815ed" x="445" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumotamt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="71013f8e-f25c-46d3-981c-0cb96406a93c" x="534" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sump02}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="9425fcfa-92dc-4f57-ac41-a517bb8d79c9" x="623" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sump01}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="9efdc913-8942-48a9-bdd2-57be14b76346" x="712" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumtotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9a1035a7-9cdc-48d9-9e5a-6ffe8be2dfba" x="0" y="0" width="27" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รวม]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

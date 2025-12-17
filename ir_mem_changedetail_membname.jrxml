@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mem_changedetail_membnameil" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="397c0d73-05f9-494d-9058-6d51485a7ece">
+	<property name="ireport.zoom" value="2.1435888100000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_scoop" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_start" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_end" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<defaultValueExpression><![CDATA["ระหว่างวันที่ " + new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($P{adtm_start}) +
+" ถึง " + new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($P{adtm_end})]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+rank () over (partition by sys.entry_date order by sys.entry_date) as ranking,
+sys.clmkey_desc as member_no ,
+ft_getmbname(sys.coop_id , sys.clmkey_desc) as fullname ,
+sys.entry_id ,
+sys.entry_date ,
+det.clmtype_desc ,
+det.clm_name ,
+det.clmold_desc ,
+det.clmnew_desc ,
+col.COMMENTS AS comment_name,
+case
+when det.clm_name like '%PROVINCE%' then mpo.province_desc
+when det.clm_name like '%AMPHUR%' then mdo.district_desc
+when det.clm_name like '%TAMBOL%' then mto.tambol_desc
+else det.clmold_desc end as old_value ,
+case
+when det.clm_name like '%PROVINCE%' then mpn.province_desc
+when det.clm_name like '%AMPHUR%' then mdn.district_desc
+when det.clm_name like '%TAMBOL%' then mtn.tambol_desc
+when det.clm_name is null  then 'ไม่มีข้อมูล'
+else det.clmnew_desc end as new_value
+from sys_logmodtb sys
+left join sys_logmodtbdet det on sys.modtbdoc_no = det.modtbdoc_no
+left join mbucfprovince mpo on det.clmold_desc = mpo.province_code
+left join mbucfprovince mpn on det.clmnew_desc = mpn.province_code
+left join mbucfdistrict mdo on det.clmold_desc = mdo.district_code
+left join mbucfdistrict mdn on det.clmnew_desc = mdn.district_code
+left join mbucftambol mto on det.clmold_desc = mto.tambol_code
+left join mbucftambol mtn on det.clmnew_desc = mtn.tambol_code
+LEFT JOIN USER_COL_COMMENTS col
+    ON col.TABLE_NAME = 'MBMEMBMASTER'
+   AND col.COLUMN_NAME = UPPER(TRIM(det.CLM_NAME))
+where sys.modtb_tbname = 'MBMEMBMASTER'
+and cast(sys.entry_date As Date) between $P{adtm_start} and $P{adtm_end}
+and det.clm_name not like '%INT%'
+and det.clm_name in ('PRENAME_CODE','MEMB_NAME','MEMB_SURNAME')
+order by
+sys.entry_date]]>
+	</queryString>
+	<field name="RANKING" class="java.math.BigDecimal"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="ENTRY_ID" class="java.lang.String"/>
+	<field name="ENTRY_DATE" class="java.sql.Timestamp"/>
+	<field name="CLMTYPE_DESC" class="java.lang.String"/>
+	<field name="CLM_NAME" class="java.lang.String"/>
+	<field name="CLMOLD_DESC" class="java.lang.String"/>
+	<field name="CLMNEW_DESC" class="java.lang.String"/>
+	<field name="COMMENT_NAME" class="java.lang.String"/>
+	<field name="OLD_VALUE" class="java.lang.String"/>
+	<field name="NEW_VALUE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="20">
+			<subreport>
+				<reportElement uuid="12b600f6-aac6-4b7d-90fc-b489baed7fcc" x="0" y="0" width="555" height="20"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_scoop}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_portrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="dadd2da4-bba1-478c-b186-12ebb4c64fbf" x="384" y="0" width="118" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ข้อมูลใหม่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f6edbb91-26fe-4e78-8c2e-2c81fe328d38" x="256" y="0" width="128" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ข้อมูลเก่า]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ee6f1982-5953-44e3-a9a4-548ea747edd3" x="502" y="0" width="53" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ผู้ทำรายการ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3d4b01cd-ffcf-458b-80cc-b3a7058293ef" x="0" y="0" width="25" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4045af48-115a-40dd-8871-ab38ab84dd07" x="67" y="0" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ชื่อ - นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="70a96fa2-d0c1-4e8f-aa27-272535242d32" x="25" y="0" width="42" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e42a2e0-888a-4b30-8236-713bf9017a74" x="167" y="0" width="89" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[รายการ]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="cfe54c8f-6c55-45f9-a73b-e5a849a4f00b" x="256" y="0" width="128" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{OLD_VALUE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2956f3c1-c5fe-4a65-afb1-11b5e2f354bf" x="384" y="0" width="118" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NEW_VALUE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4b1e7df2-48d3-4b20-a2f6-2101b679a68b" x="67" y="0" width="100" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1ffb885d-4742-466a-9fd7-054d09f58c2d" x="25" y="0" width="42" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6eb474d4-8c6f-474e-ab50-f2f80ae27c22" x="0" y="0" width="25" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="6c7ac852-afd6-42ea-8370-933728ad0639" x="502" y="0" width="53" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ENTRY_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4df662f3-b9b4-4907-9bec-3d465dba68c9" x="167" y="0" width="89" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMMENT_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement uuid="2c45c2a6-830a-4d59-afe0-bc0f1c7237f0" x="435" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="fd240aef-85bc-404c-93c4-b7c560e9f1a7" x="515" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

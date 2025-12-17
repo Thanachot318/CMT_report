@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_loan_lnreqloan_byoffer_subclroth" language="groovy" pageWidth="144" pageHeight="140" orientation="Landscape" columnWidth="144" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="94cd0237-942f-4aaf-af20-2bea25060da5">
+	<property name="ireport.zoom" value="4.177248169415656"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="req_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+lnreqloanclr.principal_balance,
+lnreqloanclr.cp_interest,
+lnreqloanclr.loantype_code
+from lnreqloanclr
+where lnreqloanclr.loanrequest_docno = $P{req_no}
+and lnreqloanclr.clear_status = 1
+order by lnreqloanclr.loantype_code]]>
+	</queryString>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="CP_INTEREST" class="java.math.BigDecimal"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="1f591582-27a4-484a-bd47-3b981b1f9856" x="102" y="0" width="42" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CP_INTEREST}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="2ee860c6-3365-42b8-a976-6fb6baf9d9b2" x="0" y="0" width="60" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANTYPE_CODE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="e60502bf-45c9-41c6-aa84-8c8722aec40e" x="60" y="0" width="42" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRINCIPAL_BALANCE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

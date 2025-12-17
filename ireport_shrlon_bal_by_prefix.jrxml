@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ireport_shrlon_bal_by_prefix" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c61bb95f-f60e-49c2-af3f-01ad160ae037">
+	<property name="ireport.zoom" value="1.7715610000000048"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\ARD\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coopid" class="java.lang.String"/>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<parameter name="as_reportid" class="java.lang.String"/>
+	<parameter name="as_reportdetail" class="java.lang.String"/>
+	<parameter name="as_smembgroup" class="java.lang.String"/>
+	<parameter name="as_emembgroup" class="java.lang.String"/>
+	<parameter name="as_workdate" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[select
+    cm.coop_name,
+    m1.membgroup_desc as s_groupdesc,
+    m2.membgroup_desc as e_groupdesc
+from mbucfmembgroup m1
+inner join mbucfmembgroup m2 on m1.membgroup_code = $P{as_smembgroup} and m2.membgroup_code = $P{as_emembgroup}
+join cmcoopmaster cm on cm.coop_id = m1.coop_id
+where cm.coop_id = $P{as_coopid}]]>
+	</queryString>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="S_GROUPDESC" class="java.lang.String"/>
+	<field name="E_GROUPDESC" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7e9a1564-c42f-4896-b939-1fc8740a8f14" x="516" y="0" width="20" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + "/"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="55271920-5e7b-41a4-9493-6c2a1830b3c4" x="380" y="0" width="136" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ : "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="#,##0">
+				<reportElement uuid="6bf1b509-f35e-4c13-833a-cd7f96caad14" x="536" y="0" width="19" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="f485389f-d7cc-4ec4-b29f-b593f5a0d60e" x="0" y="0" width="555" height="40"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA["ประจำ วันที่ " + new SimpleDateFormat("dd MMMM yyyy",new Locale("th","TH")).format($P{as_workdate})]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header/ir_header_portrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e2aa9d4b-7f6b-4ff5-a385-7496a6f2c2fd" x="0" y="0" width="555" height="40"/>
+				<subreportParameter name="as_sgroup">
+					<subreportParameterExpression><![CDATA[$P{as_smembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_egroup">
+					<subreportParameterExpression><![CDATA[$P{as_emembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["ireport_shrlon_bal_by_prefix_sub1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="40">
+			<subreport>
+				<reportElement uuid="7fa95518-5103-4e72-9678-a960c53cba53" x="0" y="0" width="555" height="40"/>
+				<subreportParameter name="as_sgroup">
+					<subreportParameterExpression><![CDATA[$P{as_smembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_egroup">
+					<subreportParameterExpression><![CDATA[$P{as_emembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["ireport_shrlon_bal_by_prefix_sub2.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="40">
+			<subreport>
+				<reportElement uuid="86eb4e1a-c534-4675-83dc-745b0310413e" x="0" y="0" width="555" height="40"/>
+				<subreportParameter name="as_sgroup">
+					<subreportParameterExpression><![CDATA[$P{as_smembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_egroup">
+					<subreportParameterExpression><![CDATA[$P{as_emembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["ireport_shrlon_bal_by_prefix_sub3.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="40">
+			<subreport>
+				<reportElement uuid="62ac45c2-b6b7-4475-8c81-57ec0d6327c6" x="0" y="0" width="555" height="40"/>
+				<subreportParameter name="as_sgroup">
+					<subreportParameterExpression><![CDATA[$P{as_smembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_egroup">
+					<subreportParameterExpression><![CDATA[$P{as_emembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["ireport_shrlon_bal_by_prefix_sub4.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="40" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="ac021179-6b5c-4538-92e2-531cc9cdffaf" x="0" y="0" width="555" height="40"/>
+				<subreportParameter name="as_sgroup">
+					<subreportParameterExpression><![CDATA[$P{as_smembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_egroup">
+					<subreportParameterExpression><![CDATA[$P{as_emembgroup}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["ireport_shrlon_bal_by_prefix_sub5.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

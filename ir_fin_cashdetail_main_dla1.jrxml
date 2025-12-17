@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_fin_cashdetail_main" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="055be7d6-6e9d-4683-b81e-02a87a31ce77">
+	<property name="ireport.zoom" value="1.2100000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_slipno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\GCOOP_ALL\\CORE\\GCOOP\\iReport\\Reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select coop_id from finconstant
+where  coop_id=$P{as_coopid}]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="360" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7eae682c-0df7-4a0d-8376-b4fedf19aa7f" x="641" y="24" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ต้นฉบับ]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="7925be39-7fcd-4405-9a1a-3faa65644076" x="0" y="0" width="555" height="360"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_slipno">
+					<subreportParameterExpression><![CDATA[$P{as_slipno}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["ir_fin_cashdetail_dla1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

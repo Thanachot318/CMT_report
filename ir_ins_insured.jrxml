@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mem_changedetail_membnameil" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="397c0d73-05f9-494d-9058-6d51485a7ece">
+	<property name="ireport.zoom" value="1.610510000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT DISTINCT
+ p.PRENAME_DESC || ' ' || im.INSMEM_NAME || ' ' || im.INSMEM_SURNAME AS FULLNAME,
+ im.insurance_no,
+ im.MEMBER_NO,
+ ip.INSURETYPE_DESC,
+ inp.INSUREPLAN_NAME,
+ im.insend_date,
+ im.loancontract_no,
+ im.coverage_amt,
+ im.premium_amt,
+ im.insstart_date,
+ im.insend_date,
+ im.policy_no
+FROM insinsuremaster im
+LEFT JOIN INSINSURETYPE ip ON ip.INSURETYPE_CODE = im.insuretype_code
+LEFT JOIN INSINSURETYPEPLAN inp ON inp.INSUREPLAN_CODE  =  im.insureplan_code
+LEFT JOIN MBUCFPRENAME p ON p.PRENAME_CODE = im.PRENAME_CODE
+ORDER BY im.insurance_no, im.insurance_no]]>
+	</queryString>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="INSURANCE_NO" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="INSURETYPE_DESC" class="java.lang.String"/>
+	<field name="INSUREPLAN_NAME" class="java.lang.String"/>
+	<field name="INSEND_DATE" class="java.sql.Timestamp"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="COVERAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="PREMIUM_AMT" class="java.math.BigDecimal"/>
+	<field name="INSSTART_DATE" class="java.sql.Timestamp"/>
+	<field name="POLICY_NO" class="java.lang.String"/>
+	<group name="memberNoGroup">
+		<groupExpression><![CDATA[$F{MEMBER_NO}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="1ffb885d-4742-466a-9fd7-054d09f58c2d" x="0" y="0" width="555" height="20"/>
+					<textElement verticalAlignment="Bottom">
+						<font fontName="Angsana New" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA["เลขสมาชิก : " + $F{MEMBER_NO} + " " + $F{FULLNAME}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="20">
+			<subreport>
+				<reportElement uuid="12b600f6-aac6-4b7d-90fc-b489baed7fcc" x="0" y="0" width="555" height="20"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_portrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="dadd2da4-bba1-478c-b186-12ebb4c64fbf" x="337" y="0" width="98" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[สัญญาเงินกู้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f6edbb91-26fe-4e78-8c2e-2c81fe328d38" x="200" y="0" width="71" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[แผน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ee6f1982-5953-44e3-a9a4-548ea747edd3" x="502" y="0" width="53" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เบี้ยประกัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3d4b01cd-ffcf-458b-80cc-b3a7058293ef" x="0" y="0" width="25" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e42a2e0-888a-4b30-8236-713bf9017a74" x="91" y="0" width="109" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ประเภทประกัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="591b0fbe-7efe-4b5d-9424-7c994db4367a" x="435" y="0" width="67" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[ทุนประกัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bc13c633-34d2-4cdc-a5a5-890c2d8e48de" x="25" y="0" width="66" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[เลขที่ประกัน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cfd8dffd-75f6-433d-a234-e6a584dcb13a" x="271" y="0" width="66" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<text><![CDATA[วันที่คุ้มครอง]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="cfe54c8f-6c55-45f9-a73b-e5a849a4f00b" x="200" y="0" width="71" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INSUREPLAN_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2956f3c1-c5fe-4a65-afb1-11b5e2f354bf" x="337" y="0" width="98" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANCONTRACT_NO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6eb474d4-8c6f-474e-ab50-f2f80ae27c22" x="0" y="0" width="25" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="6c7ac852-afd6-42ea-8370-933728ad0639" x="502" y="0" width="53" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PREMIUM_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4df662f3-b9b4-4907-9bec-3d465dba68c9" x="91" y="0" width="109" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INSURETYPE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="79c4a05b-5fc7-49aa-a289-32fcc69a1147" x="435" y="0" width="67" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COVERAGE_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5b17e250-b74a-4f88-a76d-c8ed84f41507" x="25" y="0" width="66" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INSURANCE_NO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e6e98629-77ee-4ace-ba5a-bda2ef961a58" x="271" y="0" width="66" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($F{INSEND_DATE})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement uuid="2c45c2a6-830a-4d59-afe0-bc0f1c7237f0" x="435" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="fd240aef-85bc-404c-93c4-b7c560e9f1a7" x="515" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

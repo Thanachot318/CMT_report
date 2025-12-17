@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 5.1.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_meeting_all" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="22d71010-63b6-4724-9a1d-89003b1e550f">
+	<property name="ireport.zoom" value="1.7715610000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_startdate" class="java.util.Date"/>
+	<parameter name="as_enddate" class="java.util.Date"/>
+	<parameter name="as_entryid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    CMCOOPCONSTANT.COOP_NAME,
+    CMCOOPCONSTANT.COOP_ID,
+    mtmeeting.meeting_id,
+    mtmeeting.topic,
+    mtmeeting.meeting_start as MEETING_START,
+    mtmeeting.meeting_end as MEETING_END,
+    mtmeeting.staff_id,
+    mtmeeting.location
+FROM
+    mtmeeting
+left join CMCOOPCONSTANT on CMCOOPCONSTANT.COOP_ID = mtmeeting.COOP_ID
+WHERE
+    CMCOOPCONSTANT.COOP_ID = $P{as_coopid}
+    AND MEETING_START between $P{as_startdate} and (TRUNC($P{as_enddate})+1)
+ORDER BY
+    mtmeeting.meeting_id]]>
+	</queryString>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="MEETING_ID" class="java.lang.String"/>
+	<field name="TOPIC" class="java.lang.String"/>
+	<field name="MEETING_START" class="java.sql.Timestamp"/>
+	<field name="MEETING_END" class="java.sql.Timestamp"/>
+	<field name="STAFF_ID" class="java.lang.String"/>
+	<field name="LOCATION" class="java.lang.String"/>
+	<variable name="order" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+	</variable>
+	<variable name="sum_total" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{order}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="101" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="52" height="20" uuid="625e7ea7-454d-4689-afa4-189d0a4a878f"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ " +$V{PAGE_NUMBER}+ " /  "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="14" width="100" height="20" uuid="59c067c1-70d0-44b4-baaa-3db1566ef86c"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ผู้พิมพ์: " + $P{as_entryid}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="26" y="0" width="15" height="20" uuid="776d418b-06d3-4375-b119-8b7f0b57e00c"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="371" y="0" width="184" height="20" uuid="e02ac34e-2bec-48dd-adc6-38ca029c7991"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["วันที่พิมพ์ " +
+new SimpleDateFormat("dd/MM/yyyy ",new Locale("th","TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="81" width="22" height="20" uuid="0d29a62c-0ad4-4e4c-913b-f054ce6fb3f3"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="22" y="81" width="88" height="20" uuid="b3d3a0bf-71ca-4091-82cd-3035a51ae7a7"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รหัสการประชุม]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="36" width="555" height="20" uuid="8c398bd8-f16c-4356-ace7-ab72265cc1f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รายงานการประชุม ระหว่างวันที่ " +' '+new SimpleDateFormat("d MMMM yyyy",new Locale ( "th", "TH" )).format($P{as_startdate}) +" ถึง " +' '+new SimpleDateFormat("d MMMM yyyy",new Locale ( "th", "TH" )).format($P{as_enddate})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="110" y="81" width="165" height="20" uuid="55723a22-1f82-48d3-b86e-8345921be289"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<text><![CDATA[ชื่อการประชุม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="81" width="70" height="20" uuid="5ab0bd31-cddc-4e3d-9724-4f3a5b256baf"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันที่เริ่มประชุม]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="555" height="20" uuid="7323ee39-4c9c-4516-93dc-623011650057"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="345" y="81" width="110" height="20" uuid="3e22cc33-60d1-4131-8ab6-527377035667"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[สถานที่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="455" y="81" width="100" height="20" uuid="079dd6c2-e5af-43d8-9dab-9b0d8f1c4928"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ผู้สร้างการประชุม]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="16" width="555" height="20" uuid="5bec752e-fdf0-452d-aeec-b6682c527cc8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รายงานการประชุม"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="22" height="30" uuid="ea556a1c-7861-4d89-814d-47ac04a71a0b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{order}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="22" y="0" width="88" height="30" uuid="eb037aab-3ed7-4eb7-ba0b-1d3ca29c5ce7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEETING_ID}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="110" y="0" width="165" height="30" uuid="eb037aab-3ed7-4eb7-ba0b-1d3ca29c5ce7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOPIC}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="345" y="0" width="110" height="30" uuid="3043527b-5ace-4ad0-ba1d-8a283f73419f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="11"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOCATION}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="455" y="0" width="100" height="30" uuid="7e985c8d-9b3a-4511-a1a5-9768b39d2503"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{STAFF_ID}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="275" y="0" width="70" height="30" uuid="3043527b-5ace-4ad0-ba1d-8a283f73419f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="11"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale ( "th", "TH" )).format($F{MEETING_START})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20">
+			<textField>
+				<reportElement x="0" y="0" width="180" height="20" uuid="70765f9a-14f8-487a-a142-6622151da638"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมทั้งหมด  " +  $V{sum_total}  + "   รายการ"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

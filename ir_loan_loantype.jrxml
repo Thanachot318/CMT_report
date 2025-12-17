@@ -1,0 +1,843 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_loan_loantype" language="groovy" pageWidth="1332" pageHeight="842" orientation="Landscape" columnWidth="1292" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="531c656e-b890-4455-ad24-6c5d6f9d35a8">
+	<property name="ireport.zoom" value="0.9090909090909117"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select * from dual]]>
+	</queryString>
+	<field name="DUMMY" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="223" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="53c6bd15-4f62-4029-97d3-7495fc415900" x="0" y="0" width="1292" height="31"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รายงานข้อกำหนดและเงื่อนไขการให้เงินกู้ยืม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="82695cbc-7624-4a10-9a47-099c43676d80" x="0" y="60" width="620" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วงเงินสูงสุดรวมทุกสัญญา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="02374594-ce9e-4de8-818a-70f99ac6a746" x="620" y="60" width="465" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เงินคงเหลือหลังหักชำระหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4d96ccf2-67f2-408c-8176-307def16d5dd" x="620" y="120" width="310" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[อายุลูกหนี้เงินกู้ยืมที่ต้องชำระหนี้ให้แล้วเสร็จ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="221805e9-fcf2-4e35-b229-d8be21ba1b7e" x="0" y="120" width="620" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[การปรับปรุงโครงสร้างหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5dfb12e1-4c93-4b72-9a93-7bfddc91f7c9" x="0" y="160" width="310" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[อายุที่ต้องชำระหนี้ให้แล้วเสร็จหลังปรับปรุงโครงสร้างหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="07376515-f45a-4cc3-94aa-b46fbf35b608" x="0" y="180" width="310" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[จำนวนงวดชำระหนี้สูงสุดหลังปรับปรุงโครงสร้างหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e1dfb992-2e8c-4636-99f7-2be385a8e7ef" x="0" y="80" width="155" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[กำหนด/ไม่กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c589be9c-ea1c-475a-949c-6cd4c2529b2c" x="155" y="80" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c01b1ee-9666-47fd-b8b9-52e7b83594d8" x="310" y="80" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เท่าของเงินเดือน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e806a51a-e8d1-46a2-af18-27b92cd8a29a" x="465" y="80" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เท่าของทุนเรือนหุ้น]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement uuid="05ac7ff3-e2f4-479f-b72a-2ded061bf021" x="1273" y="0" width="19" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a57d727f-b4eb-4aba-80b1-ea1f7be91b33" x="1117" y="0" width="136" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ : "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0f0b69f9-c89d-4458-8cec-bb5faf7643be" x="1253" y="0" width="20" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + "/"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="293f60e1-0480-4c13-a041-642029dc3ce2" x="1192" y="20" width="100" height="20">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA["วันที่พิมพ์ " + new SimpleDateFormat("dd MMMM yyyy", new Locale("th", "TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ef12fccd-fdbd-4650-9a0d-c4c15a7cb39c" x="1192" y="40" width="100" height="20">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA["เวลาที่พิมพ์ " + new SimpleDateFormat("HH:mm:ss", new Locale("th", "TH")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="39a698b9-bd93-4458-977b-2345d4fdf1b2" x="0" y="100" width="155" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="db19378c-eaca-4ad0-bce6-0160bd7e81cd" x="620" y="100" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73b759af-60a4-4cce-96a5-961914005991" x="620" y="160" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ad6db90e-62e6-4ef8-a9eb-ee262d55d0bd" x="310" y="140" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cca204a0-076b-4b0e-a1dd-1c1ef76fcea5" x="310" y="160" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0b88d87c-ac7b-4c40-83de-24af171b2822" x="310" y="180" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[กำหนด]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="6f15d952-aa7c-4e3b-aa94-1e45c29352e1" x="155" y="100" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["8,000,000.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3647cb07-8cf3-48d6-a5ce-f6411c740cd1" x="775" y="100" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7babd04e-b35c-4bcf-ba1c-602fce35d3b6" x="775" y="160" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["60"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cef31b83-0f8c-478b-9495-86b09e04fda1" x="465" y="160" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["60"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e1a6f683-a073-4f75-ab74-f5811881b4e6" x="465" y="180" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["360"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2c62c14e-4201-491d-b45f-d81964f391cb" x="310" y="100" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="108ee9a8-995b-4f2f-80d1-52fbeda3d280" x="465" y="100" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a11c7b22-40f5-4847-aad5-7d0abf6b2af4" x="930" y="80" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a6c377a6-2910-4bc4-8a8f-1dd957394d6e" x="620" y="80" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[กำหนด/ไม่กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="99a16d88-0de2-4548-8819-e433349f7aee" x="775" y="80" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% ของรายได้]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="78f8c5c4-a743-446a-ab80-7db59bb13e81" x="930" y="100" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["3,000.00"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="36d94b4b-e0d2-47f4-95bf-042c00cefdf4" x="620" y="140" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[กำหนด/ไม่กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="47692434-d7eb-48f3-9b0c-e3fbfd37b0ab" x="775" y="140" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ปี]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7585ecdb-67e3-4100-882c-c86ec867eb59" x="0" y="140" width="310" height="20"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0427dede-089e-4959-bb46-418da46ab247" x="465" y="140" width="155" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จำนวน]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="e518d9ad-7c19-4219-aada-3f0535e8b709" x="0" y="0" width="50" height="60"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c2d1dc25-6ee4-4741-b76b-6e4cceeabd37" x="50" y="0" width="50" height="60"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ผู้กู้ยืม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="52e9f1e2-e592-4fd1-9366-6c5d259de54a" x="100" y="0" width="93" height="60"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ชื่อโครงการ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a3cbaf0c-9b63-45a9-88f5-a1ed6a04a01c" x="193" y="0" width="93" height="60"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ประเภทเงิน ให้กู้ยืม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="be9071b2-86c4-4fbe-984a-06ab30172caa" x="363" y="20" width="75" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เท่าของเงินเดือน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f1e43bf3-7eb1-4c11-8cf9-75c385d73e83" x="286" y="20" width="77" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน (บาท)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4dca3c2a-326f-4f84-91c4-dfcb396bfe91" x="438" y="20" width="93" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เท่าของทุนเรือนหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="862046a5-742b-450b-b473-e458fd460cfc" x="531" y="20" width="167" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[% ของมูลค่าประเมินของหลักทรัพย์]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4435a859-5376-4572-b85a-d736acd78bed" x="286" y="0" width="412" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ยอดเงินให้กู้สูงสุด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f38c5ecb-4080-41f5-99a5-f5a41ab6ad2b" x="698" y="20" width="126" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[อัตราดอกเบี้ยต่อปี (%)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e41d78d3-cbb6-4f33-920a-9cdf1dd6071f" x="698" y="0" width="276" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[อัตราดอกเบี้ย/งวดการชำระหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1b5fd189-ab94-4938-8576-7b58e3d4c77c" x="824" y="20" width="150" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[งวดชำระหนี้สูงสุด (เดือน)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46676f8c-be4f-4c2f-8033-645625208062" x="974" y="0" width="318" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เงื่อนไขการกู้วนซ้ำ/รวมหนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc41dacd-4caa-4d82-8e47-1d83ae0102ab" x="974" y="20" width="90" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[กำหนด/ไม่กำหนด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b32e8428-a117-4514-851c-87a44e86153b" x="1064" y="20" width="118" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ชำระหนี้เดิมแล้ว
+% ของเงินต้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="94905159-188e-44e1-a8e6-1678595bed2a" x="1182" y="20" width="110" height="40"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ชำระหนี้เดิมแล้ว
+งวด (เดือน)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="60" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="a7c5012f-d41b-47a3-8e8e-64d399893c43" x="0" y="0" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="18fddb7f-4e26-4ac0-a8af-ddc7506914a9" x="0" y="20" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="277b7f89-2a35-4f13-aacf-d00da8597342" x="0" y="40" width="50" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3b1e58c9-58c1-40df-a957-840ec1a37fa5" x="193" y="0" width="93" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ฉุกเฉิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9abeafc9-9061-488a-99a6-d119d74d6ce9" x="193" y="20" width="93" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[สามาัญ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8250dda0-196a-4f2b-9e28-2befd6356bbb" x="193" y="40" width="93" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<text><![CDATA[พิเศษ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="fa33d633-a3b9-467f-9802-814dd2a05651" x="286" y="0" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["300,000.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c8148887-7a6d-4623-8f76-416700178407" x="286" y="20" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["3,000,000.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3f9420fa-eeb1-4c0e-935a-893f0470a67d" x="286" y="40" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["8,000,000.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fa097ffc-44bf-475b-92be-8cae6bc06971" x="363" y="0" width="75" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="72d4e5c6-8138-4a6a-991b-1d83254d8c98" x="363" y="20" width="75" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="72391377-5fc9-42d1-a069-28d48d44a16c" x="363" y="40" width="75" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b5b22f53-3450-4ab0-b723-f67942446299" x="438" y="0" width="93" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a59ff8ea-40dd-42d0-95f2-ea99a8f68e17" x="438" y="20" width="93" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="96df429e-ac0e-410d-8361-589431495e95" x="438" y="40" width="93" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5646a0e0-e473-4cee-8f4e-7d6d0af5382d" x="531" y="0" width="167" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="976c5907-b9ec-4ce1-a8eb-742ac53aa26f" x="531" y="20" width="167" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a70884a1-fea8-4618-9366-ecbc83a1eefd" x="531" y="40" width="167" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["70.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="33694e1b-adee-4275-af23-edf19fe053c0" x="698" y="0" width="126" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["5.25"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e17c3ee4-4f7a-43d3-87e9-3c66edd78c7e" x="698" y="20" width="126" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["5.25"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fd83b4c4-065b-4561-bd0b-f8a78a3590a4" x="698" y="40" width="126" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["4.75"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="062ce004-b359-44cd-86d9-3a9f31302e25" x="824" y="20" width="150" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["240"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5f7aa594-5bbd-469b-bb4f-9d104aa2acb8" x="824" y="0" width="150" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["30"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a0a7f1e0-99b0-4a0f-a39b-d4ba44c18064" x="824" y="40" width="150" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["360"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="244b57e7-171b-4c16-9823-77a0e04c9589" x="974" y="0" width="90" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["กำหนด"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9d331f63-2c5b-4f65-8b08-29c639cf7550" x="974" y="40" width="90" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["กำหนด"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="416e9c8f-eb16-4abc-889e-a885bbed99a7" x="974" y="20" width="90" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["กำหนด"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d0773974-22e3-4749-84da-ece9099176cf" x="1064" y="0" width="118" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f1aa0670-7142-4f92-bbe7-e75b69421009" x="1064" y="20" width="118" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="97cbfeea-b125-411e-ab4c-8f74f24acd5d" x="1064" y="40" width="118" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0.00"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="84a753d9-c0c5-4dae-aa96-16e2ccca07b4" x="1182" y="0" width="110" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["3"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ddd4947f-2309-480b-aeb2-c0118360e314" x="1182" y="20" width="110" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["6"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ac90b01e-265d-4f28-bb45-e933140a9012" x="1182" y="40" width="110" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="16" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

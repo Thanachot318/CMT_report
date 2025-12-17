@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_reqloancoll" language="groovy" pageWidth="191" pageHeight="802" whenNoDataType="AllSectionsNoDetail" columnWidth="191" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b5d986e2-c55d-46b1-8668-b6e16b1fb8c7">
+	<property name="ireport.zoom" value="2.593742460100004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ref_collno" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+mb.member_no,
+ft_getmbname(mb.coop_id, mb.member_no) as coll_who,
+lnc.collused_amt
+from lncontcoll lnc
+left join lncontmaster lm on lm.loancontract_no = lnc.loancontract_no
+left join mbmembmaster mb on mb.member_no = lm.member_no
+where lnc.ref_collno = $P{ref_collno} and lnc.coll_status = 1
+order by mb.member_no]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="COLL_WHO" class="java.lang.String"/>
+	<field name="COLLUSED_AMT" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d6f73d54-4765-455d-acc1-05b37d9b0520" x="0" y="0" width="111" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO} + "  " + $F{COLL_WHO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="12e4b159-4308-428f-b089-32d019decf3e" x="111" y="0" width="76" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COLLUSED_AMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

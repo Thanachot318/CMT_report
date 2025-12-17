@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_loan_collateral" language="groovy" pageWidth="455" pageHeight="555" orientation="Landscape" columnWidth="455" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="763e0747-438c-4d38-af14-a848aac6b9eb">
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="collmast_no" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+lnl.*,
+lnt.landtype_desc,
+(select province_desc from mbucfprovince where province_code = lnl.pos_province)  as province_desc,
+(select district_desc from mbucfdistrict where district_code = lnl.pos_amphur)  as amphur_desc,
+(select tambol_desc from mbucftambol where tambol_code = lnl.pos_tambol) as tambol_desc
+from lncollmastland lnl
+left join lnucflandtype lnt on lnl.landtype_code = lnt.landtype_code
+where lnl.collmast_no = $P{collmast_no}
+order by lnl.landtype_code]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="COLLMAST_NO" class="java.lang.String"/>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="LANDTYPE_CODE" class="java.lang.String"/>
+	<field name="LAND_RAVANG" class="java.lang.String"/>
+	<field name="LAND_DOCNO" class="java.lang.String"/>
+	<field name="LAND_LANDNO" class="java.lang.String"/>
+	<field name="LAND_BOOKNO" class="java.lang.String"/>
+	<field name="LAND_PAGENO" class="java.lang.String"/>
+	<field name="LAND_SURVEY" class="java.lang.String"/>
+	<field name="POS_PROVINCE" class="java.lang.String"/>
+	<field name="POS_AMPHUR" class="java.lang.String"/>
+	<field name="POS_TAMBOL" class="java.lang.String"/>
+	<field name="SIZE_RAI" class="java.math.BigDecimal"/>
+	<field name="SIZE_NGAN" class="java.math.BigDecimal"/>
+	<field name="SIZE_WA" class="java.math.BigDecimal"/>
+	<field name="PHOTOAIR_PROVINCE" class="java.lang.String"/>
+	<field name="PHOTOAIR_NUMBER" class="java.lang.String"/>
+	<field name="PHOTOAIR_PAGE" class="java.lang.String"/>
+	<field name="PRICEPER_UNITLAND" class="java.math.BigDecimal"/>
+	<field name="LAND_PRICE" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNITCOMPANY" class="java.math.BigDecimal"/>
+	<field name="COMPANY_PRICE" class="java.math.BigDecimal"/>
+	<field name="ESTCOMPANY_NAME" class="java.lang.String"/>
+	<field name="MORTGAGE_DATE" class="java.sql.Timestamp"/>
+	<field name="COLL_RATE" class="java.math.BigDecimal"/>
+	<field name="COMPANY_FLAG" class="java.math.BigDecimal"/>
+	<field name="AREA_AMT" class="java.math.BigDecimal"/>
+	<field name="LANDTYPE_DESC" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="AMPHUR_DESC" class="java.lang.String"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<variable name="land_bal" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{COMPANY_FLAG} == 1? $F{COMPANY_PRICE} : $F{LAND_PRICE}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e80068a5-0139-4922-b270-5c87a6b71fcf" x="65" y="0" width="40" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_DOCNO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a4ca669f-520d-4d51-8d6e-5895eb42e3c2" x="105" y="0" width="31" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_LANDNO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a9da213e-e307-462c-a4f3-9c1a2c3f71e4" x="136" y="0" width="25" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_RAVANG}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7f4c4615-32f1-42d1-af76-e9e58f8803bd" x="161" y="0" width="41" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_SURVEY}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="233ab62e-95a1-4229-ade2-b3d041e6ebf3" x="202" y="0" width="40" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($F{MORTGAGE_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3f42e463-fee5-45b8-90c5-ee11e4e3141e" x="334" y="0" width="39" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TAMBOL_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="458dbf74-bedb-4d9c-b157-db37ddddc6a0" x="373" y="0" width="38" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AMPHUR_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3dea512b-772b-4ddf-a90e-4fbfcd78e8dc" x="411" y="0" width="44" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="e933cc21-79f1-4458-a10c-356cd9f46fd8" x="283" y="0" width="51" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_FLAG} == 1? $F{COMPANY_PRICE} : $F{LAND_PRICE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="86f069e7-744a-4e7b-a054-18dcaba3b883" x="242" y="0" width="41" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AREA_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="20a55b80-3cf8-4ddb-9e4e-73c79761d3f0" x="0" y="0" width="65" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LANDTYPE_CODE} + " - " + $F{LANDTYPE_DESC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

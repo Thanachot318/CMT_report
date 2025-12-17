@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DLA_REALOAN_COLL" language="groovy" pageWidth="1044" pageHeight="1150" orientation="Landscape" columnWidth="1044" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5a1d7de0-5ba3-4656-82eb-bd3970b86fa2">
+	<property name="ireport.zoom" value="1.464100000000004"/>
+	<property name="ireport.x" value="376"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="loanrequest_docno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\api\\iReport\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+lnreqloancoll.ref_collno as MEMBER_NO ,
+lnreqloancoll.description  as FullName,
+    REPLACE(TO_CHAR(ft_calage(mbmembmaster.birth_date, SYSDATE, 4)), '.', '/') AS birth_age,
+    REPLACE(TO_CHAR(ft_calage(mbmembmaster.work_date, SYSDATE, 4)), '.', '/') AS work_age,
+    REPLACE(TO_CHAR(ft_calage(mbmembmaster.member_date, SYSDATE, 4)), '.', '/') AS member_age,
+mbmembmaster.SALARY_AMOUNT as SALARY_AMOUNT,
+lnreqloancoll.collactive_amt as LOANREQUEST_AMT
+FROM
+lnreqloancoll
+LEFT JOIN mbmembmaster ON lnreqloancoll.ref_collno = mbmembmaster.member_no
+where lnreqloancoll.loanrequest_docno = $P{loanrequest_docno}]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="BIRTH_AGE" class="java.lang.String"/>
+	<field name="WORK_AGE" class="java.lang.String"/>
+	<field name="MEMBER_AGE" class="java.lang.String"/>
+	<field name="SALARY_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="LOANREQUEST_AMT" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="7606e6b3-1643-4d20-b217-e0a3073aa0f6" x="572" y="0" width="50" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="def6434e-cf1e-4271-9799-128955958301" x="794" y="1" width="52" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0c1a0fb7-4352-4ca6-b2b1-d4f0a0df287a" x="0" y="0" width="52" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bc6cf72e-4ec2-4ec7-903b-017f2ccc11fb" x="268" y="0" width="108" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b7e2b892-2ea4-4d6c-b29c-67bda1d519ec" x="675" y="0" width="56" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="09805782-1f95-47d9-ac4e-39703f510875" x="956" y="1" width="53" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANREQUEST_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f4392f90-601f-432d-8ecf-0ec3ea6fafbf" x="119" y="0" width="81" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="cf72eeb3-d9de-4f05-8861-be6154d61324" x="376" y="1" width="41" height="20">
+					<printWhenExpression><![CDATA[$F{BIRTH_AGE} != "0/00" ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BIRTH_AGE} == 0 ? "" : $F{BIRTH_AGE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="72951e12-8a3e-4d43-b929-4c65da8b351c" x="731" y="1" width="63" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="0b34e85a-dd08-494a-9b37-a50d151f7731" x="417" y="0" width="39" height="20">
+					<printWhenExpression><![CDATA[$F{BIRTH_AGE} != "0/00" ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{WORK_AGE} == 0 ? "" : $F{WORK_AGE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="19f32e1d-1aac-4590-a831-e4c50b1d67b0" x="1009" y="1" width="33" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ad23152a-4e1d-41fe-849a-42223dcb3e80" x="495" y="0" width="77" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="9c2de763-37c4-4451-94db-509604825180" x="456" y="0" width="39" height="20">
+					<printWhenExpression><![CDATA[$F{BIRTH_AGE} != "0/00" ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_AGE} == 0 ? "" :  $F{MEMBER_AGE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="534d3975-4f81-4ff9-bc32-943924531ac0" x="52" y="0" width="67" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3aea9b26-1af8-4773-96aa-7d3fe2f1bc08" x="200" y="0" width="68" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBER_NO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f3e18c66-501b-4917-b499-17d0704248f8" x="846" y="1" width="55" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d16e0ab5-ac9b-400a-a6fb-f1bc88deba0c" x="901" y="1" width="55" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="53a84d24-a8ce-4e4f-88b9-cf7f9249eff4" x="622" y="1" width="53" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

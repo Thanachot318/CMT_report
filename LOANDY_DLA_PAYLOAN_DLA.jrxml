@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LOANDY_DLA_PAYLOAN_DLA" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ca20b459-0dc4-4247-af7c-ac66f8d98cc6">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="adtm_start" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_end" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sloantype_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="eloantype_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="status" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+case
+when $P{status} = '%' then lnloantype.loantype_desc|| ' ทั้งหมด'
+when $P{status} = '1' then lnloantype.loantype_desc|| ' สถานะ: อนุมัติ'
+when $P{status} = '-9' then lnloantype.loantype_desc|| ' สถานะ: ไม่อนุมัติ'
+when $P{status} = '12' then lnloantype.loantype_desc|| ' สถานะ: จ่ายแล้ว'
+when $P{status} = '8' then lnloantype.loantype_desc|| ' สถานะ: รออนุมัติ'
+else '' end as report_detail,
+Slslippayout.PAYOUTSLIP_NO ,
+	Slslippayout.OPERATE_DATE  ,
+	FT_GETGRPNAME(Slslippayout.coop_id, mbmembmaster.membgroup_code) AS grp_desc,
+	Slslippayout.MEMBER_NO ,
+	FT_GETMBNAME(Slslippayout.coop_id, Slslippayout.member_no) as FullName,
+	 REPLACE(TO_CHAR(lnreqloan.birth_age), '.', '/') AS birth_age,
+	 REPLACE(TO_CHAR(lnreqloan.work_age), '.', '/') AS work_age,
+	 REPLACE(TO_CHAR(lnreqloan.member_age), '.', '/') AS member_age,
+	mbmembmaster.position_desc,
+	mbmembmaster.SALARY_AMOUNT,
+	lnreqloan.INCOMEMONTH_OTHER AS INCOMEMONTH_OTHER,
+	lnreqloan.SHARE_BALANCE,
+	lnreqloan.loancredit_amt,
+	nvl( (
+		 select sum( lnreqloanclr.principal_balance) as principal_balance
+	 	 from lnreqloanclr where lnreqloanclr.loanrequest_docno =  lnreqloan.loanrequest_docno
+		 and lnreqloanclr.loantype_code = lnreqloan.loantype_code and lnreqloanclr.clear_status = 1),0)   as principal_balance_sum,
+	nvl ((
+		 select sum( lnreqloanclr.cp_interest) as principal_balance
+		 from lnreqloanclr where lnreqloanclr.loanrequest_docno =  lnreqloan.loanrequest_docno
+		 and lnreqloanclr.loantype_code = lnreqloan.loantype_code and lnreqloanclr.clear_status = 1),0)  as cp_interest_sum,
+	lnreqloan.LOANPERMISS_AMT ,
+	lnreqloan.LOANREQUEST_AMT ,
+	lnreqloan.period_payamt ,
+	lnreqloan.share_periodvalue,
+	lnreqloan.period_payment,
+	lnreqloan.paymonth_coop,
+	lnreqloan.paymonth_exp + lnreqloan.paymonth_other as pay_other,
+
+nvl((select sum(SLSLIPPAYINDET.ITEM_PAYAMT) from
+	 SLSLIPPAYINDET  where SLSLIPPAYINDET.PAYINSLIP_NO  = Slslippayout.SLIPCLEAR_NO AND SLSLIPPAYINDET.SLIPITEMTYPE_CODE  != 'LON'
+	),0)   as clrother_amt,
+
+0 as clrins_amt,
+
+lnreqloan.salary_bal ,
+	lnreqloan.recvestimate_amt,
+	Slslippayout.ENTRY_ID,
+	lnreqloan.loantype_code,
+	lnreqloan.loanrequest_docno,
+	mbucfprovince.province_code,
+	mbucfprovince.province_desc,
+	lnreqloan.paymonth_other AS paymonth_other,
+	lnloantype.prefix,
+	-- 0 AS principal_balance,
+	-- 0  AS cp_interest
+	nvl(lnreqloanclr.principal_balance,0) as principal_balance,
+	nvl(lnreqloanclr.cp_interest,0) as cp_interest
+FROM
+	Slslippayout
+LEFT JOIN lnreqloan ON  lnreqloan.LOANREQUEST_DOCNO = Slslippayout.LOANREQUEST_DOCNO
+left join lnreqloanclr on  lnreqloanclr.loanrequest_docno =  lnreqloan.loanrequest_docno and lnreqloanclr.clear_status = 1
+LEFT JOIN mbmembmaster ON
+	Slslippayout.member_no = mbmembmaster.member_no
+LEFT JOIN lnloantype ON
+	lnloantype.loantype_code = Slslippayout.SHRLONTYPE_CODE
+LEFT JOIN mbucfprovince ON
+	mbucfprovince.province_code = mbmembmaster.province_code
+where Slslippayout.OPERATE_DATE between  $P{adtm_start} and $P{adtm_end}
+and Slslippayout.SHRLONTYPE_CODE between $P{sloantype_code} and $P{eloantype_code}
+and Slslippayout.SLIP_STATUS like $P{status}]]>
+	</queryString>
+	<field name="REPORT_DETAIL" class="java.lang.String"/>
+	<field name="PAYOUTSLIP_NO" class="java.lang.String"/>
+	<field name="OPERATE_DATE" class="java.sql.Timestamp"/>
+	<field name="GRP_DESC" class="java.lang.String"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="BIRTH_AGE" class="java.lang.String"/>
+	<field name="WORK_AGE" class="java.lang.String"/>
+	<field name="MEMBER_AGE" class="java.lang.String"/>
+	<field name="POSITION_DESC" class="java.lang.String"/>
+	<field name="SALARY_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="INCOMEMONTH_OTHER" class="java.math.BigDecimal"/>
+	<field name="SHARE_BALANCE" class="java.math.BigDecimal"/>
+	<field name="LOANCREDIT_AMT" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE_SUM" class="java.math.BigDecimal"/>
+	<field name="CP_INTEREST_SUM" class="java.math.BigDecimal"/>
+	<field name="LOANPERMISS_AMT" class="java.math.BigDecimal"/>
+	<field name="LOANREQUEST_AMT" class="java.math.BigDecimal"/>
+	<field name="PERIOD_PAYAMT" class="java.math.BigDecimal"/>
+	<field name="SHARE_PERIODVALUE" class="java.math.BigDecimal"/>
+	<field name="PERIOD_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="PAYMONTH_COOP" class="java.math.BigDecimal"/>
+	<field name="PAY_OTHER" class="java.math.BigDecimal"/>
+	<field name="CLROTHER_AMT" class="java.math.BigDecimal"/>
+	<field name="CLRINS_AMT" class="java.math.BigDecimal"/>
+	<field name="SALARY_BAL" class="java.math.BigDecimal"/>
+	<field name="RECVESTIMATE_AMT" class="java.math.BigDecimal"/>
+	<field name="ENTRY_ID" class="java.lang.String"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANREQUEST_DOCNO" class="java.lang.String"/>
+	<field name="PROVINCE_CODE" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="PAYMONTH_OTHER" class="java.math.BigDecimal"/>
+	<field name="PREFIX" class="java.lang.String"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="CP_INTEREST" class="java.math.BigDecimal"/>
+	<columnHeader>
+		<band height="101" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

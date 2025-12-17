@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_hr_emp_profile" language="groovy" pageWidth="847" pageHeight="595" orientation="Landscape" columnWidth="807" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e4e081f2-8fc9-49f6-9843-a710cb21f2a6">
+	<property name="ireport.zoom" value="1.0000000000000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_coop_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_sempno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_eempno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select DISTINCT
+hr.emp_no,
+mp.prename_desc||hr.emp_name||' '||hr.emp_surname as fullname ,
+hd.pos_desc,
+hdg.deptgrp_desc,
+hud.education_desc,
+hre.edu_degree,
+hre.edu_major,
+hr.contain_date,
+TRUNC(MONTHS_BETWEEN (SYSDATE,hr.work_date ) /12 )  || ' ปี' || ' ' ||
+TRUNC(MOD(MONTHS_BETWEEN(SYSDATE,hr.work_date),12)) || ' เดือน' as age,
+(case when hr.emptype_code in ('01','02') then hr.salary_amt else hr.daily_wage end) as salary_amt,
+hr.emplevel_code  as emplevel_code,
+'ระดับ '||hr.emplevel_code  as emplevel_code_1,
+hrc.order_date
+from hremployee hr ,
+ hremployeeedu hre ,
+ hrucfpositionmas hm ,
+hrucfpositiondet hd ,
+mbucfprename mp,
+hrlogchangework hrc ,
+hrucfdeptgrp hdg ,
+hrucfeducation hud
+where hr.prename_code = mp.prename_code
+and hr.emp_no = trim(hre.emp_no(+))
+and hr.pos_code = hd.pos_code(+)
+and hd.pos_mas  = hm.pos_mas(+)
+and hr.emp_no = hrc.emp_no(+)
+and hr.emplevel_code = hrc.emplevel_code(+)
+and hr.deptgrp_code = hdg.deptgrp_code(+)
+and hre.education_code = hud.education_code(+)
+and hr.coop_id = $P{as_coop_id}
+and hr.emp_no  between $P{as_sempno} and $P{as_eempno}
+order by hr.emp_no]]>
+	</queryString>
+	<field name="EMP_NO" class="java.lang.String"/>
+	<field name="FULLNAME" class="java.lang.String"/>
+	<field name="POS_DESC" class="java.lang.String"/>
+	<field name="DEPTGRP_DESC" class="java.lang.String"/>
+	<field name="EDUCATION_DESC" class="java.lang.String"/>
+	<field name="EDU_DEGREE" class="java.lang.String"/>
+	<field name="EDU_MAJOR" class="java.lang.String"/>
+	<field name="CONTAIN_DATE" class="java.sql.Timestamp"/>
+	<field name="AGE" class="java.lang.String"/>
+	<field name="SALARY_AMT" class="java.math.BigDecimal"/>
+	<field name="EMPLEVEL_CODE" class="java.lang.String"/>
+	<field name="EMPLEVEL_CODE_1" class="java.lang.String"/>
+	<field name="ORDER_DATE" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="83" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="181d946d-e669-43fb-ade3-e8eac6acbd12" x="0" y="0" width="807" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ประวัติเจ้าหน้าที่สหกรณ์ออมทรัพย์กรมป่าไม้ จำกัด (ใช้)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="de2d1841-4ff6-4d17-982d-bff81b121f2c" x="0" y="60" width="29" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9d2443e8-7afc-45ff-b9d3-44cdb40c4c9c" x="29" y="60" width="130" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ชื่อ-สกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c35203e3-41bc-4ac5-af56-982ca63c76e0" x="159" y="60" width="140" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ตำเเหน่ง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="13e0de76-c6a2-4e8f-9c40-af0b8c6f2c3e" x="299" y="60" width="120" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[สังกัด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="65a0f7b4-3e6b-416b-9392-7eb503c1f296" x="419" y="60" width="140" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วุฒิการศึกษา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b426b35f-1b4f-48ea-978e-b72f0a3b30db" x="559" y="60" width="61" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันบรรจุ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8d61b7f2-3788-4d4f-88d7-769432058b43" x="620" y="60" width="61" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[อายุงาน(ปี)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="397d7b40-ce8c-4c19-8d18-a200fd15e560" x="681" y="60" width="65" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เงินเดือน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="38b3dc9d-527f-439b-a863-a6ea578d139b" x="746" y="60" width="61" height="23"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ระดับ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="852e57a4-c476-4955-b254-fed2f4b2969a" x="0" y="33" width="807" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ณ วันที่  "+ new SimpleDateFormat("d MMMM yyyy",new Locale("th","TH")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f45365e8-bcea-4486-a47f-d07b4cbb6118" x="728" y="10" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["วันที่พิมพ์ : " + new SimpleDateFormat("dd/MM/yyyy",new Locale ( "th", "TH" )).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="48" splitType="Stretch">
+			<textField>
+				<reportElement uuid="3add43ce-ede1-447a-8507-ad6bab590778" x="0" y="0" width="29" height="48"/>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8c0b370d-4d73-44a9-bb8f-181297e62728" x="29" y="0" width="130" height="48"/>
+				<box leftPadding="3">
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULLNAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ba345af1-cf76-4c1e-9bbb-2d3c1dd6c1a4" x="159" y="0" width="140" height="48"/>
+				<box leftPadding="3">
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{POS_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1c1a2414-0191-498c-97c5-9710d0731789" x="299" y="0" width="120" height="48"/>
+				<box leftPadding="3">
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTGRP_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="42fdcc40-aae5-4a65-83b8-d33fb69a26b9" x="419" y="0" width="140" height="16"/>
+				<box leftPadding="3">
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EDUCATION_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c2b0fbb9-3b2c-4a00-9dfb-52bc55b5d89e" x="559" y="0" width="61" height="48"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("d MMM yyyy",new Locale("th","TH")).format($F{CONTAIN_DATE})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d4df60ad-202e-4db6-a5ca-0208cf8b9b4b" x="620" y="0" width="61" height="48"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AGE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="469b7bc6-39da-4baf-93cd-faaf6a031007" x="681" y="0" width="65" height="48"/>
+				<box rightPadding="3">
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SALARY_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="01cf5a2f-4ca6-44f1-84d7-99f36f6f472c" x="746" y="0" width="61" height="22"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMPLEVEL_CODE}!=null?$F{EMPLEVEL_CODE_1}:""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ac602a5f-99aa-413e-9fe9-92243c0c71f2" x="746" y="22" width="61" height="26"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("d MMM yyyy",new Locale("th","TH")).format($F{ORDER_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fe681e76-9e18-45d9-bccb-6cbfe9f62bd6" x="419" y="16" width="140" height="16"/>
+				<box leftPadding="3">
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EDU_DEGREE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="14f8e858-8e65-4fb2-b02b-bf5b0ab2d0c1" x="419" y="32" width="140" height="16"/>
+				<box leftPadding="3">
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EDU_MAJOR}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

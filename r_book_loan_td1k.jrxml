@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="r_book_loan_td1k" language="groovy" pageWidth="612" pageHeight="1252" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="cf291b26-8024-42ea-aef8-86ef1d8021ba">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="colmast_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+lnl.*,
+lnm.*,
+(select province_desc from mbucfprovince where province_code = lnl.pos_province)  as province_desc,
+(select district_desc from mbucfdistrict where district_code = lnl.pos_amphur)  as amphur_desc,
+(select tambol_desc from mbucftambol where tambol_code = lnl.pos_tambol) as tambol_desc,
+ft_getmbname(lnm.coop_id, lnm.member_no) as mem_name,
+ft_readtbaht(lnm.est_price) as m_bath,
+(select tambol_desc from mbucftambol where tambol_code = lnm.mrtg_tambol1) as tambol_desc2,
+(select district_desc from mbucfdistrict where district_code = lnm.mrtg_amphur1)  as amphur_desc2,
+(select province_desc from mbucfprovince where province_code = lnm.mrtg_province1)  as province_desc2,
+(select tambol_desc from mbucftambol where tambol_code = lnm.autzd_tambol) as tambol_desc3,
+(select district_desc from mbucfdistrict where district_code = lnm.autzd_amphur)  as amphur_desc3,
+(select province_desc from mbucfprovince where province_code = lnm.autzd_province)  as province_desc3,
+(select coop_name from cmcoopmaster where coop_id = lnm.coop_id) as coop_name,
+(select addr_moo from cmcoopmaster where coop_id = lnm.coop_id) as addr_moo
+from lncollmaster lnm
+join lncollmastland lnl on lnm.collmast_no = lnl.collmast_no
+where lnm.collmast_no = $P{colmast_no}
+and lnl.coop_id = $P{coopid}]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="COLLMAST_NO" class="java.lang.String"/>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="LANDTYPE_CODE" class="java.lang.String"/>
+	<field name="LAND_RAVANG" class="java.lang.String"/>
+	<field name="LAND_DOCNO" class="java.lang.String"/>
+	<field name="LAND_LANDNO" class="java.lang.String"/>
+	<field name="LAND_BOOKNO" class="java.lang.String"/>
+	<field name="LAND_PAGENO" class="java.lang.String"/>
+	<field name="LAND_SURVEY" class="java.lang.String"/>
+	<field name="POS_PROVINCE" class="java.lang.String"/>
+	<field name="POS_AMPHUR" class="java.lang.String"/>
+	<field name="POS_TAMBOL" class="java.lang.String"/>
+	<field name="SIZE_RAI" class="java.math.BigDecimal"/>
+	<field name="SIZE_NGAN" class="java.math.BigDecimal"/>
+	<field name="SIZE_WA" class="java.math.BigDecimal"/>
+	<field name="PHOTOAIR_PROVINCE" class="java.lang.String"/>
+	<field name="PHOTOAIR_NUMBER" class="java.lang.String"/>
+	<field name="PHOTOAIR_PAGE" class="java.lang.String"/>
+	<field name="PRICEPER_UNITLAND" class="java.math.BigDecimal"/>
+	<field name="LAND_PRICE" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNITCOMPANY" class="java.math.BigDecimal"/>
+	<field name="COMPANY_PRICE" class="java.math.BigDecimal"/>
+	<field name="ESTCOMPANY_NAME" class="java.lang.String"/>
+	<field name="MORTGAGE_DATE" class="java.sql.Timestamp"/>
+	<field name="COLL_RATE" class="java.math.BigDecimal"/>
+	<field name="COMPANY_FLAG" class="java.math.BigDecimal"/>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="COLLMAST_TYPE" class="java.lang.String"/>
+	<field name="COLLMAST_DATE" class="java.sql.Timestamp"/>
+	<field name="COLL_PRICE" class="java.math.BigDecimal"/>
+	<field name="COLL_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="PRICEPER_UNIT" class="java.math.BigDecimal"/>
+	<field name="EST_PERCENT" class="java.math.BigDecimal"/>
+	<field name="EST_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGE_PRICE" class="java.math.BigDecimal"/>
+	<field name="EXPIRE_DATE" class="java.sql.Timestamp"/>
+	<field name="REDEEM_DATE" class="java.sql.Timestamp"/>
+	<field name="COLLMAST_STATUS" class="java.math.BigDecimal"/>
+	<field name="LAND_DEPARTMENT" class="java.lang.String"/>
+	<field name="BUILDINGTYPE_CODE" class="java.lang.String"/>
+	<field name="BD_VILLAGE" class="java.lang.String"/>
+	<field name="BD_ADDRNO" class="java.lang.String"/>
+	<field name="BD_ADDRMOO" class="java.lang.String"/>
+	<field name="BD_SOI" class="java.lang.String"/>
+	<field name="BD_ROAD" class="java.lang.String"/>
+	<field name="BD_TAMBOL" class="java.lang.String"/>
+	<field name="BD_AMPHUR" class="java.lang.String"/>
+	<field name="BD_PROVINCE" class="java.lang.String"/>
+	<field name="BD_AGE" class="java.math.BigDecimal"/>
+	<field name="CONDO_REGISTNO" class="java.lang.String"/>
+	<field name="CONDO_NAME" class="java.lang.String"/>
+	<field name="CONDO_TOWERNO" class="java.lang.String"/>
+	<field name="CONDO_FLOOR" class="java.lang.String"/>
+	<field name="CONDO_ROOMNO" class="java.lang.String"/>
+	<field name="CONDO_ROOMSIZE" class="java.math.BigDecimal"/>
+	<field name="CONDO_AGE" class="java.math.BigDecimal"/>
+	<field name="DESC_POSITION" class="java.lang.String"/>
+	<field name="DESC_UTILITY" class="java.lang.String"/>
+	<field name="DESC_TRAVEL" class="java.lang.String"/>
+	<field name="DESC_ETC" class="java.lang.String"/>
+	<field name="REDEEM_FLAG" class="java.math.BigDecimal"/>
+	<field name="COLLMAST_DESC" class="java.lang.String"/>
+	<field name="BHPRICENOW_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="BGMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="BHADJUSTVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="ASSETVAL_AMT" class="java.math.BigDecimal"/>
+	<field name="LAWSALE_AMT" class="java.math.BigDecimal"/>
+	<field name="INSURANCE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGE_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMMORAGECOMP_AMT" class="java.math.BigDecimal"/>
+	<field name="ROMADJUST_AMT" class="java.math.BigDecimal"/>
+	<field name="INSURANCEFIRE_AMT" class="java.math.BigDecimal"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="BD_ONLANDNO" class="java.lang.String"/>
+	<field name="BD_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="CONDO_DEPRECIATION" class="java.math.BigDecimal"/>
+	<field name="CONDO_PRICESQUARE" class="java.math.BigDecimal"/>
+	<field name="AUTRZ_DATE" class="java.sql.Timestamp"/>
+	<field name="AUTZD_PROVINCE" class="java.lang.String"/>
+	<field name="AUTRZ_NAME2" class="java.lang.String"/>
+	<field name="AUTRZ_NAME1" class="java.lang.String"/>
+	<field name="AUTZD_PERSONID" class="java.lang.String"/>
+	<field name="AUTRZ_POS1" class="java.lang.String"/>
+	<field name="AUTRZ_POS2" class="java.lang.String"/>
+	<field name="AUTZD_AGE" class="java.lang.String"/>
+	<field name="AUTZD_NATIONALITY" class="java.lang.String"/>
+	<field name="AUTZD_CITIZENSHIP" class="java.lang.String"/>
+	<field name="AUTZD_PARENTNAME" class="java.lang.String"/>
+	<field name="AUTZD_VILLAGE" class="java.lang.String"/>
+	<field name="AUTZD_ADDRESS" class="java.lang.String"/>
+	<field name="AUTZD_MOO" class="java.lang.String"/>
+	<field name="AUTZD_SOI" class="java.lang.String"/>
+	<field name="AUTZD_ROAD" class="java.lang.String"/>
+	<field name="AUTZD_TAMBOL" class="java.lang.String"/>
+	<field name="AUTZD_AMPHUR" class="java.lang.String"/>
+	<field name="AUTZD_NAME" class="java.lang.String"/>
+	<field name="MRTG_PHONE1" class="java.lang.String"/>
+	<field name="MRTG_PHONE2" class="java.lang.String"/>
+	<field name="MRTG_MEMNO1" class="java.lang.String"/>
+	<field name="MRTG_NAME1" class="java.lang.String"/>
+	<field name="MRTG_PERSONID1" class="java.lang.String"/>
+	<field name="MRTG_AGE1" class="java.lang.String"/>
+	<field name="MRTG_NATIONALITY1" class="java.lang.String"/>
+	<field name="MRTG_CITIZENSHIP1" class="java.lang.String"/>
+	<field name="MRTG_PARENTNAME1" class="java.lang.String"/>
+	<field name="MRTG_MATENAME1" class="java.lang.String"/>
+	<field name="MRTG_VILLAGE1" class="java.lang.String"/>
+	<field name="MRTG_ADDRESS1" class="java.lang.String"/>
+	<field name="MRTG_MOO1" class="java.lang.String"/>
+	<field name="MRTG_PROVINCE1" class="java.lang.String"/>
+	<field name="MRTG_AMPHUR1" class="java.lang.String"/>
+	<field name="MRTG_TAMBOL1" class="java.lang.String"/>
+	<field name="MRTG_SOI1" class="java.lang.String"/>
+	<field name="MRTG_ROAD1" class="java.lang.String"/>
+	<field name="MRTG_MEMNO2" class="java.lang.String"/>
+	<field name="MRTG_NAME2" class="java.lang.String"/>
+	<field name="MRTG_PERSONID2" class="java.lang.String"/>
+	<field name="MRTG_AGE2" class="java.lang.String"/>
+	<field name="MRTG_NATIONALITY2" class="java.lang.String"/>
+	<field name="MRTG_CITIZENSHIP2" class="java.lang.String"/>
+	<field name="MRTG_PARENTNAME2" class="java.lang.String"/>
+	<field name="MRTG_MATENAME2" class="java.lang.String"/>
+	<field name="MRTG_VILLAGE2" class="java.lang.String"/>
+	<field name="MRTG_ADDRESS2" class="java.lang.String"/>
+	<field name="MRTG_MOO2" class="java.lang.String"/>
+	<field name="MRTG_PROVINCE2" class="java.lang.String"/>
+	<field name="MRTG_AMPHUR2" class="java.lang.String"/>
+	<field name="MRTG_TAMBOL2" class="java.lang.String"/>
+	<field name="MRTG_SOI2" class="java.lang.String"/>
+	<field name="MRTG_ROAD2" class="java.lang.String"/>
+	<field name="LAND_OFFICE" class="java.lang.String"/>
+	<field name="MORTGAGE_GRTNAME" class="java.lang.String"/>
+	<field name="INTEREST_RATE" class="java.math.BigDecimal"/>
+	<field name="MORTGAGESUM_AMT" class="java.math.BigDecimal"/>
+	<field name="MORTGAGEFIRST_AMT" class="java.math.BigDecimal"/>
+	<field name="LEASEHOLD_RIGHTS" class="java.math.BigDecimal"/>
+	<field name="ESTLAND_PRICE" class="java.math.BigDecimal"/>
+	<field name="ESTBUILDING_PRICE" class="java.math.BigDecimal"/>
+	<field name="COLLMASTNO_OLD" class="java.lang.String"/>
+	<field name="CALRENEWVAL_TYPE" class="java.math.BigDecimal"/>
+	<field name="CALRENEWVAL_PERIOD" class="java.math.BigDecimal"/>
+	<field name="CALRENEWVAL_DATE" class="java.sql.Timestamp"/>
+	<field name="MORTAGELAND_PERCENT" class="java.math.BigDecimal"/>
+	<field name="MORTAGELAND_AMT" class="java.math.BigDecimal"/>
+	<field name="BUILDING_PRICE" class="java.math.BigDecimal"/>
+	<field name="MORTAGEBUILD_PERCENT" class="java.math.BigDecimal"/>
+	<field name="MORTAGEBUILD_AMT" class="java.math.BigDecimal"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="AMPHUR_DESC" class="java.lang.String"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<field name="MEM_NAME" class="java.lang.String"/>
+	<field name="M_BATH" class="java.lang.String"/>
+	<field name="TAMBOL_DESC2" class="java.lang.String"/>
+	<field name="AMPHUR_DESC2" class="java.lang.String"/>
+	<field name="PROVINCE_DESC2" class="java.lang.String"/>
+	<field name="TAMBOL_DESC3" class="java.lang.String"/>
+	<field name="AMPHUR_DESC3" class="java.lang.String"/>
+	<field name="PROVINCE_DESC3" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="ADDR_MOO" class="java.lang.String"/>
+	<group name="land_seq" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{SEQ_NO}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="115">
+			<staticText>
+				<reportElement uuid="cd3f2e36-ddaf-4434-8750-a8d12c8d28e7" x="159" y="65" width="272" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[คำขอจดทะเบียนสิทธิและนิติกรรม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="689a452d-44b9-4af1-a89e-cf799de255b6" x="159" y="85" width="272" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[การสอบสวนสิทธิในที่ดินและประเภทจำนองเป็นประกัน]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="c56d5f2a-6690-4c8e-93fa-899fe707136d" x="465" y="3" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="045452c4-4f50-4fd9-88f7-c68d38789b93" x="465" y="19" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="fd97cea6-ed0b-41db-b91c-2779cf67326c" x="489" y="16" width="58" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ที่สวน / ไร่]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="15e9a4a5-2315-450b-bba0-c07c99404234" x="465" y="36" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="9e1150a1-bde9-4cd5-8928-429d3035b0b2" x="489" y="34" width="58" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ที่นา]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="1720d241-5c67-4567-aaaf-b8e652d4fa8d" x="465" y="53" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="291efc04-669d-4fb4-a1d8-1a1d74fef263" x="489" y="50" width="68" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ที่....................]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="183d8be2-5846-454c-a684-25711af37aa5" x="465" y="70" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="1376cdbd-369f-4ef5-9e89-8802de35df7d" x="488" y="67" width="43" height="18"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[นอกเขต]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="9a573fc4-dae3-46d0-bb05-db5c0a3c64c0" x="465" y="88" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="88fdf7e8-1790-4c9b-ab67-6a9eb3188e73" x="488" y="85" width="32" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ในเขต]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="685c5957-5382-4a96-a83d-abc1407f6b16" x="251" y="0" width="94" height="65"/>
+				<imageExpression><![CDATA["Image/chut.JPG"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="d2e396c8-6131-4c98-bbb0-66571d08d02a" x="489" y="0" width="31" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ที่บ้าน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="75a8ccec-527c-4424-b63a-75f56d245e29" x="521" y="0" width="49" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(ท.ด.๑ ก.)]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="1036" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="5913d6b9-597f-4e9c-a47b-4a7330d4c86c" x="14" y="113" width="558" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จังหวัด.....................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3ae61626-6687-4e9a-8ca9-185f0bf08bf5" x="47" y="278" width="525" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๒. ข้าพเจ้า....................................................................................................................................................	ผู้จำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="710c5a95-26d3-46bd-a1d8-716f2ffe5fef" x="31" y="869" width="541" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๑) ราคาประเมินทุนทรัพย์.................................................บาท.................................................................................................สตางค์]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d1ac770-5495-435e-a985-c9d8d3d8fdc4" x="14" y="29" width="66" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[ตำแหน่งที่ดิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fa66c120-9427-457e-8a32-944ab5565596" x="14" y="53" width="559" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หมู่ที่........................................................................................      เลขที่.................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a55816f6-1135-47a8-9e00-20c4ed490816" x="14" y="73" width="557" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ตำบล.......................................................................................      เล่ม.............................................หน้า................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="53229f2d-e01c-4847-9bf1-d9f42861200d" x="288" y="29" width="84" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[ทะเบียน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0458e090-2be6-4664-ac3f-fbd1525732f4" x="14" y="93" width="557" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[อำเภอ......................................................................................      เลขที่ดิน............................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c69fa95b-aa21-4daf-a6c0-926b1162ea76" x="14" y="132" width="558" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ระวางรูปถ่ายทางอากาศชื่อ.........................................................     หมายเลข......................................แผ่นที่............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ebd4d061-a234-457b-867b-da4b5453fb7f" x="14" y="152" width="558" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จำนวนที่ดิน....................................................ไร่.................................................................งาน...................................................ตารางวา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bc9c1bf8-8672-40ed-9a59-25c25f726a9a" x="48" y="238" width="525" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๑. ข้าพเจ้าผู้มีนามต่อไปนี้ มีความประสงค์ขอจดทะเบียนสิทธิและนิติกรรมเกี่ยวกับอสังหาริมทรัพย์ที่กล่าวข้างบนนี้และได้ปฏิญาณตน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="36937d08-9193-4a15-ba11-2661db9fd61d" x="15" y="258" width="506" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ขอให้ถ้อยคำด้วยความสัตย์จริง ถ้าข้าพเจ้าให้ถ้อยคำไม่เป็นความจริงให้ใช้ถ้อยคำนี้ยันข้าพเจ้าในทางคดีอาญา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="317f2813-074e-4d22-8e52-b4fb210851d8" x="87" y="298" width="484" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ .................................................................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0ee9fa95-7c0f-4cc7-99e9-c6831d732509" x="15" y="318" width="558" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[อายุ.......................ปี   สัญชาติ.............................บิดา/มารดาชื่อ...............................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="901d4704-b18b-4e7d-845b-604b5d0bf908" x="56" y="341" width="41" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[โสด]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="59c9ad6f-b3f0-46c1-b9ee-52c1d2e65978" x="39" y="344" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="4629c456-63e2-4e7e-8a43-0348760ec7e6" x="138" y="341" width="41" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หม้าย]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="c8e4575e-a01b-4aa9-9eee-f703c34910fe" x="121" y="344" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="e7c8c4a0-9167-45ff-9296-b8d19fb4229f" x="217" y="340" width="355" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[คู่สมรสชื่อ..................................................................................................................]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="fbd63586-21fa-4f63-8b0c-b21bba69620d" x="200" y="344" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="4f0a7a2c-5886-4525-8a2e-bbf24d244270" x="14" y="365" width="559" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[อยู่ที่บ้าน/หมู่บ้าน..............................................เลขที่......................................ตรอก/ซอย...............................ถนน......................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3b10531a-0908-4896-8ac2-ed1c1e501f53" x="14" y="385" width="557" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หมู่ที่...........................ตำบล/แขวง.........................................อำเภอ/เขต..........................................จังหวัด..............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e44a9d0a-2762-4168-bd1c-7a8d2ae93ac6" x="13" y="405" width="314" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หมายเลขโทรศัพท์............................................................................]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="6faf4f9d-804c-47e8-90d0-dbcfc74ef102" x="190" y="2" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="32cf0d72-99eb-4976-8864-347284707463" x="290" y="2" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="97340fae-deaa-4a43-80fb-292d06277be3" x="190" y="16" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="80f0100a-f1a8-4bd1-b80f-1deb861ecff8" x="204" y="12" width="78" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[อื่นๆ ...................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f7e4907d-40d8-4f76-9217-24ad79b42b32" x="204" y="-2" width="31" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[น.ส.๓]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="52439d82-34e2-4357-8ee6-c9d0170bcac8" x="304" y="-2" width="47" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[น.ส.๓ ก.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d1a750ec-8f46-41cd-b4f6-7d0208f19364" x="49" y="425" width="382" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๓. ข้าพเจ้า...........................................................................................................ผู้รับจำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="13fd0c54-77f9-4611-8a84-b23b4ce82e3e" x="76" y="445" width="313" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[โดย...........................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="60e7685f-1334-437e-92ed-fef17c3ec8ec" x="43" y="568" width="528" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๔. ข้าพเจ้าขอแสดงราคาทรัพย์ที่ขอทำนิติกรรมนี้เป็นเงิน..................................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c32ab277-5287-403f-95eb-0a3df498e71f" x="43" y="587" width="109" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๕. ข้าพเจ้าขอรับรองว่า]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="71785861-024e-42d2-8ba5-4bddc8d27514" x="66" y="606" width="299" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(๑) ข้าพเจ้าไม่ได้รับโอนแทนหรือเพื่อประโยชน์แก่บุคคลต่างด้าว]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d6466f4d-410b-4c03-91b3-725a7f83b7f1" x="66" y="625" width="299" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(๒) ราคาทรัพย์ที่แสดงไว้ใน ๔. เป็นราคาที่แท้จริง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a4bf2e04-0884-416a-93a9-8143f101d818" x="66" y="644" width="506" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(๓) จำนองที่ดินพร้อมสิ่งปลูกสร้างที่มีอยู่แล้วหรือที่จะมีขึ้นในภายหน้าเพื่อเป็นประกันหนี้และภาระผูกพันของ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ed26f764-d6c4-45f1-9e91-5990d8d66175" x="66" y="664" width="303" height="17"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[............................................................................................................ต่อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="075f8d72-3848-4fc4-90b4-8a4b609102ab" x="252" y="736" width="321" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[วันที่......................เดือน.................................พ.ศ. ....................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4d4ff89a-9eba-4ef9-850e-a6fb5291fe9d" x="148" y="759" width="238" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ลงชื่อ...............................................................ผู้ขอจำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="99b9def9-77cf-4e02-9418-febcaf2cb1a3" x="148" y="778" width="238" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ลงชื่อ...............................................................ผู้รับจำนอง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87e6fcee-e5b9-412b-ba15-6099ec0d4059" x="148" y="798" width="238" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ลงชื่อ...............................................................ผู้สอบสวน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1e7aea22-db4a-4f9a-a0ae-6d13d5aec68f" x="148" y="818" width="203" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(...............................................................)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f3390853-dd0e-4b85-bbae-3b6549f68af8" x="44" y="943" width="528" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[คงเหลือ.......................................................................ไร่........................................................งาน...................................ตารางวา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d3575ad1-009c-41e8-a0db-124ffc222a0a" x="44" y="925" width="529" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[จำนวนที่ดิน.................................................................ไร่........................................................งาน...................................ตารางวา]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b5b88dc-95bf-4149-aa24-0f4c583c075f" x="177" y="848" width="203" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[สำหรับพนักงานเจ้าพนักงาน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="628b1617-916d-4241-92b4-3d776ba2dc55" x="31" y="887" width="540" height="18"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๒) โฉนดที่ดินใหม่ระวาง....................................................เลขที่ดิน..............................................หน้าสำรวจ......................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7ece1a4a-b1cf-4bdf-be1e-60f1b9bdb137" x="44" y="905" width="528" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[โฉนดที่ดินลขที่.............................................................เล่ม.....................................................หน้า................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5bcca551-f73d-4daa-b3a5-d7ccfb4b7b26" x="183" y="983" width="290" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ลงชื่อ...............................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bc91789c-9cda-4786-81fe-1fbd3beb75f5" x="183" y="1004" width="203" height="19"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(...............................................................)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3055aa34-e750-4a09-89f5-299cacdcee81" x="31" y="961" width="539" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[๓) ได้จดทะเบียนแล้วแต่วันที่................. เดือน........................................................ พ.ศ. ....................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a98158c5-7cb1-4b4c-b225-68e3be671718" x="183" y="1017" width="203" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="14" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[เจ้าพนักงานที่ดิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="663a69f7-0085-4915-bf56-6d7bd8433051" x="217" y="486" width="355" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[คู่สมรสชื่อ...................................................................................................................]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="ebf81357-bcf3-4169-87af-36bc5d98891c" x="121" y="490" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="2d274adf-5dec-466a-b051-6f705cc22594" x="200" y="490" width="10" height="10"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="2d20ce34-261b-4811-ac16-473b9ab3065a" x="39" y="490" width="10" height="10"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="bf1a71c6-51dc-4714-b417-4b6a28bd92cb" x="56" y="486" width="41" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[โสด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0511b24f-84a2-45a8-9cef-f2bf5f8a53b9" x="138" y="486" width="41" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หม้าย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="da327b9f-d0a1-420d-9445-080f5094d545" x="66" y="681" width="505" height="17"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(๔)  ดอกเบี้ยร้อยละ...................ต่อปี ส่งดอกเบี้ยเดือนละครั้ง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7100f1a8-101e-473e-860d-8cddcb24dd93" x="66" y="698" width="505" height="17"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(๕) เงื่อนไขและข้อตกลงอื่น ๆ ให้เป็นไปตามข้อตกลงท้ายหนังสือสัญญาจำนองเป็นประกันทุกประการและให้ถือว่าข้อตกลงต่อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7fdfd96a-9fd6-4d4f-b59e-7322abda5f1a" x="44" y="715" width="528" height="17"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ท้ายสัญญาจำนองเป็นประกันเป็นส่วนหนึ่งของสัญญาจำนองเป็นประกันด้วย (จำนวน 1 ฉบับ)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="10e0d898-2d8f-4f17-9588-38336e8bd8ea" x="13" y="465" width="558" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[อายุ.......................ปี   สัญชาติ.............................บิดา/มารดาชื่อ................................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7b58ef8d-ae7f-4773-915c-5ff3bec08f23" x="11" y="548" width="298" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หมายเลขโทรศัพท์............................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f50e4f0b-2745-46f7-b5da-c91352025cc5" x="12" y="528" width="560" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[หมู่ที่...........................ตำบล/แขวง...........................................อำเภอ/เขต.........................................จังหวัด...............................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0424852e-8571-41b1-87e5-91bfdcd47dc6" x="12" y="508" width="559" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[อยู่ที่บ้าน/หมู่บ้าน..............................................เลขที่.............................ตรอก/ซอย......................................ถนน........................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="07dd8cae-4f48-4918-ba60-b2f5a8c68aa7" x="47" y="71" width="219" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TAMBOL_DESC}==null ? "-":$F{TAMBOL_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="41b25805-59d9-439a-aa37-e687eca40dca" x="335" y="91" width="222" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_LANDNO}==null ? "-":$F{LAND_LANDNO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a6e09400-0dc3-404f-8b34-6c2b491f91d2" x="47" y="91" width="219" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AMPHUR_DESC}==null ? "-":$F{AMPHUR_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f646dce9-b0ca-4b3e-b82f-73bb9ac36929" x="47" y="111" width="219" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE_DESC}==null ? "-":$F{PROVINCE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2a8e77f6-4cdf-4fd7-b742-8ad34626135a" x="309" y="71" width="111" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_BOOKNO}==null ? "-":$F{LAND_BOOKNO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="86eca93f-b215-41e4-bbfe-7f25d67b99ac" x="256" y="150" width="71" height="20">
+					<printWhenExpression><![CDATA[($F{SIZE_NGAN}==null || $F{SIZE_NGAN}==0 ? false : true)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SIZE_NGAN}==null ? "-":$F{SIZE_NGAN}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fdb61a30-9f9e-44ec-ae45-ee70cdf3e5d0" x="90" y="150" width="79" height="20">
+					<printWhenExpression><![CDATA[($F{SIZE_RAI}==null || $F{SIZE_RAI}==0 ? false : true)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SIZE_RAI}==null ? "-":$F{SIZE_RAI}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e0219499-adc6-42a0-8749-d3ed4beb809c" x="335" y="51" width="222" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_DOCNO}==null ? "-":$F{LAND_DOCNO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="89cb9252-6a93-4be5-b690-630a3f6c0ea4" x="447" y="71" width="110" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAND_PAGENO}==null ? "-":$F{LAND_PAGENO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f872d6e1-c672-4a0e-b771-12c5a5e0c105" x="447" y="150" width="73" height="20">
+					<printWhenExpression><![CDATA[($F{SIZE_WA}==null || $F{SIZE_WA}==0 ? false : true)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SIZE_WA}==null ? "-":$F{SIZE_WA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d1e1e00d-fb7b-4456-b690-0ce5b1401362" x="105" y="276" width="294" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_NAME1}==null ? "-":$F{MRTG_NAME1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="db4026af-437c-45e9-8c02-ef685204d0b7" x="325" y="295" width="159" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_PERSONID2}==null ? "":"("+$F{MRTG_PERSONID2}+")"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e90c125a-9db0-43e5-8d18-ca98edc95b18" x="43" y="316" width="44" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{MRTG_AGE1}==null ? "-":$F{MRTG_AGE1})+"  "+
+($F{MRTG_AGE2}==null ? "-":$F{MRTG_AGE2})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e46789de-a9ac-4f3a-866f-83b5c050d316" x="151" y="316" width="59" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_NATIONALITY1}==null ? "-":$F{MRTG_NATIONALITY1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b5ca893e-7647-4c45-b8de-cc2c085d555c" x="282" y="316" width="288" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_PARENTNAME1}==null ? "-":$F{MRTG_PARENTNAME1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="45eea91e-6514-474c-8258-746d6e809985" x="266" y="338" width="291" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_MATENAME1}==null ? "-":$F{MRTG_MATENAME1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50ae3057-5d0d-4bec-8c39-6a0430e199c8" x="91" y="363" width="104" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_VILLAGE1}==null ? "-":$F{MRTG_VILLAGE1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1f38171f-d48f-49c8-8e56-c7f4344cbd12" x="224" y="363" width="93" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_ADDRESS1}==null ? "-":$F{MRTG_ADDRESS1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3dfe138e-7457-4a5c-81d5-fe99bdf9d84e" x="368" y="363" width="86" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_SOI1}==null ? "-":$F{MRTG_SOI1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8a98a9e8-fa3c-472a-a8c4-fa5eb39c4342" x="476" y="363" width="94" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_ROAD1}==null ? "-":$F{MRTG_ROAD1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="db0a8faa-8fb2-42cc-afd0-da1cb7ef97e0" x="46" y="383" width="60" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_MOO1}==null ? "-":$F{MRTG_MOO1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2e4167af-cfe4-4e52-b78e-d6fbedbc8956" x="162" y="383" width="94" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TAMBOL_DESC2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ae62dc08-8e49-4d13-a14c-49b6ab9ac82a" x="314" y="383" width="96" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AMPHUR_DESC2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1f40d3db-e302-4f5f-bb9a-bced0b6f056f" x="455" y="383" width="115" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE_DESC2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9f1ee42a-e1ef-46ad-94a6-2ff9c1d6f872" x="102" y="403" width="207" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_PHONE1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9aff1e67-0d9f-47bd-9444-2f7933cea631" x="150" y="463" width="50" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTZD_NATIONALITY}==null ? "-":$F{AUTZD_NATIONALITY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="56fb22c1-066e-49de-b658-b38322ce9168" x="100" y="546" width="186" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["0-2579-7070"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4c45bf16-b520-419b-89f3-84cdcda29bd3" x="92" y="506" width="98" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTZD_VILLAGE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ce873f61-5ae7-4d0d-8de2-388139569187" x="164" y="526" width="87" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TAMBOL_DESC3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2f9145ca-0b5c-43a1-bed2-cdd10823bb41" x="317" y="526" width="92" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AMPHUR_DESC3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a03a292c-d724-4e24-8eee-f8df33ce1698" x="453" y="526" width="117" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE_DESC3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a14ad64f-4ecc-44f7-9fd5-c047c44f0901" x="240" y="506" width="52" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTZD_ADDRESS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="da13fd61-a64b-48e2-934a-8ebe845aa125" x="274" y="566" width="85" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EST_PRICE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e7ab8bed-e87a-4e83-8167-970b956018c0" x="92" y="662" width="259" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEM_NAME}==null ? "-":$F{MEM_NAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="08efc41b-de7b-471a-a889-92dff04bfa94" x="159" y="680" width="40" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INTEREST_RATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a222fe1d-3f53-4fd7-bcee-1de2b52736e5" x="106" y="423" width="270" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}==null ? "-":$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eb61b066-b418-4f45-a5bc-27867bbd1754" x="106" y="443" width="280" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTZD_NAME}==null ? "-":"(โดย) "+$F{AUTZD_NAME}+"  "+$F{AUTRZ_POS1}+"  แทน "]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fb064ba1-a60c-4a37-86ef-9180966a7da0" x="357" y="566" width="200" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["("+$F{M_BATH}+")"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="af5eaf62-59b1-425f-9d9a-91c91c033105" x="367" y="664" width="205" height="17"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}==null ? "-":$F{COOP_NAME}+" ผู้รับจำนอง"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="688f3786-f8b2-4eae-b57e-d95ebed8928f" x="286" y="734" width="23" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("d",new Locale("th","TH")).format($F{MORTGAGE_DATE})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="f2e34eda-98ee-41ca-a547-71471eb21312" x="359" y="734" width="77" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("MMMM",new Locale("th","TH")).format($F{MORTGAGE_DATE})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="78585e28-00df-4a11-8aed-5b0097973210" x="468" y="734" width="66" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy",new Locale("th","TH")).format($F{MORTGAGE_DATE})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3cda6892-54f6-4c44-9de3-50ff7d177494" x="378" y="778" width="193" height="19"/>
+				<textElement>
+					<font fontName="Browallia New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTRZ_DATE}==null ? "": "(แทนตามหนังสือมอบอำนาจ ลว."+new SimpleDateFormat("d MMMM yyyy",new Locale("th","TH")).format($F{AUTRZ_DATE})+")"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c205dbc8-3fc1-4ce5-929c-24515e15b27e" x="325" y="276" width="213" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_PERSONID1}==null ? "-":"("+$F{MRTG_PERSONID1} +")"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0ce6d412-8765-4196-87c2-a7ecbc2666d9" x="105" y="296" width="294" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MRTG_NAME2}==null ? "":$F{MRTG_NAME2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="69b8de6d-018d-4bdd-b367-12cfac9d7a82" x="351" y="506" width="85" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTZD_SOI}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="314443f5-aeed-4e39-88a3-82fcbf51ba43" x="469" y="506" width="101" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTZD_ROAD}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="27a69202-48fb-4c98-be0d-709cf23f7513" x="37" y="526" width="78" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AUTZD_MOO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e7fb7f60-b428-4a63-8f8c-2ef297da487e" x="61" y="-2" width="31" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ก. ที่ดิน]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="85ac135b-07e3-46af-8f24-d63cdf19bc68" x="47" y="51" width="219" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADDR_MOO}==null ? "-":$F{ADDR_MOO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb4c53b-1be7-4d89-8b74-293278700c6f" x="14" y="196" width="558" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[............................................................................................................................................................................................]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="71930fab-fced-4b9a-beb3-0e910a0a1902" x="123" y="130" width="151" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PHOTOAIR_PROVINCE}==null ? "-":$F{PHOTOAIR_PROVINCE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c5c25a95-fc85-451d-91ae-bdef8d741810" x="327" y="130" width="93" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PHOTOAIR_NUMBER}==null ? "-":$F{PHOTOAIR_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4e9f1475-7bc9-4ab9-9815-9b4df055048a" x="455" y="130" width="107" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PHOTOAIR_PAGE}==null ? "-":$F{PHOTOAIR_PAGE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5f57836f-b8c1-4536-8274-c74ff35bd6eb" x="14" y="216" width="558" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[............................................................................................................................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="65d4562d-3876-45e2-82e0-3b360327a4b6" x="61" y="176" width="108" height="20"/>
+				<textElement>
+					<font fontName="Browallia New" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ข. อสังหาริมทรัพย์อย่างอื่น]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="34">
+			<staticText>
+				<reportElement uuid="151be750-2473-4cb7-8f3d-68a1082e2dab" x="32" y="1" width="344" height="33"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Browallia New" size="14" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[หมายเหตุ   ๑. ให้ทำเครื่องหมาย  /  ใน         หน้าข้อความที่ต้องการ
+                ๒. ให้ขีดฆ่าข้อความที่ไม่ต้องการออก]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="3486b74e-d503-48d7-9804-c215ffc54658" x="190" y="5" width="10" height="10"/>
+			</rectangle>
+			<line>
+				<reportElement uuid="1bba5b42-9ed9-4128-a1a8-f14ac1081022" x="0" y="1" width="573" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

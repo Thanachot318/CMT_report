@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_loan_lnreqloan_byoffer_subclroth" language="groovy" pageWidth="187" pageHeight="140" orientation="Landscape" columnWidth="187" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="94cd0237-942f-4aaf-af20-2bea25060da5">
+	<property name="ireport.zoom" value="4.177248169415656"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="req_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+    lnreqloanclrother.clrother_desc as clrother_desc,
+    lnreqloanclrother.clrother_amt as clrother_amt,
+    lnreqloanclrother.clrothertype_code as clrothertype_code,
+    case
+        when lnreqloanclrother.clrothertype_code = 'INN'
+        then 'ประกันชีวิต' else  clrother_desc end as ins_desc
+from lnreqloanclrother
+where lnreqloanclrother.loanrequest_docno = $P{req_no}
+  and lnreqloanclrother.clrothertype_code not in ('INN')
+
+union all
+
+SELECT
+    lnreqloanclrins.clrother_desc AS clrother_desc,
+    lnreqloanclrins.PREMIUM_AMT AS clrother_amt,
+    lnreqloanclrins.INSURETYPE_CODE AS clrothertype_code,
+    'ประกันชีวิต' as ins_desc
+FROM lnreqloanclrins
+where lnreqloanclrins.loanrequest_docno = $P{req_no}
+]]>
+	</queryString>
+	<field name="CLROTHER_DESC" class="java.lang.String"/>
+	<field name="CLROTHER_AMT" class="java.math.BigDecimal"/>
+	<field name="CLROTHERTYPE_CODE" class="java.lang.String"/>
+	<field name="INS_DESC" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="1f591582-27a4-484a-bd47-3b981b1f9856" x="124" y="0" width="63" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CLROTHER_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="2ee860c6-3365-42b8-a976-6fb6baf9d9b2" x="0" y="0" width="124" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INS_DESC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

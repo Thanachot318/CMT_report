@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DLA_PAY_EXP" language="groovy" pageWidth="213" pageHeight="555" orientation="Landscape" columnWidth="213" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9662f651-9211-4fc6-9f8c-dac31084bf73">
+	<property name="ireport.zoom" value="2.5937424601000023"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="slip_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+cm.moneytype_code,
+cm.MONEYTYPE_DESC,
+se.expense_accid,
+ck.bank_desc,
+cbk.BRANCH_NAME,
+se.ctrlchq_payname,
+se.expense_amt
+FROM
+    slslippayoutexpense se
+LEFT JOIN cmucfbank ck ON se.expense_bank = ck.bank_code
+LEFT JOIN CMUCFBANKBRANCH cbk ON cbk.BRANCH_ID = se.EXPENSE_BRANCH AND cbk.BANK_CODE = se.expense_bank
+left join CMUCFMONEYTYPE cm on se.MONEYTYPE_CODE =  cm.MONEYTYPE_CODE
+where se.payoutslip_no = $P{slip_no}
+ORDER BY
+  CASE WHEN MONEYTYPE_CODE = 'CBT' THEN 0
+       WHEN MONEYTYPE_CODE = 'CHQ' THEN 1
+       ELSE 2 END]]>
+	</queryString>
+	<field name="MONEYTYPE_CODE" class="java.lang.String"/>
+	<field name="MONEYTYPE_DESC" class="java.lang.String"/>
+	<field name="EXPENSE_ACCID" class="java.lang.String"/>
+	<field name="BANK_DESC" class="java.lang.String"/>
+	<field name="BRANCH_NAME" class="java.lang.String"/>
+	<field name="CTRLCHQ_PAYNAME" class="java.lang.String"/>
+	<field name="EXPENSE_AMT" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b861ea03-98f7-4c21-983a-70f4d10936da" x="0" y="0" width="174" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph leftIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MONEYTYPE_CODE} == "CBT" ?
+    ($F{MONEYTYPE_DESC} == null ? "" : $F{MONEYTYPE_DESC}) + " " +
+    ($F{EXPENSE_ACCID} == null ? "" : $F{EXPENSE_ACCID}) + " " +
+    ($F{BANK_DESC} == null ? "" : $F{BANK_DESC}) + " " +
+    ($F{BRANCH_NAME} == null ? "" : $F{BRANCH_NAME}) + " "
+:
+$F{MONEYTYPE_CODE} == "CHQ" ?
+    ($F{MONEYTYPE_DESC} == null ? "" : $F{MONEYTYPE_DESC}) + " " +
+    ($F{CTRLCHQ_PAYNAME} == null ? "" : $F{CTRLCHQ_PAYNAME})
+: ""]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="c58d7502-97e4-4c51-9d07-f6a341bcacba" x="160" y="0" width="53" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EXPENSE_AMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

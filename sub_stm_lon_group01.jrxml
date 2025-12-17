@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_stm_lon_group01" language="groovy" pageWidth="424" pageHeight="802" columnWidth="424" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="23ab4a5b-feeb-44e4-a56a-aec83a57bd35">
+	<property name="ireport.zoom" value="1.9487171000000014"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="e_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="s_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="member_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select lncontstatement.loancontract_no ,
+lncontstatement.slip_date,
+lncontstatement.loanitemtype_code,
+lncontmaster.loanrequest_amt,
+lncontstatement.period,
+lncontstatement.principal_payment,
+lncontstatement.interest_payment,
+lncontstatement.principal_balance,
+lnloantype.loangroup_code,
+lncontmaster.loantype_code
+from
+lncontmaster
+left join lncontstatement on lncontmaster.loancontract_no = lncontstatement.loancontract_no
+left join lnloantype on lncontmaster.loantype_code = lnloantype.loantype_code
+where lncontmaster.member_no = $P{member_no}
+and lncontstatement.slip_date between $P{s_date} and $P{e_date}
+and lnloantype.loangroup_code in('01')
+and lncontstatement.seq_no >= 1
+order by lnloantype.loangroup_code,lncontmaster.loantype_code,lncontstatement.loancontract_no , lncontstatement.seq_no]]>
+	</queryString>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="SLIP_DATE" class="java.sql.Timestamp"/>
+	<field name="LOANITEMTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANREQUEST_AMT" class="java.math.BigDecimal"/>
+	<field name="PERIOD" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="INTEREST_PAYMENT" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="LOANGROUP_CODE" class="java.lang.String"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="6885930e-9eb7-4e15-b701-64cfc0f3f1c4" x="346" y="0" width="68" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRINCIPAL_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5f7d8907-0e95-4e66-bf9b-4712d2e98adf" x="111" y="0" width="29" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANITEMTYPE_CODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d6edd0b2-d6b1-4100-897a-42a620056519" x="207" y="0" width="28" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PERIOD}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="189eeb2a-aecd-417d-b13b-6ea015682b3b" x="140" y="0" width="67" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANREQUEST_AMT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="3197a201-edf3-4b9f-a599-9556d5c7b7c1" x="235" y="0" width="68" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRINCIPAL_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9e583d06-5709-4bfd-be82-547c8df078fa" isPrintRepeatedValues="false" x="0" y="0" width="59" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANCONTRACT_NO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="7cc9698d-06ad-456f-b434-95e35717ee98" x="303" y="0" width="44" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INTEREST_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b8affe4b-81c8-4d31-aa76-c86d3a11d9eb" x="59" y="0" width="52" height="20"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($F{SLIP_DATE})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mis_total_loan_share_dept_member" language="groovy" pageWidth="3000" pageHeight="612" orientation="Landscape" columnWidth="2960" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0d0fe7d8-fcbd-4fa2-a425-6847dcccc8f1">
+	<property name="ireport.zoom" value="1.2100000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_date" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="period_age" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="status" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sprovince_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="eprovince_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT lt.loantype_code
+	, lt.loantype_desc
+	, case when nvl(m.province_code, '000') = '000' then '999' else m.province_code end  AS province_code
+	, mp.province_desc
+	, pa.group_code
+	, pa.group_desc
+	, mf.member_flag
+	, mf.member_desc
+	, count(CASE WHEN TRUNC(ft_calage(m.BIRTH_DATE, TRUNC($P{adtm_date}), 8) / 12) BETWEEN pa.from_age AND pa.to_age
+				AND mf.member_flag = (CASE WHEN m.member_status = 1 AND m.resign_status = 0 THEN 0 ELSE 1 END) THEN 1 ELSE NULL END) as member_cnt
+	, SUM(CASE WHEN TRUNC(ft_calage(m.BIRTH_DATE, TRUNC($P{adtm_date}), 8) / 12) BETWEEN pa.from_age AND pa.to_age
+				AND mf.member_flag = (CASE WHEN m.member_status = 1 AND m.resign_status = 0 THEN 0 ELSE 1 END) THEN l.PRINCIPAL_BALANCE ELSE 0 END) AS PRINCIPAL_BALANCE
+	, SUM(CASE WHEN TRUNC(ft_calage(m.BIRTH_DATE, TRUNC($P{adtm_date}), 8) / 12) BETWEEN pa.from_age AND pa.to_age
+				AND mf.member_flag = (CASE WHEN m.member_status = 1 AND m.resign_status = 0 THEN 0 ELSE 1 END) THEN s.SHARESTK_AMT * st.UNITSHARE_VALUE ELSE 0 END) AS SHARESTK_AMT
+	, SUM(CASE WHEN TRUNC(ft_calage(m.BIRTH_DATE, TRUNC($P{adtm_date}), 8) / 12) BETWEEN pa.from_age AND pa.to_age
+				AND mf.member_flag = (CASE WHEN m.member_status = 1 AND m.resign_status = 0 THEN 0 ELSE 1 END) THEN d.prncbal ELSE 0 END) AS prncbal
+	, cm.coop_name
+FROM LNCONTSTATEMENT l
+JOIN (
+	SELECT LOANCONTRACT_NO, MAX(seq_no) AS seq_no FROM LNCONTSTATEMENT
+	WHERE OPERATE_DATE <= $P{adtm_date}
+		AND ITEM_STATUS = 1 AND LOANITEMTYPE_CODE <> 'CL'
+	GROUP BY LOANCONTRACT_NO
+) lq ON l.loancontract_no = lq.loancontract_no
+	AND l.seq_no = lq.seq_no
+JOIN LNCONTMASTER lm ON l.loancontract_no = lm.loancontract_no
+JOIN LNLOANTYPE lt ON lm.loantype_code = lt.loantype_code
+JOIN MBMEMBMASTER m ON lm.member_no = m.member_no
+LEFT JOIN MBUCFPROVINCE mp ON nvl(m.province_code, '000') = mp.province_code
+LEFT JOIN SHSHARESTATEMENT s on lm.member_no = s.member_no
+JOIN (
+	SELECT MEMBER_NO, MAX(seq_no) AS seq_no FROM SHSHARESTATEMENT
+	WHERE OPERATE_DATE <= $P{adtm_date}
+		AND ITEM_STATUS = 1
+	GROUP BY MEMBER_NO
+) sq ON s.MEMBER_NO = sq.MEMBER_NO
+	AND s.seq_no = sq.seq_no
+JOIN SHSHAREMASTER sm ON s.member_no = sm.member_no
+JOIN SHSHARETYPE st ON sm.sharetype_code = st.sharetype_code
+LEFT JOIN DPDEPTMASTER dm ON lm.member_no = dm.member_no
+LEFT JOIN DPDEPTSTATEMENT d ON dm.deptaccount_no = d.deptaccount_no
+LEFT JOIN (
+	SELECT deptaccount_no, MAX(seq_no) AS seq_no FROM DPDEPTSTATEMENT
+	WHERE OPERATE_DATE <= $P{adtm_date}
+		AND ITEM_STATUS = 1
+	GROUP BY deptaccount_no
+) dq ON d.deptaccount_no = dq.deptaccount_no
+	AND d.seq_no = dq.seq_no
+JOIN CMCOOPCONSTANT cm ON lm.COOP_ID = cm.COOP_ID
+CROSS JOIN (
+SELECT LEVEL AS group_code
+	, TO_CHAR(0+ ($P{period_age} * (LEVEL - 1))+ CASE WHEN LEVEL = 1 THEN 0 ELSE 1 END) || ' - ' || TO_CHAR(0 + ($P{period_age} * LEVEL)) AS group_desc
+	, 0 + ($P{period_age} * (LEVEL - 1)) + CASE WHEN LEVEL = 1 THEN 0 ELSE 1 END AS from_Age, 0 + ($P{period_age} * LEVEL) AS to_age
+FROM dual CONNECT BY LEVEL <= (
+	SELECT CEIL(TRUNC((MAX(ft_calage(m.BIRTH_DATE, TRUNC($P{adtm_date}), 4)))) / $P{period_age}) AS ages
+	FROM MBMEMBMASTER m
+)) pa
+CROSS JOIN (
+	SELECT LEVEL - 1 AS member_flag, CASE WHEN LEVEL = 1 THEN 'ปกติ' ELSE 'พ้นสภาพ' END AS member_desc
+	FROM dual CONNECT BY LEVEL <= 2
+) mf
+WHERE l.principal_balance > 0
+and m.province_code between $P{sprovince_code} and $P{eprovince_code}
+and (CASE WHEN m.member_status = 1 AND m.resign_status = 0 THEN 0 ELSE 1 END) like $P{status}
+GROUP BY lt.loantype_code
+	, lt.loantype_desc
+	, case when nvl(m.province_code, '000') = '000' then '999' else m.province_code end
+	, mp.province_desc
+	, pa.group_code
+	, pa.group_desc
+	, cm.coop_name
+	, mf.member_flag
+	, mf.member_desc
+ORDER BY province_code , loantype_code, member_flag, pa.group_code]]>
+	</queryString>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANTYPE_DESC" class="java.lang.String"/>
+	<field name="PROVINCE_CODE" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="GROUP_CODE" class="java.math.BigDecimal"/>
+	<field name="GROUP_DESC" class="java.lang.String"/>
+	<field name="MEMBER_FLAG" class="java.math.BigDecimal"/>
+	<field name="MEMBER_DESC" class="java.lang.String"/>
+	<field name="MEMBER_CNT" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="SHARESTK_AMT" class="java.math.BigDecimal"/>
+	<field name="PRNCBAL" class="java.math.BigDecimal"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<group name="PROVINCE">
+		<groupExpression><![CDATA[$F{PROVINCE_CODE}]]></groupExpression>
+		<groupFooter>
+			<band height="127">
+				<textField>
+					<reportElement uuid="1f5c25f5-5a7e-4b9d-b3dd-487ec1bebc3d" x="0" y="0" width="960" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Angsana New" size="14"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA["จังหวัด : " + ($F{PROVINCE_DESC} == null ? "ไม่ได้ระบุ" : $F{PROVINCE_DESC} )]]></textFieldExpression>
+				</textField>
+				<crosstab>
+					<reportElement uuid="97f929e9-fb5d-4bb2-bac4-ea2b0e1c2171" x="0" y="20" width="2960" height="107"/>
+					<crosstabDataset>
+						<dataset resetType="Group" resetGroup="PROVINCE"/>
+					</crosstabDataset>
+					<crosstabHeaderCell>
+						<cellContents>
+							<staticText>
+								<reportElement uuid="14d8afee-2fcc-4074-a093-3092d5bc078b" x="120" y="0" width="60" height="40"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[สถานภาพ]]></text>
+							</staticText>
+							<staticText>
+								<reportElement uuid="5c9f3103-2328-4d94-bea0-1d8dc93b5395" x="0" y="0" width="120" height="40"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ประเภท]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabHeaderCell>
+					<rowGroup name="LOANTYPE_CODE" width="120" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{LOANTYPE_CODE} + $F{LOANTYPE_DESC}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="b8ed2de2-9ad5-41cb-b588-bc3be82329a0" style="Crosstab Data Text" x="0" y="0" width="120" height="40"/>
+									<textElement textAlignment="Left" verticalAlignment="Top">
+										<font fontName="Angsana New" size="14"/>
+										<paragraph leftIndent="2"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{LOANTYPE_CODE}.substring(2)]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents backcolor="#005FB3" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="c7b983fe-97ba-4b26-b53a-b1fd4ee41528" x="0" y="0" width="180" height="20" forecolor="#FFFFFF"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[รวมทั้งหมด]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<rowGroup name="MEMBER_FLAG" width="60" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{MEMBER_FLAG} + $F{MEMBER_DESC}]]></bucketExpression>
+						</bucket>
+						<crosstabRowHeader>
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="1680a2f3-7f3b-48ce-abc2-0e881ff85300" style="Crosstab Data Text" x="0" y="0" width="60" height="20"/>
+									<textElement verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{MEMBER_FLAG}.substring(1)]]></textFieldExpression>
+								</textField>
+							</cellContents>
+						</crosstabRowHeader>
+						<crosstabTotalRowHeader>
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="21b19487-6549-4b7c-a7c6-c6d521bfe4f7" x="0" y="0" width="60" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14"/>
+									</textElement>
+									<text><![CDATA[รวม]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalRowHeader>
+					</rowGroup>
+					<columnGroup name="GROUP_CODE" height="40" totalPosition="End">
+						<bucket class="java.lang.String">
+							<bucketExpression><![CDATA[$F{GROUP_DESC}]]></bucketExpression>
+						</bucket>
+						<crosstabColumnHeader>
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textField>
+									<reportElement uuid="066538a3-c851-4106-8638-c5f79d218538" style="Crosstab Data Text" x="0" y="0" width="275" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$V{GROUP_CODE}]]></textFieldExpression>
+								</textField>
+								<staticText>
+									<reportElement uuid="1c53fa08-d61a-44f5-8cca-aff75856e57f" x="0" y="20" width="50" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[คน]]></text>
+								</staticText>
+								<staticText>
+									<reportElement uuid="1d4b34e7-3c17-4c5e-b656-6d8364ee0c1d" x="50" y="20" width="75" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[ยอดหนี้คงเหลือ]]></text>
+								</staticText>
+								<staticText>
+									<reportElement uuid="40c0b412-7d9a-42c6-b6b9-d483259bfeb7" x="125" y="20" width="75" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[หุ้น]]></text>
+								</staticText>
+								<staticText>
+									<reportElement uuid="9dd7b879-bebd-4c51-bfe5-a464408faf24" x="200" y="20" width="75" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[เงินฝากคงเหลือ]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabColumnHeader>
+						<crosstabTotalColumnHeader>
+							<cellContents backcolor="#FFFFFF" mode="Opaque">
+								<box>
+									<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<staticText>
+									<reportElement uuid="abc7dbf1-0fca-4c7c-8bd5-c307740a9a6e" x="0" y="0" width="275" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[รวม]]></text>
+								</staticText>
+								<staticText>
+									<reportElement uuid="d6a4d909-fe79-47b5-93c9-c39aeb13b18f" x="125" y="20" width="75" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[หุ้น]]></text>
+								</staticText>
+								<staticText>
+									<reportElement uuid="6f04ecff-010f-4ea2-9cea-ef095204b5b4" x="0" y="20" width="50" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[คน]]></text>
+								</staticText>
+								<staticText>
+									<reportElement uuid="bb831391-9fef-411f-b99f-a948b05e4620" x="200" y="20" width="75" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[เงินฝากคงเหลือ]]></text>
+								</staticText>
+								<staticText>
+									<reportElement uuid="d46a6873-9d77-4d6c-a642-daccfd03a446" x="50" y="20" width="75" height="20"/>
+									<box>
+										<pen lineWidth="0.5"/>
+										<topPen lineWidth="0.5"/>
+										<leftPen lineWidth="0.5"/>
+										<bottomPen lineWidth="0.5"/>
+										<rightPen lineWidth="0.5"/>
+									</box>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Angsana New" size="14" isBold="true"/>
+									</textElement>
+									<text><![CDATA[ยอดหนี้คงเหลือ]]></text>
+								</staticText>
+							</cellContents>
+						</crosstabTotalColumnHeader>
+					</columnGroup>
+					<measure name="PRINCIPAL_BALANCE" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{PRINCIPAL_BALANCE}]]></measureExpression>
+					</measure>
+					<measure name="MEMBER_CNTMeasure" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{MEMBER_CNT}]]></measureExpression>
+					</measure>
+					<measure name="SHARESTK_AMT" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{SHARESTK_AMT}]]></measureExpression>
+					</measure>
+					<measure name="PRNCBAL" class="java.math.BigDecimal" calculation="Sum">
+						<measureExpression><![CDATA[$F{PRNCBAL}]]></measureExpression>
+					</measure>
+					<crosstabCell width="275" height="20">
+						<cellContents backcolor="#FFFFFF">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="2826e5e2-ff4e-470d-8061-61314997b362" style="Crosstab Data Text" x="0" y="0" width="50" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{MEMBER_CNTMeasure}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="8ad55949-a2a2-4b1a-bceb-41ef5d498429" style="Crosstab Data Text" x="50" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRINCIPAL_BALANCE}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="00a513a1-8da8-4ce7-a6f5-3253c8ab17a5" style="Crosstab Data Text" x="125" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SHARESTK_AMT}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="c44a33df-2326-4acd-9357-79ecb9c15a00" style="Crosstab Data Text" x="200" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRNCBAL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="275" height="20" rowTotalGroup="LOANTYPE_CODE">
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="807d949f-46a2-49cf-9d8e-921c51fc87a1" style="Crosstab Data Text" x="0" y="0" width="50" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{MEMBER_CNTMeasure_LOANTYPE_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="3a753fd8-6260-4b9a-bced-f49e713e961a" style="Crosstab Data Text" x="50" y="0" width="75" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRINCIPAL_BALANCE_LOANTYPE_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="5348ec4e-fa4b-425a-a9d6-93397fa519cb" style="Crosstab Data Text" x="125" y="0" width="75" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SHARESTK_AMT_LOANTYPE_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="7c99d007-5e8d-42af-b4a6-a39dbb87457f" style="Crosstab Data Text" x="200" y="0" width="75" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRNCBAL_LOANTYPE_CODE_ALL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="275" height="20" columnTotalGroup="GROUP_CODE">
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="76c4c287-7331-49ed-ab86-7a96951ec74d" style="Crosstab Data Text" x="0" y="0" width="50" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{MEMBER_CNTMeasure_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="c45b703f-8bff-4c2e-abfc-ad7f658f9ac9" style="Crosstab Data Text" x="50" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRINCIPAL_BALANCE_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="438cd55b-5912-4926-980e-213f146bb210" style="Crosstab Data Text" x="125" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SHARESTK_AMT_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="5d9e8182-6380-4c3e-b1e9-7a5953886476" style="Crosstab Data Text" x="200" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRNCBAL_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="275" height="20" rowTotalGroup="LOANTYPE_CODE" columnTotalGroup="GROUP_CODE">
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="6620ef0c-65d7-42d0-ad41-d8c89fb0d5a6" style="Crosstab Data Text" x="0" y="0" width="50" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{MEMBER_CNTMeasure_LOANTYPE_CODE_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="448faa49-05fe-4474-8425-47d678aa046f" style="Crosstab Data Text" x="50" y="0" width="75" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRINCIPAL_BALANCE_LOANTYPE_CODE_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="e9c3ebc9-d610-4446-adfb-b5c76047c01c" style="Crosstab Data Text" x="125" y="0" width="75" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SHARESTK_AMT_LOANTYPE_CODE_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="21461746-b405-4799-9300-626ccdda8cf9" style="Crosstab Data Text" x="200" y="0" width="75" height="20" forecolor="#FFFFFF"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRNCBAL_LOANTYPE_CODE_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="275" height="20" rowTotalGroup="MEMBER_FLAG">
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="d3dda383-8c39-4e86-952a-bbf73ac031ef" style="Crosstab Data Text" x="50" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRINCIPAL_BALANCE_MEMBER_FLAG_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="dad20884-da76-4898-b40c-642adef079bf" style="Crosstab Data Text" x="0" y="0" width="50" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{MEMBER_CNTMeasure_MEMBER_FLAG_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="8541f30b-28d9-4677-a43e-095585ffb4bd" style="Crosstab Data Text" x="125" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SHARESTK_AMT_MEMBER_FLAG_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="73f8596c-c72f-4142-9165-cda38d5d34e0" style="Crosstab Data Text" x="200" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRNCBAL_MEMBER_FLAG_ALL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+					<crosstabCell width="275" height="20" rowTotalGroup="MEMBER_FLAG" columnTotalGroup="GROUP_CODE">
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="af9fc47a-c388-4a26-b8de-8456247a52fc" style="Crosstab Data Text" x="0" y="0" width="50" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{MEMBER_CNTMeasure_MEMBER_FLAG_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="7c10ad91-0c62-40bb-8500-dade9e40db23" style="Crosstab Data Text" x="50" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRINCIPAL_BALANCE_MEMBER_FLAG_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="f2aca5ea-19f1-48f0-a425-fbf746f44207" style="Crosstab Data Text" x="125" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{SHARESTK_AMT_MEMBER_FLAG_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+							<textField pattern="#,##0.00;-#,##0.00">
+								<reportElement uuid="c00cae5a-666d-4e54-b93a-1b499ed3e212" style="Crosstab Data Text" x="200" y="0" width="75" height="20"/>
+								<box>
+									<pen lineWidth="0.5"/>
+									<topPen lineWidth="0.5"/>
+									<leftPen lineWidth="0.5"/>
+									<bottomPen lineWidth="0.5"/>
+									<rightPen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Angsana New" size="14" isBold="true"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{PRNCBAL_MEMBER_FLAG_GROUP_CODE_ALL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabCell>
+				</crosstab>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="46" splitType="Stretch">
+			<textField>
+				<reportElement uuid="37c00b4f-545b-403c-9f6c-cd5007035839" x="0" y="0" width="960" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+</jasperReport>

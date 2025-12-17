@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_accept_book" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="eb7464cb-43d5-4967-a6c5-9c1006689708">
+	<property name="ireport.zoom" value="0.7513148009015784"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_wcid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_sdept" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_edept" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_docno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+cnt.coop_name
+, cnt.coop_shortname
+, pre.prename_desc || ' ' || trim(mt.deptaccount_name) || ' ' || trim(mt.deptaccount_sname) as Full_name
+, mt.deptaccount_no
+, to_char( mt.deptopen_date,'dd/mm/')||to_char(to_number(to_char( mt.deptopen_date,'yyyy'))+543) as deptopen_date
+, mt.deptopen_date as test
+ from wcdeptmaster mt
+join wccontcoop cnt on mt.wc_id = cnt.wc_id and mt.coop_id = cnt.coop_id
+left join mbucfprename pre on trim(to_char(mt.prename_code,'000')) = pre.prename_code
+where mt.wc_id = $P{as_wcid}
+and mt.deptaccount_no between $P{as_sdept} and $P{as_edept}]]>
+	</queryString>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="COOP_SHORTNAME" class="java.lang.String"/>
+	<field name="FULL_NAME" class="java.lang.String"/>
+	<field name="DEPTACCOUNT_NO" class="java.lang.String"/>
+	<field name="DEPTOPEN_DATE" class="java.lang.String"/>
+	<field name="TEST" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="666" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7528f809-688a-48ea-8401-67c04c5594eb" x="67" y="80" width="22" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[เรื่อง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc798790-1d4c-4ed8-b403-c87a9870ae63" x="118" y="80" width="103" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[การตอบรับการเป็นสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="381a90e1-56e6-494f-b2c6-dabdb97a5d42" x="67" y="131" width="22" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[เรียน]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c676ed98-83f0-4de3-810f-74f97ebf5f3a" x="118" y="131" width="369" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FULL_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f39e0c14-c44b-4aba-ac56-7e164f6cd531" x="118" y="100" width="369" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}+ " "+ " ("+ $F{COOP_SHORTNAME} +" ) "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d84b063b-2218-41cf-a952-5eca8c87e46f" x="67" y="164" width="50" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[สิ่งที่ส่งมาด้วย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="05f11af3-f771-4ad1-ab11-d4640d58bb47" x="118" y="196" width="394" height="23"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[ศูนย์ประสานงานสหกรณ์ออมทรัพย์บริษัทวิทยุการบินแห่งประเทศไทย จำกัด ขอแจ้งให้ท่าน
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="326569b7-42c5-479d-931b-a70b03625f6b" x="67" y="219" width="154" height="23"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[ทราบว่า ตามที่ท่านได้สมัครเป็นสมาชิก]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b66ce1cb-b215-4a67-b0fb-2cf23db6f626" x="281" y="39" width="161" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd MMMM yyyy", new Locale("th", "TH")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e345ae64-5ec1-4e3d-98ab-63d690382893" x="196" y="219" width="316" height="23"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f590407b-a84f-4882-a0d0-50d7335acac2" x="67" y="242" width="51" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" ("+ $F{COOP_SHORTNAME} +" ) "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2c47c6b7-edfd-4279-b892-8720547db2a4" x="118" y="242" width="30" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[รอบที่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d9a52e9a-33f1-4e7f-ae6f-6d5799415449" x="118" y="272" width="30" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[บัดนี้]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0f6cd47d-2988-41d9-ab7a-1f77c4c7727f" x="148" y="272" width="36" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_SHORTNAME} ]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2ae3b29f-81e6-451f-92bf-d56969767cb5" x="184" y="272" width="328" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ได้รับการอุมัติการเป็นสมาชิกของท่านตั้งแต่วันที่  "+new SimpleDateFormat("dd MMMM yyyy", new Locale("th", "TH")).format($F{TEST})+"โดยจะมีสมาชิกภาพ"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9e74ad06-64ea-4585-8266-cd5191b0364a" x="67" y="292" width="445" height="23"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[สมบูรณ์เมื่อพ้นกำหนด 180 วัน นับตั้งแต่วันที่อนุมัติเป็นสมาชิก จึงขอนำส่งบัตรประจำตัวสมาชิกให้กับท่านเพื่อยืนยันการเป็นสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9df881f3-a9f4-4aa0-afa8-cf234a7defb8" x="118" y="315" width="394" height="23"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[ทั้งนี้ ขอให้ท่านตรวจสอบความถูกต้องของข้อมูลส่วนบุคคล หากต้องการแก้ไขหรือเปลี่ยนแปลงสามารถติดต่อได้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e44e0de1-3884-4910-bf52-47d73fbcbdad" x="67" y="338" width="394" height="23"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[ที่ฝ่ายอำนวยการ   0 2285 9358]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ba61c951-b336-49a0-9833-3c06b178f880" x="67" y="374" width="47" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[หมายเหตุ :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4fc050ea-49ae-41ff-9005-0d8130092fdb" x="114" y="374" width="377" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[1. โปรดเก็บรักษาบัตรสมาชิกไว้เพื่อสิทธิประโยชน์ของท่าน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="78be709a-5e56-47f5-ad4e-c62137fda02b" x="114" y="394" width="377" height="33"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[2. การคุ้มครองจะต่อเนื่องแบบปีต่อปี เมื่อสมาชิกได้ทำการจ่ายเงินสงเคราะห์ล่วงหน้าตามที่ศูนย์
+ประสานงานเรียกเก็บ
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a061687d-5a10-41ee-a02a-da8ea970daa7" x="118" y="436" width="103" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[จึงเรียนมาเพื่อโปรดทราบ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9f421264-84d9-45de-95f4-298e93016c5f" x="281" y="471" width="103" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[ขอแสดงความนับถือ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b5597b97-c5b2-415f-9eab-042c222e57cf" x="281" y="531" width="103" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[(นางพรสุข ไกรเลิศ)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="130b619b-dc91-4d12-a50a-199631d093b7" x="262" y="551" width="133" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[ผู้จัดการศูนย์ประสานงาน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c769d881-15fc-4670-ae56-7c1bb408ef98" x="199" y="572" width="262" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[สหกรณ์ออมทรัพย์บริษัทวิทยุการบินแห่งประเทศไทย จำกัด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4657ee90-8a35-4649-9e83-a03c227f9b4c" x="118" y="164" width="78" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[บัตรประจำตัวสมาชิก]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="9ed7f831-421b-45ad-bbe8-f9133b10883f" x="196" y="164" width="25" height="20"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_SHORTNAME} ]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="727c29ec-4297-4147-92d9-cc76296baeb4" x="221" y="164" width="41" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[รหัสสมาชิก]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="bda86c2f-248c-47ac-a133-3162df92bc81" x="262" y="164" width="100" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEPTACCOUNT_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8a20fac1-53b1-4140-8c82-1ed4911acc91" x="67" y="626" width="103" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[ฝ่ายอำนวยการ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d430978-fd63-49a9-a4e1-2869b37d5df0" x="67" y="646" width="391" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<text><![CDATA[โทรศัพท์ 0 2285 9358  โทรสาร 0 2285 9359 , 0 2286 0344]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d8d9e412-2b43-49b5-994c-06c0140e6ecb" x="14" y="19" width="100" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{as_docno}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

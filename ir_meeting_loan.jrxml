@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_meeting_loan" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="812" leftMargin="20" rightMargin="10" topMargin="20" bottomMargin="20" uuid="11b63495-83aa-4d7c-80cc-2f6e167bce36">
+	<property name="ireport.zoom" value="1.3310000000000044"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="iscospadla"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="as_coop" class="java.lang.String"/>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["meeting_report03"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<parameter name="as_meetingid" class="java.lang.String"/>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA["รหัสการประชุม : " + $P{as_meetingid}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+m.TOPIC ,
+m.STAFF_ID ,
+mb.CREATED_AT ,
+mb.ESTIMATE_AMOUNT ,
+mb.DESCRIPTION ,
+mb.APPROVE_BY
+FROM MTBUDGET mb
+LEFT JOIN MTMEETING m
+ON mb.MEETING_ID  = m.MEETING_ID
+WHERE m.MEETING_ID = $P{as_meetingid}]]>
+	</queryString>
+	<field name="TOPIC" class="java.lang.String"/>
+	<field name="STAFF_ID" class="java.lang.String"/>
+	<field name="CREATED_AT" class="java.sql.Timestamp"/>
+	<field name="ESTIMATE_AMOUNT" class="java.math.BigDecimal"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<field name="APPROVE_BY" class="java.lang.String"/>
+	<variable name="Sum_ESTIMATE_AMOUNT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ESTIMATE_AMOUNT}]]></variableExpression>
+	</variable>
+	<variable name="order" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+	</variable>
+	<variable name="sum_total" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{order}]]></variableExpression>
+	</variable>
+	<pageHeader>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement uuid="7d06b9d9-f826-4666-8330-9fa1c966fdc2" x="0" y="0" width="809" height="30">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coop}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="e7fae923-1bdf-4873-80f6-f2c6fe19c938" x="0" y="0" width="25" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="debbaa78-3734-4e71-a093-5c03b75c05a9" x="25" y="0" width="150" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ชื่อผู้ขอยืม]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="50d052bd-ef0b-45f2-b43c-1f1b12d980fa" x="175" y="0" width="100" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[รหัสพนักงาน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b5a4a197-975c-45be-b7f0-20552d2b9a96" x="275" y="0" width="150" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[วันที่ยืมเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="88b04160-634e-4631-af5f-5e3a592fbd2d" x="425" y="0" width="150" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a288ae1c-4f62-401c-993f-c0e31053218e" x="575" y="0" width="150" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[รายละเอียดการยืมเงิน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8439d307-843a-4e37-bc7e-d8fecfe2b127" x="725" y="0" width="85" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<text><![CDATA[ผู้อนุมัติ]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="39" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement uuid="d734edf6-8910-449f-83e2-c1ac5f1c013b" x="0" y="0" width="25" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1615b9c0-0fad-4cb9-a155-ceeb17f70ca2" x="25" y="0" width="150" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{STAFF_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2af7f59c-9088-488a-95ce-206ef5a1ec98" x="175" y="2" width="100" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{STAFF_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5126aa05-738c-4cf7-b731-c6fc2c3df690" x="275" y="0" width="150" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale ( "th", "TH" )).format($F{CREATED_AT})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b3946041-7f20-4795-b04f-ac879169ba56" x="425" y="0" width="150" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ESTIMATE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d78968d4-2704-4c70-a10c-acd203497810" x="575" y="0" width="150" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESCRIPTION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1afb47f0-3c6d-40e2-9dc9-808ec80744e5" x="725" y="0" width="84" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{APPROVE_BY}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement uuid="c29ff624-3acd-41c3-9e1e-9aa9deee06d7" x="0" y="0" width="770" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["หน้า "+$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="e7c9d154-99df-4c68-8d7c-b031c2815818" x="770" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="26" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement uuid="51a353b2-1db1-488d-b29e-9edcb702abda" x="240" y="1" width="180" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["รวมทั้งหมด  " +  $V{sum_total}  + "   รายการ"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="334036e1-ff74-48fc-8194-d7eecd0c70aa" x="0" y="0" width="810" height="1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="06cde251-8cfa-454c-8812-62b2ed22e845" x="0" y="0" width="810" height="1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</line>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c0235be5-4e42-4c89-b5f7-135f813309c2" x="425" y="1" width="73" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Sum_ESTIMATE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="db4a6671-ba50-496d-9814-479c3146eb91" x="0" y="20" width="810" height="1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement uuid="e5b23f81-425f-46ee-bfa1-555747369837" x="0" y="23" width="810" height="1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</line>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="9c7ad861-3215-41b6-b046-2a170aa70839" x="498" y="0" width="77" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["บาท"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="4b73576d-6ee9-4538-86b6-61021c5306bc" x="0" y="1" width="73" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOPIC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

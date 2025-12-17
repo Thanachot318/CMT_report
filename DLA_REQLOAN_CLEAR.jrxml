@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DLA_REQLOAN_CLEAR" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ca3f5ae1-69b4-4505-abd8-417017a11aa7">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+    lnreqloanclr.coop_id,
+    lnreqloanclr.loanrequest_docno,
+    lnreqloanclr.loancontract_no,
+    lnreqloanclr.loantype_code,
+    lnreqloanclr.loanapprove_amt,
+    lnreqloanclr.principal_balance,
+    lnreqloanclr.intreal_amt,
+    lnreqloanclr.clear_status,
+	lnreqloanclr.principal_balance + lnreqloanclr.intreal_amt as sum_prn
+FROM
+    lnreqloanclr
+JOIN
+    lnreqloan ON lnreqloanclr.loanrequest_docno = lnreqloan.loanrequest_docno
+-- AND lnreqloanclr.loantype_code = lnreqloan.loantype_code
+WHERE
+    lnreqloanclr.clear_status = 1
+    AND lnreqloanclr.loanrequest_docno = '2568-00062']]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="LOANREQUEST_DOCNO" class="java.lang.String"/>
+	<field name="LOANCONTRACT_NO" class="java.lang.String"/>
+	<field name="LOANTYPE_CODE" class="java.lang.String"/>
+	<field name="LOANAPPROVE_AMT" class="java.math.BigDecimal"/>
+	<field name="PRINCIPAL_BALANCE" class="java.math.BigDecimal"/>
+	<field name="INTREAL_AMT" class="java.math.BigDecimal"/>
+	<field name="CLEAR_STATUS" class="java.math.BigDecimal"/>
+	<field name="SUM_PRN" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a18def0d-1051-45ff-a5fb-0c0799ea01fe" x="0" y="0" width="86" height="20"/>
+				<textElement>
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANTYPE_CODE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="757703db-66bb-4e5a-be47-ccc67e3ea015" x="86" y="0" width="65" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRINCIPAL_BALANCE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="9352e775-0eb2-4017-9331-590c792fa26a" x="151" y="0" width="65" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INTREAL_AMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

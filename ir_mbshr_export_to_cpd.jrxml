@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_mbshr_share_payin_all_cancel" language="groovy" printOrder="Horizontal" pageWidth="1190" pageHeight="842" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1160" leftMargin="20" rightMargin="10" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="11b63495-83aa-4d7c-80cc-2f6e167bce36">
+	<property name="ireport.zoom" value="1.948717100000011"/>
+	<property name="ireport.x" value="7"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="iscospadla"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="as_coopid" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["MBSH-DAY-211"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA["เลขทะเบียนสหกรณ์ " + $P{as_coopid} + " จังหวัด "]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select mbm.member_no, cmc.coop_taxid,
+	(select max(account_year) from cmaccountyear where accsyscls_status = 0 ) as year,
+	mbm.card_person,
+	mup.prename_desc,
+	mbm.memb_name,
+	mbm.memb_surname,
+	(case when mbm.nationality = 'ไทย' then 'TH' else  mbm.nationality end ) as nationality,
+	shm.sharestk_amt/sht.unitshare_value as sharestk_amt,
+	sht.unitshare_value,
+	mbm.member_date,
+	substr(mbm.membcat_code, 1, 1) as membcat_code,
+	mbm.resign_date,
+	mbm.address_no, mbm.address_moo,
+	mbm.address_soi,
+	mbm.address_village,
+	mbm.address_road,
+	mtb.tambol_desc,
+	mdt.district_desc,
+	mpv.province_desc,
+	cmc.coop_name,
+	mbm.postcode,
+ft_getmbaddr(mbm.coop_id,mbm.member_no, 1) as addr,
+	mbm.mem_telmobile as mem_tel
+from shsharemaster shm
+	join mbmembmaster mbm on shm.coop_id = mbm.coop_id and shm.member_no =mbm.member_no
+	join cmcoopconstant cmc on shm.coop_id = cmc.coop_id
+	left outer join mbucfprename mup on mbm.prename_code = mup.prename_code
+	join shsharetype sht on shm.sharetype_code = sht.sharetype_code
+	left outer join mbucfprovince mpv on mbm.province_code = mpv.province_code
+	left outer join mbucfdistrict mdt on mbm.district_code = mdt.district_code
+	left outer join mbucftambol mtb on mbm.tambol_code = mtb.tambol_code
+where 	shm.coop_id = $P{as_coopid} and
+	shm.sharemaster_status = 1]]>
+	</queryString>
+	<field name="MEMBER_NO" class="java.lang.String"/>
+	<field name="COOP_TAXID" class="java.lang.String"/>
+	<field name="YEAR" class="java.math.BigDecimal"/>
+	<field name="CARD_PERSON" class="java.lang.String"/>
+	<field name="PRENAME_DESC" class="java.lang.String"/>
+	<field name="MEMB_NAME" class="java.lang.String"/>
+	<field name="MEMB_SURNAME" class="java.lang.String"/>
+	<field name="NATIONALITY" class="java.lang.String"/>
+	<field name="SHARESTK_AMT" class="java.math.BigDecimal"/>
+	<field name="UNITSHARE_VALUE" class="java.math.BigDecimal"/>
+	<field name="MEMBER_DATE" class="java.sql.Timestamp"/>
+	<field name="MEMBCAT_CODE" class="java.lang.String"/>
+	<field name="RESIGN_DATE" class="java.sql.Timestamp"/>
+	<field name="ADDRESS_NO" class="java.lang.String"/>
+	<field name="ADDRESS_MOO" class="java.lang.String"/>
+	<field name="ADDRESS_SOI" class="java.lang.String"/>
+	<field name="ADDRESS_VILLAGE" class="java.lang.String"/>
+	<field name="ADDRESS_ROAD" class="java.lang.String"/>
+	<field name="TAMBOL_DESC" class="java.lang.String"/>
+	<field name="DISTRICT_DESC" class="java.lang.String"/>
+	<field name="PROVINCE_DESC" class="java.lang.String"/>
+	<field name="COOP_NAME" class="java.lang.String"/>
+	<field name="POSTCODE" class="java.lang.String"/>
+	<field name="ADDR" class="java.lang.String"/>
+	<field name="MEM_TEL" class="java.lang.String"/>
+	<variable name="order" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+	</variable>
+	<variable name="sum_total" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{order}]]></variableExpression>
+	</variable>
+	<pageHeader>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement uuid="8bc125de-7b91-49dd-aff4-7cd816434a30" x="0" y="0" width="1161" height="30">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coopid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\hrader_a3_landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement uuid="e7fae923-1bdf-4873-80f6-f2c6fe19c938" x="0" y="0" width="25" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="debbaa78-3734-4e71-a093-5c03b75c05a9" x="25" y="0" width="77" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[เลข 13 หลัก
+ของสหกรณ์]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="50d052bd-ef0b-45f2-b43c-1f1b12d980fa" x="102" y="0" width="38" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ปี
+บัญชี]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="88b04160-634e-4631-af5f-5e3a592fbd2d" x="230" y="0" width="49" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[คำนำ
+หน้าชื่อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="093aa406-15a7-41fd-a91f-93f3e82d8e7e" x="279" y="0" width="96" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ชื่อ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ed5884aa-5489-412c-b5b3-ba24b01dd560" x="140" y="0" width="90" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[เลขประจำตัว
+ประชาชน]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2831bb98-f681-4662-a46a-72726b50634e" x="375" y="0" width="96" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[นามสกุล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="05c0b4e1-37d3-462a-bace-2b2022912113" x="471" y="0" width="49" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[สัญชาติ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9073afe2-12d6-4193-a759-636e799ec5d9" x="520" y="0" width="49" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[จำนวน
+หุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="845bf0e6-b86b-40af-bf63-85a439a0ccf4" x="569" y="0" width="49" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[มูลค่า
+ต่อหุ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cc274870-32da-4d18-8c45-7eefe0d4e53a" x="618" y="0" width="49" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[วันที่เข้า
+เป็นสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2845ad45-434e-4559-a9d6-3ab4ec3d0542" x="667" y="0" width="49" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ประเภท สมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1d25e714-afaa-434f-a4fc-dd6ea1982161" x="716" y="0" width="49" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[วันที่ออก
+จากสมาชิก]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eeaa537f-47a9-41d2-9aac-3bdf4002aebe" x="765" y="0" width="127" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ที่อยู่]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="edfc504b-3b77-4a27-bbd5-399f981e850a" x="892" y="0" width="45" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ตำบล/
+แขวง]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7f00c036-ba52-4477-bdb1-cadbdbc7e6c0" x="937" y="0" width="45" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[อำเภอ/
+เขต]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d4dcb416-8cd1-4ea7-80f8-e51c1430e529" x="982" y="0" width="66" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[จังหวัด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1c0981b5-1b25-417d-9e0b-c4c139058e1c" x="1048" y="0" width="51" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[รหัสไปรษณีย์]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b2ab0403-56f3-4a13-ace2-1f1314a3c5cd" x="1099" y="0" width="61" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[เบอร์โทรศัพท์]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement uuid="0cbc74cc-d67b-4fcd-a7a7-a9b0a312076a" x="25" y="0" width="77" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COOP_TAXID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="76ec1c4f-2fd2-45ac-98bd-6eefe13713cb" x="0" y="0" width="25" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b751f3ab-1976-42bf-9978-4b8241294d3d" x="102" y="0" width="38" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{YEAR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f7dbaf3d-ea30-4c8f-ba0e-dc1bc4b79f16" x="140" y="0" width="90" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CARD_PERSON}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="63040c4f-5150-4317-a8bd-9ebe32a14a83" x="230" y="0" width="49" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRENAME_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0e09f1b9-0758-47a4-88da-0a5b02be718b" x="279" y="0" width="96" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMB_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2a82f0b0-e407-409a-a18e-eb3122f9bcb3" x="375" y="0" width="96" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMB_SURNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fb98d8ba-2e2e-41b7-aadd-fb01dd7a9987" x="471" y="0" width="49" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NATIONALITY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fd9f3edd-13e2-40ab-8ed1-23496822811b" x="520" y="0" width="49" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SHARESTK_AMT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0d4b4e82-c81d-4a67-80b6-f20e8d826222" x="569" y="0" width="49" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{UNITSHARE_VALUE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e95678d0-be40-4b60-99b3-b4bd2a4d96f1" x="618" y="0" width="49" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($F{MEMBER_DATE})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eae632eb-8ec0-4dba-8e61-60b980197c17" x="667" y="0" width="49" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEMBCAT_CODE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="eddc4caf-49e7-4d3d-a680-43a8a1f5f25e" x="716" y="0" width="49" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy",new Locale("th","TH")).format($F{RESIGN_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="650a7f74-aee7-4003-b0eb-1932f59b1213" stretchType="RelativeToBandHeight" x="765" y="0" width="127" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADDR}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5612ad3f-7960-4abb-99b3-7bc37248d039" x="892" y="0" width="45" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TAMBOL_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="60899460-8604-44f4-8152-61fb33e36439" x="937" y="0" width="45" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DISTRICT_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="cc0140ea-2b72-4f84-921d-4a5cff776863" x="982" y="0" width="66" height="20"/>
+				<textElement textAlignment="Left">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE_DESC}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="06c48cd8-304f-453b-803f-a21873c46427" x="1048" y="0" width="51" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{POSTCODE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b3e408dd-cf76-4a27-bd4b-9290e1b72691" x="1099" y="0" width="61" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Angsana New" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MEM_TEL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="16">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement uuid="8485e287-d0d6-4074-9bea-6866ea122265" x="986" y="0" width="136" height="16"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Angsana New" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ : "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2f220a17-ae55-4483-a8cf-c41dad834ef7" x="1122" y="0" width="20" height="16"/>
+				<textElement textAlignment="Right">
+					<font fontName="Angsana New" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER} + "/"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="bd192051-e94d-4564-af5b-72791d9493a7" x="1142" y="0" width="19" height="16"/>
+				<textElement>
+					<font fontName="Angsana New" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="17" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</summary>
+</jasperReport>

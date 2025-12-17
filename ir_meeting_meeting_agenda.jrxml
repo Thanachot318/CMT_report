@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_meeting_meeting_agenda" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="812" leftMargin="20" rightMargin="10" topMargin="20" bottomMargin="20" uuid="11b63495-83aa-4d7c-80cc-2f6e167bce36">
+	<property name="ireport.zoom" value="1.3310000000000044"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="iscospadla"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="as_coop" class="java.lang.String"/>
+	<parameter name="as_reportid" class="java.lang.String">
+		<defaultValueExpression><![CDATA["meeting_report02"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<parameter name="as_meetingid" class="java.lang.String"/>
+	<parameter name="as_reportdetail" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA["รหัสการประชุม : " + $P{as_meetingid}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT 
+  m.TOPIC,
+  ma.AGENDA_TOPIC
+FROM MTAGENDA ma
+LEFT JOIN MTMEETING m
+  ON ma.MEETING_ID = m.MEETING_ID
+WHERE ma.MEETING_ID = $P{as_meetingid}]]>
+	</queryString>
+	<field name="AGENDA_TOPIC" class="java.lang.String"/>
+	<field name="TOPIC" class="java.lang.String"/>
+	<variable name="order" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+	</variable>
+	<pageHeader>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement uuid="7d06b9d9-f826-4666-8330-9fa1c966fdc2" x="0" y="0" width="809" height="30">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$P{as_coop}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[$P{as_reportdetail}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="e7fae923-1bdf-4873-80f6-f2c6fe19c938" x="340" y="0" width="25" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[ลำดับ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="debbaa78-3734-4e71-a093-5c03b75c05a9" x="365" y="0" width="95" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Browallia New" size="13"/>
+				</textElement>
+				<text><![CDATA[หัวข้อวาระการประชุม]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement uuid="d734edf6-8910-449f-83e2-c1ac5f1c013b" x="340" y="0" width="25" height="32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1615b9c0-0fad-4cb9-a155-ceeb17f70ca2" x="365" y="0" width="95" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="AngsanaUPC" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AGENDA_TOPIC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="31">
+			<textField>
+				<reportElement uuid="c29ff624-3acd-41c3-9e1e-9aa9deee06d7" x="220" y="0" width="550" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["หน้า "+$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="e7c9d154-99df-4c68-8d7c-b031c2815818" x="770" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="623a6584-d254-4457-ac64-c1db2b7c2e9d" x="0" y="0" width="220" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{TOPIC}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="334036e1-ff74-48fc-8194-d7eecd0c70aa" x="-1" y="20" width="810" height="1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

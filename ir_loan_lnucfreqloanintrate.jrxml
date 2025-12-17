@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ir_loan_lnucfreqloanintrate" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d7d53ad2-d4e8-448f-9d37-8814cbd2fd71">
+	<property name="ireport.zoom" value="1.464100000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="as_scoop" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="as_reportid" class="java.lang.String"/>
+	<parameter name="as_entryid" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\api\\iReport\\report_header\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_start" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="adtm_end" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="status" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+ld.*, lr.*,
+'รายงานการเปลี่ยนแปลงอัตตราดอกเบี้ย' as report_detail
+from
+LNREQCFLOANINTRATE lr
+left join LNREQCFLOANINTRATEDET ld on ld.loanintrate_code = ld.loanintrate_code
+where lr.ADJUST_DATE  between $P{adtm_start} and $P{adtm_end}
+and lr.apv_flag like $P{status}
+order by lr.intraterequest_docno]]>
+	</queryString>
+	<field name="COOP_ID" class="java.lang.String"/>
+	<field name="LOANINTRATE_CODE" class="java.lang.String"/>
+	<field name="INTRATEREQUEST_DOCNO" class="java.lang.String"/>
+	<field name="DATA_FLAG" class="java.lang.String"/>
+	<field name="SEQ_NO" class="java.math.BigDecimal"/>
+	<field name="EFFECTIVE_DATE" class="java.sql.Timestamp"/>
+	<field name="EXPIRE_DATE" class="java.sql.Timestamp"/>
+	<field name="STARTCONT_DATE" class="java.sql.Timestamp"/>
+	<field name="ENDCONT_DATE" class="java.sql.Timestamp"/>
+	<field name="UPPER_AMT" class="java.math.BigDecimal"/>
+	<field name="LOWER_AMT" class="java.math.BigDecimal"/>
+	<field name="INTEREST_RATE" class="java.math.BigDecimal"/>
+	<field name="LOANINTRATE_DESC" class="java.lang.String"/>
+	<field name="ADD_ID" class="java.lang.String"/>
+	<field name="APV_FLAG" class="java.math.BigDecimal"/>
+	<field name="APPROVE_ID" class="java.lang.String"/>
+	<field name="APPROVE_DATE" class="java.sql.Timestamp"/>
+	<field name="CANCLE_ID" class="java.lang.String"/>
+	<field name="CANCLE_DATE" class="java.sql.Timestamp"/>
+	<field name="ENTRY_DATE" class="java.sql.Timestamp"/>
+	<field name="ENTRY_ID" class="java.lang.String"/>
+	<field name="REMARK" class="java.lang.String"/>
+	<field name="ADJUST_DATE" class="java.sql.Timestamp"/>
+	<field name="REPORT_DETAIL" class="java.lang.String"/>
+	<variable name="PAGE_NUMBER_HEADER" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="870b0e87-2b37-4893-b7cb-8a56639e4759" x="0" y="0" width="802" height="35"/>
+				<subreportParameter name="as_coopid">
+					<subreportParameterExpression><![CDATA[$F{COOP_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportid">
+					<subreportParameterExpression><![CDATA[$P{as_reportid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_entryid">
+					<subreportParameterExpression><![CDATA[$P{as_entryid}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="as_reportdetail">
+					<subreportParameterExpression><![CDATA[]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["report_header\\ir_header_landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="8421d9d7-cf76-46d4-aec4-400c4bdca6f8" x="476" y="0" width="66" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[เรดดอกเบี้ย]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="48cd0264-7225-49c1-a1d0-eeedaa81380c" x="408" y="0" width="68" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วงเงินต่ำสุด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="569c6efc-8650-4db2-b6d7-c684910db791" x="136" y="0" width="68" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันที่สิ้นสุด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7b843c9f-cb96-4129-a788-2adf7a95dcaa" x="272" y="0" width="68" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันที่เลิกใช้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="108a65ed-b02c-4e7b-a697-cd2bc79f9c83" x="0" y="0" width="68" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[รหัส ด/บ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="64d2bc74-231f-420a-bf52-20e9dd6cb49b" x="68" y="0" width="68" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันที่มีผล]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ec3eb753-2b09-42e8-b783-a008b3ed48de" x="340" y="0" width="68" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วงเงินสูงสุด]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aa37425b-0a10-4410-8395-fe3839409bfb" x="204" y="0" width="68" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันที่เริมใช้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e8a574f9-ff58-4cb4-b7b8-5f8445951ffd" x="542" y="0" width="79" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันที่ขอ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d84b46ee-1b2f-4865-8972-a259e7f2c2be" x="621" y="0" width="79" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[วันที่อนุมัติ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9f828c10-f475-4b0e-9b99-7f443d8cabad" x="700" y="0" width="54" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ผู้ขอ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f8d5ff6b-6a10-4da2-83ec-d0dc467e778e" x="754" y="0" width="48" height="20"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ผู้อนุมัติ]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="be5ea244-5435-4680-917a-4d2dc98e41ac" x="408" y="0" width="68" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOWER_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c5ac775a-e127-4d08-9bca-eda4c90e83c4" x="700" y="0" width="54" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ENTRY_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a75b9aea-1762-4ebf-9756-2f3f8e8f00e9" x="621" y="0" width="79" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($F{ENTRY_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="af18a0eb-2a57-436d-8e07-d536d8ce75ea" x="272" y="0" width="68" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($F{ENDCONT_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="df967ae8-b8e4-4fe9-a22e-845260f634fd" x="754" y="0" width="48" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{APPROVE_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f5ca231d-df7c-4fab-8200-564456b4dda3" x="542" y="0" width="79" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($F{ADJUST_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d0a7eace-503d-4fc6-b47e-a1a57cf4b868" x="68" y="0" width="68" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($F{EFFECTIVE_DATE})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="7386dac6-9aa2-4146-ac82-0cfac59f21be" x="476" y="0" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{INTEREST_RATE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="04a8437d-65e2-4b2f-8d75-9283bc733c1f" x="0" y="0" width="68" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANINTRATE_CODE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b66a20f1-87c1-488d-8878-2662432ae249" x="340" y="0" width="68" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{UPPER_AMT}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e767080f-a2cd-4c53-b3a7-fa24874cb5f1" x="136" y="0" width="68" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($F{EXPIRE_DATE})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="099bf7ac-9371-4534-8d08-0f4f8fa3a41e" x="204" y="0" width="68" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "TH")).format($F{STARTCONT_DATE})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

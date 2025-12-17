@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DLA_REALOAN_COLL" language="groovy" pageWidth="64" pageHeight="1150" orientation="Landscape" columnWidth="64" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5a1d7de0-5ba3-4656-82eb-bd3970b86fa2">
+	<property name="ireport.zoom" value="1.464100000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="loanrequest_docno" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\api\\iReport\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+--lnreqloancoll.ref_collno as MEMBER_NO ,
+--lnreqloancoll.description  as FullName,
+    --REPLACE(TO_CHAR(ft_calage(mbmembmaster.birth_date, SYSDATE, 4)), '.', '/') AS birth_age,
+    --REPLACE(TO_CHAR(ft_calage(mbmembmaster.work_date, SYSDATE, 4)), '.', '/') AS work_age,
+    --REPLACE(TO_CHAR(ft_calage(mbmembmaster.member_date, SYSDATE, 4)), '.', '/') AS member_age,
+--mbmembmaster.SALARY_AMOUNT as SALARY_AMOUNT,
+lnreqloancoll.collactive_amt as LOANREQUEST_AMT
+FROM
+lnreqloancoll
+--LEFT JOIN mbmembmaster ON lnreqloancoll.ref_collno = mbmembmaster.member_no
+where lnreqloancoll.loanrequest_docno = $P{loanrequest_docno}
+and lnreqloancoll.loancolltype_code = '08']]>
+	</queryString>
+	<field name="LOANREQUEST_AMT" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="false">
+				<reportElement uuid="09805782-1f95-47d9-ac4e-39703f510875" x="0" y="0" width="64" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOANREQUEST_AMT} == null ? "0.00" : $F{LOANREQUEST_AMT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
