@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="COLL04_SUB" language="groovy" pageWidth="536" pageHeight="555" orientation="Landscape" columnWidth="536" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4462862c-65d7-489e-8032-d4a058775802">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="collmast_no" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    1 AS SEQ,
+    'ที่ดิน' AS COLLDESC,
+    NVL(CASE
+        WHEN lncollmastland.LANDTYPE_CODE = '01' THEN 'โฉนด '
+        WHEN lncollmastland.LANDTYPE_CODE = '02' THEN 'นส.3 '
+        WHEN lncollmastland.LANDTYPE_CODE = '03' THEN 'นส.3.ก.'
+        WHEN lncollmastland.LANDTYPE_CODE = '04' THEN 'นส.4 '
+        ELSE ''
+    END, ' ') AS LANDTYPE_DESC,
+    NVL(lncollmastland.LAND_DOCNO, ' ') AS COLLNO,
+    NVL('วันที่จดจำนอง ' || TO_CHAR(ADD_MONTHS(lncollmastland.MORTGAGE_DATE, 12 * 543), 'DD/MM/YYYY'), ' ') AS JAMNONG_DATE,
+    ' ' AS AGE_COLL,
+    ' ' AS DETERIORATION,
+    ' ' AS DETERIORATION_PRECEN,
+    ' ' AS DETERIORATION_PRISE,
+    NVL(TO_CHAR(
+        CASE
+            WHEN lncollmastland.COMPANY_FLAG = 1 THEN lncollmastland.COMPANY_PRICE
+            ELSE lncollmastland.LAND_PRICE
+        END,
+        'FM999G999G999G990D00',
+        'NLS_NUMERIC_CHARACTERS=''.,'''
+    ), ' ')  AS PRISE,
+    NVL(TO_CHAR(lncollmastland.SIZE_RAI), '0') || ' ไร่' AS RIRAR,
+    NVL(TO_CHAR(lncollmastland.SIZE_NGAN), '0') || ' งาน' AS NGAN,
+    NVL(TO_CHAR(lncollmastland.SIZE_WA), '0') || ' ตารางวา' AS WA
+FROM
+    lncollmastland
+WHERE
+    lncollmastland.COLLMAST_NO = $P{collmast_no}
+
+UNION ALL
+
+SELECT
+    2 AS SEQ,
+    'สิ่งปลูกสร้างอื่นๆ' AS COLLDESC,
+    NVL(LNUCFBUILDINGTYPE.BUILDINGTYPE_DESC, ' ') AS LANDTYPE_DESC,
+    NVL(lncollmastbuilding.BD_ONLANDNO, ' ') AS COLLNO,
+    ' ' AS JAMNONG_DATE,
+    NVL(TO_CHAR(lncollmastbuilding.BD_AGE), ' ') AS AGE_COLL,
+    NVL('ราคาค่าเสื่อม ' || TO_CHAR(lncollmastbuilding.BD_SUMPRICE_DEPT, 'FM999G999G999G990D00', 'NLS_NUMERIC_CHARACTERS=''.,''' ) || ' บาท', ' ') AS DETERIORATION,
+    NVL('เปอร์เซ็นต์ค่าเสื่อม ' || TO_CHAR(lncollmastbuilding.BD_DEPRECIATION, 'FM999G999G990D00', 'NLS_NUMERIC_CHARACTERS=''.,''' ) || ' %', ' ') AS DETERIORATION_PRECEN,
+    NVL('มูลลค่าหลังหักราคาค่าเสื่อม ' || TO_CHAR(lncollmastbuilding.BD_SUMPRICE_SAL, 'FM999G999G999G990D00', 'NLS_NUMERIC_CHARACTERS=''.,''' ) || ' บาท', ' ') AS DETERIORATION_PRISE,
+    NVL(TO_CHAR(lncollmastbuilding.BD_SUMPRICE, 'FM999G999G999G990D00', 'NLS_NUMERIC_CHARACTERS=''.,''' ) , ' ') AS PRISE,
+    ' ' AS RIRAR,
+    ' ' AS NGAN,
+    ' ' AS WA
+FROM
+    lncollmastbuilding
+LEFT JOIN
+    LNUCFBUILDINGTYPE ON lncollmastbuilding.BUILDINGTYPE_CODE = LNUCFBUILDINGTYPE.BUILDINGTYPE_CODE
+WHERE
+    lncollmastbuilding.COLLMAST_NO = $P{collmast_no}
+
+ORDER BY SEQ]]>
+	</queryString>
+	<field name="SEQ" class="java.math.BigDecimal"/>
+	<field name="COLLDESC" class="java.lang.String"/>
+	<field name="LANDTYPE_DESC" class="java.lang.String"/>
+	<field name="COLLNO" class="java.lang.String"/>
+	<field name="JAMNONG_DATE" class="java.lang.String"/>
+	<field name="AGE_COLL" class="java.lang.String"/>
+	<field name="DETERIORATION" class="java.lang.String"/>
+	<field name="DETERIORATION_PRECEN" class="java.lang.String"/>
+	<field name="DETERIORATION_PRISE" class="java.lang.String"/>
+	<field name="PRISE" class="java.lang.String"/>
+	<field name="RIRAR" class="java.lang.String"/>
+	<field name="NGAN" class="java.lang.String"/>
+	<field name="WA" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="762c7e73-9a38-48f1-99f6-5d212e4811e6" x="0" y="0" width="415" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="Angsana New" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COLLDESC}+ " " + $F{LANDTYPE_DESC}+ " " + $F{COLLNO}+ " " +$F{JAMNONG_DATE}+ " " + $F{AGE_COLL} + " " + $F{DETERIORATION}+ " " +$F{DETERIORATION_PRECEN}+ " " +$F{DETERIORATION_PRISE}+ " " + $F{RIRAR}+ " " +$F{NGAN}+ " " + $F{WA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="e70807d6-5049-45c5-99c7-bdec6dbf6d19" x="415" y="0" width="59" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRISE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="6a21794c-b458-4383-84e2-f35878e28fe7" x="474" y="0" width="59" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Angsana New" size="12"/>
+					<paragraph rightIndent="3"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
